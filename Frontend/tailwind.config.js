@@ -1,14 +1,19 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: "class",
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  darkMode: 'class', // Enable class-based dark mode
   theme: {
     extend: {
       colors: {
-        bgDark: "#0f172a", // or any dark background you like
+        primary: '#6C63FF',
+        accent: '#00FFFF',
+        neonPink: '#D946EF',
+        success: '#10B981',
+        bgDark: '#1F1B24',
+      },
+      fontFamily: {
+        inter: ['Inter', 'sans-serif'],
+        grotesk: ['Space Grotesk', 'sans-serif'],
       },
     },
   },
