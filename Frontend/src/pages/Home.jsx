@@ -3,8 +3,9 @@ import { motion } from "framer-motion"
 import { TypeAnimation } from "react-type-animation"
 import Lottie from "lottie-react"
 import DevAnim from "../assets/dev-lottie1.json"
+import DevAnimDark from "../assets/dev-lottie2.json"
 
-const Home = () => {
+const Home = ({darkMode, setDarkMode}) => {
   return (
     <div className='bg-white dark:bg-bgDark min-h-screen flex items-center justify-center px-4'>
       <div className='grid md:grid-cols-2 gap-10 max-w-7xl w-full'>
@@ -33,8 +34,8 @@ const Home = () => {
         </motion.div>
 
         {/* Right Animation */}
-        <motion.div initial={{ x: 100, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 1 }} className="hidden md:block">
-          <Lottie animationData={DevAnim} loop={true} />
+        <motion.div initial={{ x: 100, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 1 }} className="block">
+          <Lottie animationData={darkMode ? DevAnim : DevAnimDark} loop={true} />
         </motion.div>
       </div>
     </div>
