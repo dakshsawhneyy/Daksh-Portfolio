@@ -25,9 +25,9 @@ const About = () => {
       <h3 className="text-4xl font-black text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 mb-12 drop-shadow-md">
         My Tech Stack
       </h3>
-      <div className="max-w-6xl mx-auto grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 sm:gap-6 px-4 sm:px-6 mb-24">
+      <div className="max-w-6xl mx-auto grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 sm:gap-6 sm:px-6 mb-24">
         {skills.map((item, index) => (
-          <motion.div key={index} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: index * 0.05 }} className="relative group p-4 sm:p-6 rounded-2xl text-center font-medium text-white dark:text-white bg-white/10 dark:bg-white/5 backdrop-blur-xl border border-white/20 dark:border-gray-600/40 transition-all duration-300 hover:scale-110 hover:shadow-[0_0_30px_rgba(255,255,255,0.15)] overflow-hidden">
+          <motion.div key={index} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: index * 0.05 }} className="relative group py-4 sm:p-6 rounded-2xl text-center font-medium text-gray-800 dark:text-white bg-gray-100/60 dark:bg-white/5 backdrop-blur-xl border border-white/20 dark:border-gray-600/40 transition-all duration-300 hover:scale-110 hover:shadow-[0_0_30px_rgba(255,255,255,0.15)] overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent dark:from-white/5 dark:to-transparent opacity-20 rounded-2xl z-0 pointer-events-none"></div>
             <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-500 shadow-[0_0_40px_10px_rgba(255,255,255,0.1)] z-0 pointer-events-none"></div>
             <div className="relative z-10 text-[0.9rem] sm:text-[1rem] tracking-wide">{item}</div>
