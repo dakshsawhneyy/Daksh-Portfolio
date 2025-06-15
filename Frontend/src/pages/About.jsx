@@ -1,5 +1,6 @@
 import { timeline,certs,skills } from "../data/about"
 import { motion } from "framer-motion"
+import { Award } from "lucide-react"
 
 const About = () => {
   return (
@@ -22,7 +23,7 @@ const About = () => {
       
 
       {/* Skills Section */}
-      <h3 className="text-4xl font-black text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 mb-12 drop-shadow-md">
+      <h3 className="text-4xl font-black text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 my-12 drop-shadow-md">
         My Tech Stack
       </h3>
       <div className="max-w-6xl mx-auto grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 sm:gap-6 sm:px-6 mb-24">
@@ -37,14 +38,22 @@ const About = () => {
 
 
       {/* Certifications */}
-      <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">Certifications</h3>
-      <div className="flex flex-wrap gap-4 justify-center mb-20">
+      <section className="max-w-6xl mx-auto">
+      <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-6">Certifications</h2>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 mb-12">
         {certs.map((cert, i) => (
-          <a key={i} href={cert.link} target="_blank" className="bg-accent text-black px-4 py-2 rounded-full font-semibold hover:opacity-80 transition">
-            {cert.title}
-          </a>
+          <motion.a key={i} href={cert.link} target="_blank" className="relative group backdrop-blur-lg bg-white/20 dark:bg-gray-800/30 border border-white/30 dark:border-gray-600/40 rounded-2xl p-4 flex flex-col items-center justify-center text-center font-medium text-gray-900 dark:text-white shadow-md transition hover:scale-110" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}>
+            <div className="text-4xl mb-2 text-primary">
+              <Award size={32} />
+            </div>
+            <p className="text-sm">{cert.title}</p>
+
+            {/* Hover overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-transparent to-white/20 opacity-0 group-hover:opacity-100 rounded-2xl transition" />
+          </motion.a>
         ))}
       </div>
+    </section>
 
       {/* Currently Grinding */}
       <div className="text-center pb-20">
