@@ -5,11 +5,11 @@ import { motion } from "framer-motion"
 const Projects = () => {
   
   // Creating use state for fetching projects based on tags
-  const [selectedTag, setSelectedTag] = useState("All")
+  const [selectedTag, setSelectedTag] = useState("all")
   
   const tags = ["All", "DevOps", "Cloud", "MERN", "Python"]
 
-  const filteredProjects = (selectedTag === "All" ? projects : projects.filter(project => project.category === selectedTag))
+  const filteredProjects = (selectedTag === "all" ? projects : projects.filter(project => project.category.toLowerCase() === selectedTag))
 
   return (
     <div className='min-h-screen bg-white dark:bg-bgDark px-6 pt-10 md:pt-28'>
@@ -18,7 +18,7 @@ const Projects = () => {
       {/* Filter Buttons */}
       <div className='flex justify-center gap-1 sm:gap-4 mb-8'>
         {tags.map(tag => (
-          <button key={tag} onClick={() => setSelectedTag(tag)} className={`px-4 py-1 rounded-full text-xs sm:text-md md:text-lg md:font-medium ${selectedTag === tag ? "bg-primary text-white" : "bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-white"}`}>{tag}</button>
+          <button key={tag} onClick={() => setSelectedTag(tag.toLowerCase())} className={`px-4 py-1 rounded-full text-xs sm:text-md md:text-lg md:font-medium ${selectedTag === tag ? "bg-primary text-white" : "bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-white"}`}>{tag}</button>
         ))}
       </div>
 
