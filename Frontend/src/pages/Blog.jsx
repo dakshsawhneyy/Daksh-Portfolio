@@ -33,7 +33,7 @@ const Blog = () => {
               <img src={item.coverImage?.url} alt={item.title} className="w-full h-40 object-cover mb-4 border border-green-700/40 rounded" />
               <h3 className="text-lg font-semibold mb-2 terminal-glow">{item.title}</h3>
               <p className="text-green-500 text-sm">{item.brief.slice(0, 140)}...</p>
-              <a href={`https://hashnode.com/post/${item.slug}`} target="_blank" rel="noreferrer" className="block mt-3 text-green-300 hover:text-green-100 transition" >
+              <a href={`https://hashnode.com/post/${item.slug}`} target="_blank" rel="noreferrer" className="block mt-3 text-green-300 dark:hover:text-green-100 hover:text-black transition" >
                 ↳ Read More
               </a>
             </motion.div>

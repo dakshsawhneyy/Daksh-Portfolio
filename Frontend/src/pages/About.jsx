@@ -4,7 +4,7 @@ import { Award } from "lucide-react"
 
 const About = () => {
   return (
-    <div className="min-h-screen bg-white dark:bg-bgDark text-success px-4 py-10 md:pt-20 md :pt-20 sm:px-6 md:px-10 font-mono">
+    <div className="min-h-screen bg-white dark:bg-black text-success px-4 py-10 md:pt-20 md :pt-20 sm:px-6 md:px-10 font-mono">
       {/* Terminal-style Heading */}
       <div className="text-center mb-12">
         <motion.h2 className="text-2xl sm:text-3xl md:text-4xl font-bold terminal-blink" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>

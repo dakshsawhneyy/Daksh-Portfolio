@@ -7,7 +7,7 @@ import DevAnimDark from "../assets/dev-lottie2.json"
 
 const Home = ({darkMode, setDarkMode}) => {
   return (
-    <div className='bg-white dark:bg-bgDark min-h-screen flex items-center justify-center px-4'>
+    <div className='bg-white dark:bg-black min-h-screen flex items-center justify-center px-4'>
       <div className='grid md:grid-cols-2 gap-10 max-w-7xl w-full'>
         {/* Left Text */}
         <motion.div initial={{ x: -100, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 1 }} className="flex flex-col justify-center">
