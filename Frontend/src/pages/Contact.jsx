@@ -1,11 +1,14 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Mail, Linkedin, Github, Phone, MapPin } from 'lucide-react'
+import Starfield from '../components/Starfield'
 
 const Contact = () => {
   return (
     <div className="min-h-screen flex flex-col lg:flex-row bg-gradient-to-br from-gray-100 to-white dark:from-gray-900 dark:to-bgDark">
       
+      <Starfield />
+
       {/* Left Panel: Info & Socials */}
       <motion.div className="lg:w-1/2 flex flex-col justify-center items-start p-8 lg:p-16 gap-6 backdrop-blur-xl bg-white/30 dark:bg-gray-800/40 rounded-tr-3xl rounded-br-3xl m-4 lg:m-8 shadow-xl" initial={{ x: -100, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.6 }}>
         <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-2">

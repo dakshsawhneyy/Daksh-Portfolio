@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { FiSun, FiMoon } from "react-icons/fi"
 import { FiHome, FiUser, FiBriefcase, FiEdit3, FiMail } from "react-icons/fi"
 import { useEffect, useState } from 'react'
+import Starfield from './Starfield'
 
 
 const Navbar = ({darkMode, setDarkMode, toggleDarkMode}) => {

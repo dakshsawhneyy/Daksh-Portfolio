@@ -51,7 +51,7 @@ const Projects = () => {
                 </div>
 
                 {/* GitHub Link */}
-                <a href={item.github} target="_blank" rel="noreferrer" className="inline-block mt-4 text-[#475569] dark:text-green-300 font-semibold hover:underline" >
+                <a href={item.github} target="_blank" rel="noreferrer" className="inline-block mt-4 text-[#475569] dark:text-accent font-semibold hover:underline" >
                   ↳ View on GitHub
                 </a>
               </div>
