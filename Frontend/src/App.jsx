@@ -6,6 +6,7 @@ import Projects from "./pages/Projects"
 import Blog from "./pages/Blog"
 import Contact from "./pages/Contact"
 import { useState } from "react"
+import Footer from "./components/Footer"
 
 const App = () => {
 
@@ -27,6 +28,7 @@ const App = () => {
         <Route path="/blog" element={<Blog />}></Route>
         <Route path="/contact" element={<Contact />}></Route>
       </Routes>
+      <Footer/>
     </div>
   )
 }
