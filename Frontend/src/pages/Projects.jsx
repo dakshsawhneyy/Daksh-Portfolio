@@ -13,7 +13,7 @@ const Projects = () => {
   const filteredProjects = (selectedTag === "all" ? projects : projects.filter(project => project.category.toLowerCase() === selectedTag))
 
   return (
-    <div className='min-h-screen bg-white dark:bg-bgDark px-6 pt-10 md:pt-28'>
+    <div className='min-h-screen bg-white dark:bg-bgDark px-8 pt-10 md:pt-28'>
         <h2 className="text-3xl font-grotesk font-bold text-gray-900 dark:text-white mb-8 text-center">Side Hustles & Scalable Stuff</h2>
 
       {/* Filter Buttons */}

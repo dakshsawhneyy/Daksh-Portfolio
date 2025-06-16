@@ -1,41 +1,45 @@
 import { useEffect, useState } from "react"
 import { fetchBlogs } from "../data/blogService"
-import { motion } from 'framer-motion'
-
+import { motion } from "framer-motion"
+import Tilt from 'react-parallax-tilt'
 
 const Blog = () => {
-
-  // Creating a state to store blogs fetched from Hashnode
-  const [blogs, setBlogs] = useState([])  // Empty at starting
+  const [blogs, setBlogs] = useState([])
 
   useEffect(() => {
-    const loadBlogs = async() => {
+    const loadBlogs = async () => {
       const data = await fetchBlogs()
       setBlogs(data)
     }
     loadBlogs()
   }, [])
 
-    // Pick first post as featured
-    const [featured, ...rest] = blogs
-
   return (
-    <div className='min-h-screen bg-white dark:bg-bgDark px-6 pt-8 sm:pt-28'>
-      <h2 className='text-3xl font-bold text-center text-gray-900 dark:text-white mb-10 font-grotesk'>My Blog Articles</h2>
-      
-      <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto'>
-        {blogs.map((item, index) => (
-          <motion.div key={index} initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }} className="bg-white dark:bg-gray-900 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
-            <img src={item.coverImage?.url} alt={item.title} className="w-full h-48 object-cover"/>
-            <div className="p-4 ">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{item.title}</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300">{item.brief.slice(0, 150)}...</p>
-              <a href={`https://hashnode.com/post/${item.slug}`} target="_blank" className="inline-block mt-4 text-primary font-semibold hover:underline">Read More →</a>
-            </div>
-          </motion.div>
-        ))}
+    <div className="min-h-screen bg-white dark:bg-black text-green-400 	px-6 sm:px-6 md:px-10 py-10 sm:py-12 font-mono">
+      {/* Terminal Heading */}
+      <div className="max-w-5xl mx-auto mb-10 md:pt-10">
+        <motion.h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-green-400 terminal-blink" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }} >
+          $ cat ~/blogs/daksh.txt
+        </motion.h2>
+        <p className="text-green-600 mt-2">// Listing latest blog entries from Hashnode...</p>
+        <hr className="my-4 border-green-800" />
       </div>
 
+      {/* Blog Entries */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        {blogs.map((item, index) => (
+          <Tilt key={index} glareEnable glareMaxOpacity={0.2} scale={1.05} transitionSpeed={400} className="bg-white dark:bg-[#0f0f0f] relative overflow-hidden rounded-2xl shadow-2xl backdrop-blur-lg border border-green-700/50">
+            <motion.div key={index} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }} className=" p-4 rounded-lg hover:shadow-green-400/30 transition-all cursor-pointer " >
+              <img src={item.coverImage?.url} alt={item.title} className="w-full h-40 object-cover mb-4 border border-green-700/40 rounded" />
+              <h3 className="text-lg font-semibold mb-2 terminal-glow">{item.title}</h3>
+              <p className="text-green-500 text-sm">{item.brief.slice(0, 140)}...</p>
+              <a href={`https://hashnode.com/post/${item.slug}`} target="_blank" rel="noreferrer" className="block mt-3 text-green-300 hover:text-green-100 transition" >
+                ↳ Read More
+              </a>
+            </motion.div>
+          </Tilt>
+        ))}
+      </div>
     </div>
   )
 }
