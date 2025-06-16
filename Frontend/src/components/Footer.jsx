@@ -10,7 +10,7 @@ const Footer = () => {
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
 
         {/* Hacker Style Terminal Text */}
-        <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 0.2 }} className="text-sm sm:text-base tracking-wide text-green-400 drop-shadow-[0_0_4px_rgba(0,255,0,0.4)]">
+        <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 0.2 }} className="text-sm sm:text-base tracking-wide text-green-400 ">
           [~] root@dakshsawhneyy:~# © {currentYear} All rights reserved.
         </motion.p> 
 
@@ -30,7 +30,7 @@ const Footer = () => {
 
       {/* Blinking Cursor */}
       <div className="mt-6 text-center text-green-500 text-xs tracking-wider sm:text-sm">
-        <span className="animate-pulse">█</span> Awaiting next command...
+        <span className="animate-pulse">Awaiting next command...<span className=''>█</span></span> 
       </div>
     </footer>
   )

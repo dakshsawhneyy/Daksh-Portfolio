@@ -12,7 +12,7 @@ export const timeline = [
     type: "experience",
   },
   {
-    year: "2023",
+    year: "2024",
     title: "Web Development & MERN Stack Journey Begins",
     description: "Dove deep into MongoDB, Express, React, and Node.js. Built full-stack projects with real-world functionality, focusing on clean architecture, REST APIs, authentication, and responsive UIs.",
     type: "experience",
