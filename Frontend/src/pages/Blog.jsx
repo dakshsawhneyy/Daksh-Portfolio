@@ -18,8 +18,8 @@ const Blog = () => {
     <div className="min-h-screen bg-[#FDFDFD] dark:bg-black text-[#0F172A] dark:text-green-600 	px-6 sm:px-6 md:px-10 py-10 sm:py-12 font-mono">
       {/* Terminal Heading */}
       <div className="max-w-5xl mx-auto mb-10 md:pt-10">
-        <motion.h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#6366F1] dark:text-green-600 terminal-blink" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }} >
-          $ cat ~/blogs/daksh.txt
+        <motion.h2 className="text-xl sm:text-3xl md:text-4xl font-bold text-[#6366F1] dark:text-green-600 terminal-blink" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }} >
+          $ awk {'{'}print{'}'} ~/blogs/daksh.txt
         </motion.h2>
         <p className="text-[#475569] dark:text-accent mt-2">// Listing latest blog entries from Hashnode...</p>
         <hr className="my-4 border-green-800" />
