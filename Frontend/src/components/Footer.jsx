@@ -11,7 +11,7 @@ const Footer = () => {
 
         {/* Hacker Style Terminal Text */}
         <motion.p initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 0.2 }} className="text-sm sm:text-base tracking-wide text-primary dark:text-success ">
-          [~] root@dakshsawhneyy:~# © {currentYear} All rights reserved.
+          [~] root@dakshsawhneyy:~# May contain traces of burnout.
         </motion.p> 
 
         {/* Glassy Icon Row */}
@@ -30,7 +30,7 @@ const Footer = () => {
 
       {/* Blinking Cursor */}
       <div className="mt-6 text-center text-primary dark:text-success text-xs tracking-wider sm:text-sm">
-        <span className="animate-pulse">Awaiting next command...<span className=''>█</span></span> 
+        <span className="animate-pulse">Built by a Cloud engineer who autoscaled his soul and logs for fun.<span className=''>█</span></span> 
       </div>
     </footer>
   )
