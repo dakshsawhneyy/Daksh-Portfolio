@@ -5,18 +5,26 @@ import Navbar from "./components/Navbar"
 import Projects from "./pages/Projects"
 import Blog from "./pages/Blog"
 import Contact from "./pages/Contact"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Footer from "./components/Footer"
 
 const App = () => {
 
-  const [darkMode, setDarkMode] = useState(false)
+  const [darkMode, setDarkMode] = useState(true)
 
   // Toggle dark mode
   const toggleDarkMode = () => {
       document.documentElement.classList.toggle("dark")
       setDarkMode(!darkMode)
   }
+
+  useEffect(() => {
+    if(darkMode){
+      document.documentElement.classList.add("dark")
+    }else{
+      document.documentElement.classList.remove("dark")
+    }
+  },[darkMode])
 
   return (
     <div>

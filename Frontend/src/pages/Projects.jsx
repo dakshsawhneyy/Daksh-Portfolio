@@ -4,42 +4,56 @@ import { motion } from "framer-motion"
 import Tilt from 'react-parallax-tilt'
 
 const Projects = () => {
-  
-  // Creating use state for fetching projects based on tags
   const [selectedTag, setSelectedTag] = useState("all")
-  
   const tags = ["All", "DevOps", "Cloud", "MERN", "Python"]
 
-  const filteredProjects = (selectedTag === "all" ? projects : projects.filter(project => project.category.toLowerCase() === selectedTag))
+  const filteredProjects = (
+    selectedTag === "all" ? projects : projects.filter(project => project.category.toLowerCase() === selectedTag)
+  )
 
   return (
-    <div className='min-h-screen bg-white dark:bg-bgDark px-8 pt-10 md:pt-28'>
-        <h2 className="text-3xl font-grotesk font-bold text-gray-900 dark:text-white mb-8 text-center">Side Hustles & Scalable Stuff</h2>
+    <div className="min-h-screen bg-[#f5f7f8] dark:bg-black text-[#2a5d3c] dark:text-green-400 px-6 md:px-10 py-10 font-mono">
+      {/* Terminal Heading */}
+      <div className="max-w-6xl mx-auto text-left mb-8 md:pt-10">
+        <motion.h2 className="text-xl sm:text-3xl md:text-4xl font-bold text-[#6366F1] dark:text-green-400 terminal-blink" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }} >
+          $ ls ~/Side_Hustles_&_Scalable_Stuff
+        </motion.h2>
+        <p className="text-[#475569] dark:text-accent mt-1">// Displaying filtered projects...</p>
+        <hr className="my-4 border-[#6366F1] dark:border-success" />
+      </div>
 
-      {/* Filter Buttons */}
-      <div className='flex justify-center gap-1 sm:gap-4 mb-8'>
+      {/* Filter Tags */}
+      <div className="flex justify-center flex-wrap gap-2 sm:gap-4 mb-10">
         {tags.map(tag => (
-          <button key={tag} onClick={() => setSelectedTag(tag.toLowerCase())} className={`px-4 py-1 rounded-full text-xs sm:text-md md:text-lg md:font-medium ${selectedTag === tag.toLowerCase() ? "bg-primary text-white" : "bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-white"}`}>{tag}</button>
+          <button key={tag} onClick={() => setSelectedTag(tag.toLowerCase())} className={`px-4 py-1 rounded-full text-sm font-semibold transition-all ${selectedTag === tag.toLowerCase() ? "bg-green-700 text-white" : "bg-[#e0e4e3] dark:bg-[#0f0f0f] text-[#2a5d3c] dark:text-green-400 border border-green-300/30 dark:border-green-700/50" }`} >
+            {tag}
+          </button>
         ))}
       </div>
 
       {/* Project Cards */}
-      <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-8'> 
-        {filteredProjects.map((item,index) => (
-          <Tilt key={index} glareEnable glareMaxOpacity={0.2} scale={1.05} transitionSpeed={400} className="relative overflow-hidden rounded-2xl shadow-2xl bg-white/20 dark:bg-white/5 backdrop-blur-lg border border-white/20 dark:border-gray-600/40">
-            <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="bg-white dark:bg-gray-900 shadow-md rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 ">
-              <img src={item.image} alt="project-image" className='w-full md:max-h-60 object-cover' />
-              <div className='p-4'>
-                <h3 className='text-lg font-semibold text-gray-900 dark:text-white'>{item.title}</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">{item.description}</p>
-                {/* providing tags */}
-                <div className='flex flex-wrap gap-2 mt-3'>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        {filteredProjects.map((item, index) => (
+          <Tilt key={index} glareEnable glareMaxOpacity={0.2} scale={1.05} transitionSpeed={400} className="bg-[#fefefe] dark:bg-[#0f0f0f] rounded-2xl border border-green-600/40 dark:border-green-700/40 backdrop-blur-md shadow-xl transition-all" >
+            <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: index * 0.1 }} className="overflow-hidden rounded-xl" >
+              <img src={item.image} alt="project-img" className="w-full h-44 object-cover border-b border-green-700/30" />
+              <div className="p-4">
+                <h3 className="text-lg font-bold text-[#6366F1] dark:text-green-300 mb-1">{item.title}</h3>
+                <p className="text-sm text-[#475569] dark:text-green-400">{item.description}</p>
+
+                {/* Tags */}
+                <div className="flex flex-wrap gap-2 mt-3">
                   {item.tags.map((tag, ind) => (
-                    <span key={ind} className='text-xs px-2 py-1 bg-accent text-black dark:text-black rounded-full font-medium'>{tag}</span>
+                    <span key={ind} className="text-xs px-2 py-1 bg-green-200 text-green-900 dark:bg-green-400 dark:text-black rounded-full font-bold" >
+                      {tag}
+                    </span>
                   ))}
                 </div>
-                {/* Show on GitHub Icon */}
-                <a href={item.github} target="_blank" className='inline-block mt-4 text-primary font-semibold hover:underline'>View on GitHub →</a>
+
+                {/* GitHub Link */}
+                <a href={item.github} target="_blank" rel="noreferrer" className="inline-block mt-4 text-[#475569] dark:text-green-300 font-semibold hover:underline" >
+                  ↳ View on GitHub
+                </a>
               </div>
             </motion.div>
           </Tilt>
