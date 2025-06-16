@@ -1,46 +1,54 @@
-import { useEffect, useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import React, { useEffect, useState } from 'react'
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts'
 
 const MetricsPanel = () => {
+  const [cpuData, setCpuData] = useState(generateInitialData())
+  const [memoryData, setMemoryData] = useState(generateInitialData())
 
-    const [cpuMetric, setCpuMetric] = useState([
-        { time: '00:00', usage: 30 },
-        { time: '00:05', usage: 45 },
-        { time: '00:10', usage: 35 },
-        { time: '00:15', usage: 55 },
-        { time: '00:20', usage: 60 },
-        { time: '00:25', usage: 48 },
-    ])
+  // Generate initial static data
+  function generateInitialData() {
+    const now = new Date()
+    return Array.from({ length: 6 }).map((_, i) => {
+      const time = new Date(now.getTime() - (5 - i) * 1000).toLocaleTimeString().slice(0, 5)
+      return {
+        time,
+        usage: Math.floor(Math.random() * 40 + 30) // 30-70%
+      }
+    })
+  }
 
-    // using useEffect to dynamically change
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCpuMetric(prev => {
-                const newCpuUsage = Math.floor(Math.random() * 10 + 15)
-                const newTime = new Date().toLocaleTimeString().slice(0,5)
-                const updated = [...prev.slice(1), { time: newTime, usage: newCpuUsage }]
-                return updated
-            })
-        }, 2000);
-    
-        return () => clearInterval(interval)
-    }, [])
-    
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const time = new Date().toLocaleTimeString().slice(0, 5)
+      const newCpu = { time, usage: Math.floor(Math.random() * 40 + 30) }
+      const newMem = { time, usage: Math.floor(Math.random() * 50 + 40) }
+
+      setCpuData(prev => [...prev.slice(1), newCpu])
+      setMemoryData(prev => [...prev.slice(1), newMem])
+    }, 4000)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  const ChartCard = ({ title, data, color }) => (
+    <div className='bg-white dark:bg-black border border-green-700/50 rounded-xl p-4 shadow-2xl'>
+      <h3 className='text-lg text-primary dark:text-success mb-3'>{title}</h3>
+      <ResponsiveContainer width="100%" height={200}>
+        <LineChart data={data}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+          <XAxis dataKey="time" />
+          <YAxis domain={[20, 100]} />
+          <Tooltip />
+          <Line type="monotone" dataKey="usage" stroke={color} strokeWidth={2} dot={false} />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  )
 
   return (
-    <div className='max-w-6xl mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-6 py-10 px-6 font-mono'>
-        <div className='bg-white dark:bg-black border border-green-700/50 rounded-xl p-4 shadow-2xl'>
-            <h3 className='text-lg text-primary dark:text-success mb-3'>Container CPU Usage</h3>
-            <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={cpuMetric}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
-                    <XAxis dataKey="time" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="usage" stroke="#10B981" strokeWidth={2} />
-                </LineChart>
-            </ResponsiveContainer>
-        </div>
+    <div className='max-w-6xl mx-auto grid sm:grid-cols-2 lg:grid-cols-2 gap-6 py-10 px-6 font-mono'>
+      <ChartCard title="Container CPU Usage" data={cpuData} color="#10B981" />
+      <ChartCard title="Memory Usage" data={memoryData} color="#3B82F6" />
     </div>
   )
 }
