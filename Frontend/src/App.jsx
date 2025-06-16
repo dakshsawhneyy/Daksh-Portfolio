@@ -7,6 +7,7 @@ import Blog from "./pages/Blog"
 import Contact from "./pages/Contact"
 import { useEffect, useState } from "react"
 import Footer from "./components/Footer"
+import Dashboard from "./pages/Dashboard"
 
 const App = () => {
 
@@ -32,8 +33,9 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home darkMode={darkMode} setDarkMode={setDarkMode} />}></Route>
         <Route path="/about" element={<About />}></Route>
-        <Route path="/projects" element={<Projects />}></Route>
         <Route path="/blog" element={<Blog />}></Route>
+        <Route path="/projects" element={<Projects />}></Route>
+        <Route path="/metrics" element={<Dashboard />}></Route>
         <Route path="/contact" element={<Contact />}></Route>
       </Routes>
       <Footer/>
