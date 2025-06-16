@@ -1,22 +1,38 @@
 import { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
-const data = () => [
-  { time: '10:00', usage: (Math.random() * (40-39)) + 39},
-  { time: '10:15', usage: (Math.random() * (50-49)) + 49},
-  { time: '10:30', usage: (Math.random() * (60-59)) + 59},
-  { time: '10:45', usage: (Math.random() * (20-19)) + 19},
-  { time: '11:00', usage: 70 },
-  { time: '11:15', usage: 65 },
-];
-
 const MetricsPanel = () => {
+
+    const [cpuMetric, setCpuMetric] = useState([
+        { time: '00:00', usage: 30 },
+        { time: '00:05', usage: 45 },
+        { time: '00:10', usage: 35 },
+        { time: '00:15', usage: 55 },
+        { time: '00:20', usage: 60 },
+        { time: '00:25', usage: 48 },
+    ])
+
+    // using useEffect to dynamically change
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCpuMetric(prev => {
+                const newCpuUsage = Math.floor(Math.random() * 10 + 15)
+                const newTime = new Date().toLocaleTimeString().slice(0,5)
+                const updated = [...prev.slice(1), { time: newTime, usage: newCpuUsage }]
+                return updated
+            })
+        }, 2000);
+    
+        return () => clearInterval(interval)
+    }, [])
+    
+
   return (
     <div className='max-w-6xl mx-auto grid sm:grid-cols-2 lg:grid-cols-3 gap-6 py-10 px-6 font-mono'>
         <div className='bg-white dark:bg-black border border-green-700/50 rounded-xl p-4 shadow-2xl'>
             <h3 className='text-lg text-primary dark:text-success mb-3'>Container CPU Usage</h3>
             <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={data()}>
+                <LineChart data={cpuMetric}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
                     <XAxis dataKey="time" />
                     <YAxis />
