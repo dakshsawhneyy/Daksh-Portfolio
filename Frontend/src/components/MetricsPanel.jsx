@@ -46,7 +46,7 @@ const MetricsPanel = () => {
   )
 
   return (
-    <div className='max-w-6xl mx-auto grid sm:grid-cols-2 lg:grid-cols-2 gap-6 py-10 px-6 font-mono'>
+    <div className='max-w-7xl mx-auto grid sm:grid-cols-2 lg:grid-cols-2 gap-6 py-10 px-6 font-mono'>
       <ChartCard title="Container CPU Usage" data={cpuData} color="#10B981" />
       <ChartCard title="Memory Usage" data={memoryData} color="#3B82F6" />
     </div>

@@ -18,7 +18,7 @@ const Dashboard = () => {
     }, [])
 
     const MetricBox = ({label, value}) => (
-        <div className="bg-white dark:bg-[#0f0f0f] border border-green-500/30 p-6 rounded-xl shadow-xl hover:shadow-green-300/30 transition-all">
+        <div className="bg-white dark:bg-[#0f0f0f] border border-green-500/30 p-5 rounded-xl shadow-xl hover:shadow-green-300/30 transition-all">
             <p className="text-sm text-gray-500 dark:text-green-200 mb-2">{label}</p>
             <h3 className="text-3xl font-bold tracking-wider">{value}</h3>
         </div>
@@ -29,7 +29,7 @@ const Dashboard = () => {
         <h1 className="text-2xl md:text-3xl mb-10 terminal-blink text-center">$ watch ~/metrics/daksh.sh</h1>
 
         {/* Dashboards */}
-        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8'>
+        <div className='grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-8'>
             <MetricBox label="CPU Usage" value={`${metrics.cpuUsage}`}></MetricBox>
             <MetricBox label="Memory Usage" value={`${metrics.memoryUsage}`}></MetricBox>
             <MetricBox label="Deployment Speed" value={`${metrics.deploymentSpeed}`}></MetricBox>
