@@ -1,0 +1,6 @@
+ingressClassName: nginx
+
+host: "daksh.cctlds.online"
+
+frontendPort: 5173
+backendPort: 4000

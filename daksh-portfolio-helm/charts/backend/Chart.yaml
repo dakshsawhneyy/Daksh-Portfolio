@@ -1,0 +1,9 @@
+apiVersion: v2
+name: daksh-portfolio-backend
+description: A Helm chart for Daksh Portfolio Backend
+
+type: application
+
+version: 0.1.0
+
+appVersion: "1.0.0"

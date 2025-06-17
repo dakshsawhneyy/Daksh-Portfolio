@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: daksh-portfolio-ingress
+  namespace: daksh-portfolio
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: {{ .Values.ingressClassName }}
+  rules:
+  - host: {{ .Values.host }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: daksh-portfolio-frontend-service
+            port:
+              number: {{ .Values.frontendPort }}
+      - path: /api(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: daksh-portfolio-backend-service
+            port:
+                number: {{ .Values.backendPort }}

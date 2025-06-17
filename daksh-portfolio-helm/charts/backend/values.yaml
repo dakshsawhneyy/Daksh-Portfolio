@@ -1,0 +1,13 @@
+# Deployment
+replicas: 1
+image:
+  repository: dakshsawhneyy/daksh-portfolio-backend
+  tag: latest
+  pullPolicy: IfNotPresent
+
+# Service
+service:
+  port: 4000
+  targetPort: 4000
+  type: ClusterIP
+  protocol: TCP

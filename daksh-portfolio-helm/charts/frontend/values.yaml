@@ -1,0 +1,13 @@
+# Deployment
+replicas: 1
+image:
+  repository: dakshsawhneyy/daksh-portfolio-frontend
+  tag: latest
+  pullPolicy: IfNotPresent
+
+# Service
+service:
+  port: 5173
+  targetPort: 5173
+  type: ClusterIP
+  protocol: TCP
