@@ -17,4 +17,8 @@ app.use(express.json())
 app.use("/api/message", msgRouter)
 app.use("/api/visitor", visitorRouter)
 
+app.get('/', (req,res) => {
+    res.send("Server is running")
+})
+
 app.listen(port, () => console.log(`Server is running on port ${port}`))

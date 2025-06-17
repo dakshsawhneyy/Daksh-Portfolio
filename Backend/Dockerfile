@@ -16,6 +16,6 @@ WORKDIR /app
 # Only copy whats important
 COPY --from=builder /app ./
 
-EXPOSE 5173
+EXPOSE 4000
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "start"]
