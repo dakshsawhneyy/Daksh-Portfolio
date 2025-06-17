@@ -16,9 +16,11 @@ const Home = ({darkMode, setDarkMode}) => {
             sequence={[
               "Cloud DevOps Engineer",
               1500,
+              "Open-Source Contributor",
+              1500,
               "MERN Stack Developer",
               1500,
-              "DevSecOps Learner",
+              "System Design Enthusiast",
               1500,
               "AWS Enthusiast",
               1500,

@@ -26,7 +26,7 @@ const Dashboard = () => {
 
   return (
     <div className='min-h-screen px-10 py-16 md:pt-24 bg-white dark:bg-black text-primary dark:text-success font-mono'>
-        <h1 className="text-2xl md:text-3xl mb-10 terminal-blink text-center">$ watch ~/metrics/daksh.sh</h1>
+        <h1 className="text-2xl md:text-3xl mb-10 terminal-blink text-center">$ watch ~/metrics/logs.sh</h1>
 
         {/* Dashboards */}
         <div className='grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-8'>

@@ -58,12 +58,12 @@ const Navbar = ({darkMode, setDarkMode, toggleDarkMode}) => {
             {/* For Mobile Screen */}
             <nav className='md:hidden fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-white/30 dark:bg-bgDark/30 backdrop-blur-3xl shadow-lg rounded-full px-6 py-3 z-50 flex items-center justify-between gap-6'>
                 <div className='flex justify-between items-center gap-6'>
-                    <Link to={"/"} className={`text-xl ${isActive("/") ? "text-primary" : "text-gray-800 dark:text-white hover:text-primary"}`}> <FiHome/> </Link>
-                    <Link to={"/about"} className={`text-xl ${isActive("/about") ? "text-primary" : "text-gray-800 dark:text-white hover:text-primary"}`}> <FiUser/> </Link>
-                    <Link to={"/blog"} className={`text-xl ${isActive("/blog") ? "text-primary" : "text-gray-800 dark:text-white hover:text-primary"}`}> <FiEdit3/> </Link>
-                    <Link to={"/projects"} className={`text-xl ${isActive("/projects") ? "text-primary" : "text-gray-800 dark:text-white hover:text-primary"}`}> <FiBriefcase/> </Link>
-                    <Link to={"/metrics"} className={`text-xl ${isActive("/metrics") ? "text-primary" : "text-gray-800 dark:text-white hover:text-primary"}`}> <FiBarChart2/> </Link>
-                    <Link to={"/contact"} className={`text-xl ${isActive("/contact") ? "text-primary" : "text-gray-800 dark:text-white hover:text-primary"}`}> <FiMail/> </Link>
+                    <Link to={"/"} className={`text-xl ${isActive("/") ? "text-primary dark:text-success" : "text-gray-800 dark:text-white hover:text-primary hover:dark:text-success"}`}> <FiHome/> </Link>
+                    <Link to={"/about"} className={`text-xl ${isActive("/about") ? "text-primary dark:text-success" : "text-gray-800 dark:text-white hover:text-primary hover:dark:text-success"}`}> <FiUser/> </Link>
+                    <Link to={"/blog"} className={`text-xl ${isActive("/blog") ? "text-primary dark:text-success" : "text-gray-800 dark:text-white hover:text-primary hover:dark:text-success"}`}> <FiEdit3/> </Link>
+                    <Link to={"/projects"} className={`text-xl ${isActive("/projects") ? "text-primary dark:text-success" : "text-gray-800 dark:text-white hover:text-primary hover:dark:text-success"}`}> <FiBriefcase/> </Link>
+                    <Link to={"/metrics"} className={`text-xl ${isActive("/metrics") ? "text-primary dark:text-success" : "text-gray-800 dark:text-white hover:text-primary hover:dark:text-success"}`}> <FiBarChart2/> </Link>
+                    <Link to={"/contact"} className={`text-xl ${isActive("/contact") ? "text-primary dark:text-success" : "text-gray-800 dark:text-white hover:text-primary hover:dark:text-success"}`}> <FiMail/> </Link>
                 </div>
 
                 {/* Dark Mode Toggle */}
