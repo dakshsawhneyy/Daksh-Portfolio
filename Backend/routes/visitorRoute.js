@@ -10,14 +10,24 @@ visitorRouter.post('/', async(req, res) => {
         const userAgent = req.headers['user-agent']
         const { path } = req.body
 
-        const newVisitor = new visitorModel({
-            ip, 
-            userAgent,
-            path,
-            timestamp: new Date()
-        })
+        // Only add new entry when user changes - if path changes update to existing entry
+        let visitor = await visitorModel.findOne({ ip, userAgent });
 
-        await newVisitor.save()
+        if(visitor){
+            if(!visitor.paths.includes(path)) {
+                visitor.paths.push(path);
+                await visitor.save()
+            }
+        }else{
+            visitor = new visitorModel({
+                ip, 
+                userAgent,
+                path,
+                timestamp: new Date()
+            })
+            await visitor.save()
+        }
+
         res.status(201).json({ success:true })
 
     } catch (error) {

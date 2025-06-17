@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 const visitorSchema = new mongoose.Schema({
     ip: String,
     userAgent: String,
-    path: String,
+    paths: [String],
     timestamp: {
         type: Date,
         default: Date.now,
