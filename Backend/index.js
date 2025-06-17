@@ -3,6 +3,7 @@ import 'dotenv/config'
 import cors from 'cors'
 import connectDB from './config/mongodb.js';
 import msgRouter from './routes/messageRoute.js';
+import visitorRouter from './routes/visitorRoute.js';
 
 const app = express();
 const port = process.env.PORT || 4000
@@ -14,5 +15,6 @@ app.use(express.json())
 
 // Api's
 app.use("/api/message", msgRouter)
+app.use("/api/visitor", visitorRouter)
 
 app.listen(port, () => console.log(`Server is running on port ${port}`))
