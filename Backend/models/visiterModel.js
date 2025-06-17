@@ -10,6 +10,8 @@ const visitorSchema = new mongoose.Schema({
     },
 })
 
+visitorSchema.index({ createdAt:1 }, { expireAfterSeconds: 24 * 60 * 60 * 7 }) // clear after 7 days
+
 const visitorModel = mongoose.models.Visitors || mongoose.model('Visitors', visitorSchema)
 
 export default visitorModel

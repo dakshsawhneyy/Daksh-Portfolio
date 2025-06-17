@@ -10,7 +10,7 @@ const TrackVisitor = () => {
     useEffect(() => {
         const track = () => {
             try {
-                axios.post(`${import.meta.VITE_BACKEND_URL}/api/visitor`, {
+                axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/visitor`, {
                     path: location.pathname,    // Passing path because backend knows, user exploring which path
                 })
             } catch (error) {

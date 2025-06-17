@@ -10,7 +10,7 @@ const messageSchema = new mongoose.Schema({
   }
 });
 
-messageSchema.index({ createdAt:1}, { expireAfterSeconds: 2592000 }); // 30 days 
+messageSchema.index({ createdAt:1 }, { expireAfterSeconds: 2592000 }); // 30 days 
 
 const messageModel = mongoose.models.Messages || mongoose.model("Messages", messageSchema)
 

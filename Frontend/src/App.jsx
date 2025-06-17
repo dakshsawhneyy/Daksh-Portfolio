@@ -8,6 +8,7 @@ import Contact from "./pages/Contact"
 import { useEffect, useState } from "react"
 import Footer from "./components/Footer"
 import Dashboard from "./pages/Dashboard"
+import TrackVisitor from "./components/TrackVisitor"
 
 const App = () => {
 
@@ -29,6 +30,7 @@ const App = () => {
 
   return (
     <div>
+      <TrackVisitor />
       <Navbar darkMode={darkMode} setDarkMode={setDarkMode} toggleDarkMode={toggleDarkMode} />
       <Routes>
         <Route path="/" element={<Home darkMode={darkMode} setDarkMode={setDarkMode} />}></Route>
