@@ -11,7 +11,7 @@ const Dashboard = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             setMetrics(generateMetrics())
-        }, 2000);   // change every 1 second
+        }, 1500);   // change every 1 second
 
         return () => clearInterval(interval)
 
