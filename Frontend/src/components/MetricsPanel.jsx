@@ -25,7 +25,7 @@ const MetricsPanel = () => {
 
       setCpuData(prev => [...prev.slice(1), newCpu])
       setMemoryData(prev => [...prev.slice(1), newMem])
-    }, 6000)
+    }, 4000)
 
     return () => clearInterval(interval)
   }, [])
