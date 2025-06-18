@@ -1,6 +1,8 @@
 import { timeline, certs, skills } from "../data/about"
 import { motion } from "framer-motion"
 import { Award } from "lucide-react"
+import Techwheel from "../components/Techwheel"
+import { ExternalLink, Image as ImageIcon } from "lucide-react";
 
 const About = () => {
   return (
@@ -34,6 +36,8 @@ const About = () => {
         <p className="text-[#475569] dark:text-accent mt-2">// All the tools I wield on my terminal</p>
       </div>
 
+      <Techwheel />
+
       <div className="max-w-6xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {skills.map((item, index) => (
           <motion.div key={index} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }} className="bg-[#0f0f0f] border border-green-700/50 rounded-lg p-4 text-center hover:scale-105 transition cursor-pointer shadow-md hover:shadow-green-400/20">
@@ -55,6 +59,11 @@ const About = () => {
               <Award size={28} />
             </div>
             <p className="text-sm text-green-200">{cert.title}</p>
+            {/* Action Buttons */}
+            <div className="flex justify-center gap-2 mt-2">
+              {cert.link && <a href={cert.link} target="_blank" rel="noopener noreferrer" className="text-green-300 hover:text-green-500 transition" title="Open Certificate Link"> <ExternalLink size={20} /> </a>}
+              {cert.image && <button onClick={() => window.open(cert.image, "__blank")} className="inline-flex items-center gap-2 text-green-300 hover:text-green-500 transition-colors border border-green-600 rounded px-3 py-1 text-sm mt-2" title="View Certificate Image"><ImageIcon size={20} /><span> View Here</span></button> }
+            </div>
           </motion.a>
         ))}
       </div>

@@ -1,3 +1,5 @@
+import gdg_certificate from "../assets/gdg_certificate.jpg"
+
 export const timeline = [
   {
     year: "2025",
@@ -33,15 +35,15 @@ export const skills = [
 
 export const certs = [
   {
-    title: "AWS Cloud Practitioner",
-    link: "#",
+    title: "DevOps on AWS: Code, Build, and Test",
+    link: "https://www.coursera.org/account/accomplishments/verify/Q4T5DOO30MM1",
   },
   {
-    title: "Linux Foundation DevOps",
-    link: "#",
+    title: "Build With India",
+    link: "https://unstop.com/certificate-preview/9fc4c0b3-17a9-4838-b19e-884e8429ac72?utm_campaign=",
   },
   {
-    title: "HashiCorp Terraform Associate",
-    link: "#",
+    title: "GDG Certificate",
+    image: gdg_certificate,
   },
 ]
