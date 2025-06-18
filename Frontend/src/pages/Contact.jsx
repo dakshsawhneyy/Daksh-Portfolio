@@ -16,6 +16,9 @@ const Contact = () => {
   // Making state for fetching the state of status
   const [status, setStatus] = useState('')
 
+  // making a state to show popUp
+  const [showPopup, setShowPopup] = useState(false)
+
   // Function to Change FormData from input
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -31,6 +34,8 @@ const Contact = () => {
       if(res.data.success){
         setStatus("Message Sent")
         setFormData({ name:'', email:'', message:'' })
+        setShowPopup(true)
+        setTimeout(() => {setShowPopup(false)}, 2000);
       }else{
         setStatus("Failed to send message")
       }
@@ -91,7 +96,9 @@ const Contact = () => {
           Send Message
         </button>
       </motion.form>
-      {status && <p className="mt-2 text-accent">{status}</p>}
+      {showPopup && <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="fixed top-6 right-6 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+          Message Sent!
+        </motion.div>}
     </div>
   )
 }
