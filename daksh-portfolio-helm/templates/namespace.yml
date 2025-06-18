@@ -1,6 +1,0 @@
-kind: Namespace
-apiVersion: v1
-metadata:
-    name: daksh-portfolio
-    labels:
-        app: daksh-portfolio

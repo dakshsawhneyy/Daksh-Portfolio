@@ -4,24 +4,24 @@ metadata:
   name: daksh-portfolio-ingress
   namespace: daksh-portfolio
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   ingressClassName: {{ .Values.ingressClassName }}
   rules:
   - host: {{ .Values.host }}
     http:
       paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: daksh-portfolio-frontend-service
-            port:
-              number: {{ .Values.frontendPort }}
       - path: /api(/|$)(.*)
-        pathType: Prefix
+        pathType: ImplementationSpecific
         backend:
           service:
             name: daksh-portfolio-backend-service
             port:
                 number: {{ .Values.backendPort }}
+      - path: /.*
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: daksh-portfolio-frontend-service
+            port:
+              number: {{ .Values.frontendPort }}
