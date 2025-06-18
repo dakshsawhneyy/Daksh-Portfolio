@@ -8,7 +8,7 @@ import ansible from "../assets/ansible.jpg"
 import food from "../assets/food_delivery.jpg"
 import foo from "../assets/food.png"
 import spotify from "../assets/spotify.png"
-
+import soon from "../assets/soon.avif"
 
 const projects = [
     {
@@ -62,7 +62,7 @@ const projects = [
         description: "KubeLogStack is a production-ready Kubernetes-native log management pipeline. It collects logs from every node, stores them in a persistent database, and automates daily backups to AWS S3",
         tags: ["daemonset", "statefulset", "k8s", "cronjob", "log-pvc", "mongodb", "kind"],
         github: "https://github.com/dakshsawhneyy/KubeLogStack.git",
-        image: log_analyser,
+        image: soon,
         live: "#",
     },
     {
