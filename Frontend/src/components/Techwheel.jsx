@@ -22,6 +22,10 @@ const techLogos = [
   { name: 'Jenkins', url: 'https://www.jenkins.io/images/logos/jenkins/jenkins.svg' },
   { name: 'Nginx', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nginx/nginx-original.svg' },
   { name: 'Linux', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg' },
+  { name: 'Linux', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg' },
+  { name: 'Linux', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/grafana/grafana-original.svg' },
+  { name: 'Linux', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/gitlab/gitlab-original.svg' },
+  { name: 'Linux', url: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg' },
   { name: 'Postman', url: 'https://cdn.worldvectorlogo.com/logos/postman.svg' },
 ];
 
@@ -33,7 +37,7 @@ const Techwheel = () => {
                 techLogos.map((item, index) => (
                     <SwiperSlide key={index}>
                         <div className='flex justify-center items-center'>
-                            <img src={item.url} alt={item.name} className='h-16 w-auto grayscale hover:grayscale-0 transition duration-300 ease-in-out' />
+                            <img src={item.url} alt={item.name} className='h-16 w-auto grayscale-0 hover:grayscale transition duration-300 ease-in-out' />
                         </div>
                     </SwiperSlide>
                 ))

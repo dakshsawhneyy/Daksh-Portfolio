@@ -32,7 +32,7 @@ const About = () => {
 
       {/* Skills Section */}
       <div className="text-center my-10">
-        <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold terminal-glow mt-15">$ tech-stack --show-all</h3>
+        <h3 className="text-xl sm:text-3xl md:text-4xl font-bold terminal-glow mt-15">$ tech-stack --show-all</h3>
         <p className="text-[#475569] dark:text-accent mt-2">// All the tools I wield on my terminal</p>
       </div>
 
@@ -54,11 +54,11 @@ const About = () => {
 
       <div className="max-w-6xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
         {certs.map((cert, i) => (
-          <motion.a key={i} href={cert.link} target="_blank" className="relative group bg-[#0f0f0f] border border-green-700/50 p-4 rounded-lg shadow-md hover:shadow-green-400/30 transition text-center" initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}>
+          <motion.a key={i} href={cert.link} target="_blank" className="relative group bg-[#0f0f0f] border border-green-700/50 p-3 sm:p-5 rounded-lg shadow-md hover:shadow-green-400/30 transition text-center" initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}>
             <div className="text-3xl mb-2 text-green-400">
               <Award size={28} />
             </div>
-            <p className="text-sm text-green-200">{cert.title}</p>
+            <p className="text-sm sm:text-md text-green-200">{cert.title}</p>
             {/* Action Buttons */}
             <div className="flex justify-center gap-2 mt-2">
               {cert.link && <a href={cert.link} target="_blank" rel="noopener noreferrer" className="text-green-300 hover:text-green-500 transition" title="Open Certificate Link"> <ExternalLink size={20} /> </a>}

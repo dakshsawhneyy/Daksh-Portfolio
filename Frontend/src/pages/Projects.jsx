@@ -12,13 +12,13 @@ const Projects = () => {
   )
 
   return (
-    <div className="min-h-screen bg-[#f5f7f8] dark:bg-black text-[#2a5d3c] dark:text-green-400 px-6 md:px-10 py-10 font-mono">
+    <div className="min-h-screen bg-[#f5f7f8] dark:bg-black text-[#2a5d3c] dark:text-green-400 px-4 md:px-10 py-10 font-mono">
       {/* Terminal Heading */}
       <div className="max-w-6xl mx-auto text-left mb-8 md:pt-10">
         <motion.h2 className="text-lg sm:text-3xl md:text-4xl font-bold text-[#6366F1] dark:text-green-400 terminal-blink" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }} >
           $ ls ~/Side_Hustles_&_Scalable_Stuff
         </motion.h2>
-        <p className="text-[#475569] dark:text-accent mt-1">// Displaying filtered projects...</p>
+        <p className="text-[#475569] dark:text-accent mt-1 text-sm">// Displaying filtered projects...</p>
         <hr className="my-4 border-[#6366F1] dark:border-success" />
       </div>
 
@@ -44,7 +44,7 @@ const Projects = () => {
                 {/* Tags */}
                 <div className="flex flex-wrap gap-2 mt-3">
                   {item.tags.map((tag, ind) => (
-                    <span key={ind} className="text-xs px-2 py-1 bg-green-200 text-green-900 dark:bg-green-400 dark:text-black rounded-full font-bold" >
+                    <span key={ind} className="text-xs px-1 sm:px-2 py-1 bg-green-200 text-green-900 dark:bg-green-400 dark:text-black rounded-full font-bold" >
                       {tag}
                     </span>
                   ))}
