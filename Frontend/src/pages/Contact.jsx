@@ -51,10 +51,10 @@ const Contact = () => {
 
       {/* Left Panel: Info & Socials */}
       <motion.div className="lg:w-1/2 flex flex-col justify-center items-start p-8 lg:p-16 gap-6 backdrop-blur-xl bg-white/30 dark:bg-gray-800/40 rounded-tr-3xl rounded-br-3xl m-4 lg:m-8 shadow-xl" initial={{ x: -100, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.6 }}>
-        <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-2">
+        <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-success mb-2">
           console.log("Let's Build Something Together")
         </h2>
-        <p className="text-gray-700 dark:text-gray-300">
+        <p className="text-gray-700 dark:text-accent text-md">
           Whether you've got a project in mind or just want to say hi, I'm all ears.
         </p>
 

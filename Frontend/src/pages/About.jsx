@@ -62,7 +62,7 @@ const About = () => {
             {/* Action Buttons */}
             <div className="flex justify-center gap-2 mt-2">
               {cert.link && <a href={cert.link} target="_blank" rel="noopener noreferrer" className="text-green-300 hover:text-green-500 transition" title="Open Certificate Link"> <ExternalLink size={20} /> </a>}
-              {cert.image && <button onClick={() => window.open(cert.image, "__blank")} className="inline-flex items-center gap-2 text-green-300 hover:text-green-500 transition-colors border border-green-600 rounded px-3 py-1 text-sm mt-2" title="View Certificate Image"><ImageIcon size={20} /><span> View Here</span></button> }
+              {cert.image && <button onClick={() => window.open(cert.image, "__blank")} className="inline-flex items-center gap-1 text-green-300 hover:text-green-500 transition-colors border border-green-600 rounded px-3 py-2 text-sm mt-2" title="View Certificate Image"><ImageIcon size={20} /><span> View Here</span></button> }
             </div>
           </motion.a>
         ))}

@@ -56,7 +56,7 @@ const Navbar = ({darkMode, setDarkMode, toggleDarkMode}) => {
             </nav>
 
             {/* For Mobile Screen */}
-            <nav className='md:hidden fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-white/30 dark:bg-bgDark/30 backdrop-blur-3xl shadow-lg rounded-full px-4 sm:px-6 py-3 z-50 flex items-center justify-between gap-3'>
+            <nav className='md:hidden fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-white/30 dark:bg-bgDark/30 backdrop-blur-3xl shadow-lg rounded-full px-5 sm:px-6 py-3 z-50 flex items-center justify-between gap-5'>
                 <div className='flex justify-between items-center gap-5 sm:gap-6'>
                     <Link to={"/"} className={`text-xl ${isActive("/") ? "text-primary dark:text-success" : "text-gray-800 dark:text-white hover:text-primary hover:dark:text-success"}`}> <FiHome/> </Link>
                     <Link to={"/about"} className={`text-xl ${isActive("/about") ? "text-primary dark:text-success" : "text-gray-800 dark:text-white hover:text-primary hover:dark:text-success"}`}> <FiUser/> </Link>

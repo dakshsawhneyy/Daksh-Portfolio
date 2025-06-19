@@ -31,7 +31,7 @@ const MetricsPanel = () => {
   }, [])
 
   const ChartCard = ({ title, data, color }) => (
-    <div className='bg-white dark:bg-black border border-green-700/50 rounded-xl p-4 shadow-2xl'>
+    <div className='bg-white dark:bg-black border border-green-700/50 rounded-xl p-4 sm:p-6 md:p-8 shadow-2xl'>
       <h3 className='text-lg text-primary dark:text-success mb-3'>{title}</h3>
       <ResponsiveContainer width="100%" height={200}>
         <LineChart data={data}>

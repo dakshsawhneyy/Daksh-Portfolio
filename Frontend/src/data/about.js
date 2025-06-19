@@ -29,7 +29,7 @@ export const timeline = [
 
 export const skills = [
   "React", "Node.js", "MongoDB", "Express.js", "C++", "Python", "Linux", "Docker", "Kubernetes",
-  "AWS", "Azure","Terraform", "Ansible", "Jenkins", "GitHub Actions", "Prometheus", "Grafana",
+  "AWS", "Azure","Terraform", "Ansible", "Jenkins", "GitHub Action", "Prometheus", "Grafana",
   "SonarQube", "Trivy", "Linux", "NGINX", "GitLab", 
 ]
 
