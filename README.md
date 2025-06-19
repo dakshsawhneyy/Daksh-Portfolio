@@ -74,7 +74,7 @@ Designed for recruiters, hiring managers, and engineers who understand what it t
 
 ---
 
-## 🧠 Tech Stack Summary
+## Tech Stack Summary
 
 | Area        | Technologies |
 |-------------|--------------|
