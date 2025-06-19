@@ -15,7 +15,7 @@ Designed for recruiters, hiring managers, and engineers who understand what it t
 - **Backend**: Express + MongoDB + REST API + secure mail service + modularized routes
 - **Deployment**: Fully containerized and deployed to AWS EKS via **Helm**
 - **Cloud Native**: NGINX Ingress Controller, custom domain, SSL via ACM, managed DNS
-- **CI/CD**: GitHub Actions for image build & Render auto-deploy
+- **CI/CD**: Jenkins for image build & Render auto-deploy
 - **Monitoring Add-ons**: Real-time (simulated) DevOps Metrics panel with React Charts
 - **Logging-Ready**: App architecture built to support centralized logging integrations
 - **Terminal UI**: Hacker-themed CLI elements with animated interactions
