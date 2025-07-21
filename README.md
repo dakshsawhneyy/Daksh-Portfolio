@@ -23,7 +23,7 @@ Designed for recruiters, hiring managers, and engineers who understand what it t
 
 ---
 
-## 🛠 Key Features
+##  Key Features
 
 ### Frontend
 
