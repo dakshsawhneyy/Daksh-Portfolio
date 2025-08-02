@@ -9,8 +9,18 @@ import food from "../assets/food_delivery.jpg"
 import foo from "../assets/food.png"
 import spotify from "../assets/spotify.png"
 import soon from "../assets/soon.avif"
+import aws_card_game from "../assets/aws_card_game.png"
 
 const projects = [
+    {
+        title: "AWS Card Game",
+        category: ["Cloud, DevOps"],
+        description: "AWS-Card-Game - a fully serverless, production-grade, multiplayer card game using approx. 20+ AWS services. From real-time game state, live health tracking, multiplayer turn logic, in-game chat",
+        tags: ["AWS", "Cloud", "Devops", "CI/CD", "DynamoDB", "Lambda", "Serverless", "Athena"],
+        github: "https://github.com/dakshsawhneyy/AWS-Card-Game.git",
+        image: aws_card_game,
+        live: "#",
+    },
     {
         title: "YouTube Media Downloader Pipeline",
         category: ["Python"],
