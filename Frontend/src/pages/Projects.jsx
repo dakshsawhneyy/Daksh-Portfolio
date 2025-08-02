@@ -5,7 +5,7 @@ import Tilt from 'react-parallax-tilt'
 
 const Projects = () => {
   const [selectedTag, setSelectedTag] = useState("all")
-  const tags = ["All", "DevOps", "Cloud", "MERN", "Python"]
+  const tags = ["All", "DevOps", "Cloud", "MERN", "Python", "System Design"]
 
   const filteredProjects = (
     selectedTag === "all" ? projects : projects.filter(project => project.category.map(item => item.toLowerCase()).includes(selectedTag.toLowerCase()))

@@ -10,6 +10,7 @@ import foo from "../assets/food.png"
 import spotify from "../assets/spotify.png"
 import soon from "../assets/soon.avif"
 import aws_card_game from "../assets/aws_card_game.png"
+import picture_processing1 from "../assets/picture_processing1.png"
 
 const projects = [
     {
@@ -28,6 +29,15 @@ const projects = [
         tags: ["Python", "Loguru", "Prometheus", "CI/CD", "Grafana", "SQLite", "GitHub Actions", "Tkinter"],
         github: "https://github.com/dakshsawhneyy/YT_Video_Downloader_Pipeline.git",
         image: ytPipeline,
+        live: "#",
+    },
+    {
+        title: "Picture Processing Pipeline",
+        category: ["System Design"],
+        description: "A fast Image Processing Pipeline built using Redis, BullMQ, Node.js, and Sharp. It supports asynchronous image resizing, job status tracking, and is architected for horizontal scalability.",
+        tags: ["Redis", "BullMQ", "Messaging Queue", "System Design", "Automation", "NodeJS", "Sharp"],
+        github: "https://github.com/dakshsawhneyy/YT_Video_Downloader_Pipeline.git",
+        image: picture_processing1,
         live: "#",
     },
     {
