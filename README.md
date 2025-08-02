@@ -1,12 +1,16 @@
-# Daksh Sawhney — Full Stack Cloud Portfolio
+# Daksh Sawhney - Full Stack Cloud Portfolio
 
 > **Built by a Cloud Engineer who autoscaled his soul and logs for fun. █**
 
 This is a professional-grade portfolio site, crafted as a fusion of modern **MERN Stack development**, **Cloud-native deployment**, and advanced **DevOps engineering**. It reflects not only the skillset of a full-stack developer but the engineering maturity of someone who automates and scales infrastructure like second nature.
 
+<img width="1895" height="1200" alt="image" src="https://github.com/user-attachments/assets/1dfd3897-e8ab-491d-8134-534e02621759" />
+
 ---
 
 ## Overview
+
+<img width="1920" height="1200" alt="image" src="https://github.com/user-attachments/assets/d265e8bf-2580-49aa-8a12-b94c332841c1" />
 
 This isn't just a portfolio — it's a demonstration of production-ready engineering.
 Designed for recruiters, hiring managers, and engineers who understand what it takes to ship resilient, attractive, and scalable digital systems.
@@ -24,6 +28,10 @@ Designed for recruiters, hiring managers, and engineers who understand what it t
 ---
 
 ##  Key Features
+
+<img width="1920" height="1200" alt="image" src="https://github.com/user-attachments/assets/774f0ec2-b73c-4e2a-a964-0c358f30b9b5" />
+<img width="1920" height="1200" alt="image" src="https://github.com/user-attachments/assets/19b54375-452b-477c-9476-62d18445cc8c" />
+
 
 ### Frontend
 
