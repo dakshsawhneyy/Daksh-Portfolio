@@ -15,11 +15,11 @@ const projects = [
     {
         title: "AWS Card Game",
         category: ["Cloud, DevOps"],
-        description: "AWS-Card-Game - a fully serverless, production-grade, multiplayer card game using approx. 20+ AWS services. From real-time game state, live health tracking, multiplayer turn logic, in-game chat",
-        tags: ["AWS", "Cloud", "Devops", "CI/CD", "DynamoDB", "Lambda", "Serverless", "Athena"],
+        description: "AWS-Card-Game - a fully serverless, production-grade, multiplayer card game using approx. 𝟮𝟬+ 𝗔𝗪𝗦 𝘀𝗲𝗿𝘃𝗶𝗰𝗲𝘀. From real-time game state, live health tracking, multiplayer turn logic, in-game chat",
+        tags: ["AWS", "Cloud", "Devops", "CI/CD", "DynamoDB", "Lambda", "Serverless", "Athena", "Amplify"],
         github: "https://github.com/dakshsawhneyy/AWS-Card-Game.git",
         image: aws_card_game,
-        live: "#",
+        live: "https://master.dmyndyok8l8sp.amplifyapp.com",
     },
     {
         title: "YouTube Media Downloader Pipeline",

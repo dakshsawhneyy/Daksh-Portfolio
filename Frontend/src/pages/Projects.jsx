@@ -49,11 +49,22 @@ const Projects = () => {
                     </span>
                   ))}
                 </div>
+                
+                {/* Links Section */}
+                <div className="flex flex-col sm:flex-row justify-between mt-4">
+                  {/* GitHub Link */}
+                  <a href={item.github} target="_blank" rel="noreferrer" className="text-[#475569] dark:text-accent font-semibold hover:underline" >
+                    ↳ View on GitHub
+                  </a>
 
-                {/* GitHub Link */}
-                <a href={item.github} target="_blank" rel="noreferrer" className="inline-block mt-4 text-[#475569] dark:text-accent font-semibold hover:underline" >
-                  ↳ View on GitHub
-                </a>
+                  {/* Live Link (conditionally rendered) */}
+                  {item.live && item.live !== "#" && (
+                    <a href={item.live} target="_blank" rel="noreferrer" className="text-[#475569] dark:text-accent font-semibold hover:underline" >
+                      ↳ Live Demo
+                    </a>
+                  )}
+                </div>
+                
               </div>
             </motion.div>
           </Tilt>
