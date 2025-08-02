@@ -11,6 +11,7 @@ import spotify from "../assets/spotify.png"
 import soon from "../assets/soon.avif"
 import aws_card_game from "../assets/aws_card_game.png"
 import picture_processing1 from "../assets/picture_processing1.png"
+import kubelogstack from "../assets/kubelogstack.png"
 
 const projects = [
     {
@@ -82,7 +83,7 @@ const projects = [
         description: "KubeLogStack is a production-ready Kubernetes-native log management pipeline. It collects logs from every node, stores them in a persistent database, and automates daily backups to AWS S3",
         tags: ["daemonset", "statefulset", "k8s", "cronjob", "log-pvc", "mongodb", "kind"],
         github: "https://github.com/dakshsawhneyy/KubeLogStack.git",
-        image: soon,
+        image: kubelogstack,
         live: "#",
     },
     {
