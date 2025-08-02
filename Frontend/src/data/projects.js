@@ -12,6 +12,7 @@ import soon from "../assets/soon.avif"
 import aws_card_game from "../assets/aws_card_game.png"
 import picture_processing1 from "../assets/picture_processing1.png"
 import kubelogstack from "../assets/kubelogstack.png"
+import infra from "../assets/infra.png"
 
 const projects = [
     {
@@ -34,7 +35,7 @@ const projects = [
     },
     {
         title: "Picture Processing Pipeline",
-        category: ["System Design"],
+        category: ["System Design", "DevOps"],
         description: "A fast Image Processing Pipeline built using Redis, BullMQ, Node.js, and Sharp. It supports asynchronous image resizing, job status tracking, and is architected for horizontal scalability.",
         tags: ["Redis", "BullMQ", "Messaging Queue", "System Design", "Automation", "NodeJS", "Sharp"],
         github: "https://github.com/dakshsawhneyy/YT_Video_Downloader_Pipeline.git",
@@ -57,6 +58,15 @@ const projects = [
         tags: ["Python", "AWS Pricing Api", "AWS SNS", "Cron", "Boto3 SDK"],
         github: "https://github.com/dakshsawhneyy/Cost-Estimator-Bot-Py.git",
         image: cost_bot,
+        live: "#",
+    },
+    {
+        title: "Infra Health Monitor",
+        category: ["DevOps"],
+        description: "This project is a complete monitoring suite designed to help you track the health of your Docker containers and the uptime of external websites. It integrates alerting, log rotation, and JSON dashboard generation using pure shell scripting.",
+        tags: ["Slack", "JSON", "Shell Scripting", "Alerts", "HTTP", "Payload"],
+        github: "https://github.com/dakshsawhneyy/Infra-Health-Monitor-sh.git",
+        image: infra,
         live: "#",
     },
     {
