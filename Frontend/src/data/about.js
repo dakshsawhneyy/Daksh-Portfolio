@@ -43,6 +43,10 @@ export const certs = [
     link: "https://unstop.com/certificate-preview/9fc4c0b3-17a9-4838-b19e-884e8429ac72?utm_campaign=",
   },
   {
+    title: "DevSecOps Certificate",
+    link: "https://www.coursera.org/account/accomplishments/certificate/G7YYQVAX823K",
+  },
+  {
     title: "GDG Certificate",
     image: gdg_certificate,
   },
