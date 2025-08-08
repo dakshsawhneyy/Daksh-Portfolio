@@ -13,6 +13,7 @@ import aws_card_game from "../assets/aws_card_game.png"
 import picture_processing1 from "../assets/picture_processing1.png"
 import kubelogstack from "../assets/kubelogstack.png"
 import infra from "../assets/infra.png"
+import kafka from "../assets/kafka3.jpg"
 
 const projects = [
     {
@@ -23,6 +24,24 @@ const projects = [
         github: "https://github.com/dakshsawhneyy/AWS-Card-Game.git",
         image: aws_card_game,
         live: "https://master.dmyndyok8l8sp.amplifyapp.com",
+    },
+    {
+        title: "Log Processing and Alerting System",
+        category: ["System Design", "DevOps"],
+        description: "Ever thought of 𝗱̲𝗲̲𝘀̲𝗶̲𝗴̲𝗻̲𝗶̲𝗻̲𝗴̲ ̲𝗮̲ ̲𝘀̲𝘆̲𝘀̲𝘁̲𝗲̲𝗺̲ ̲𝘁̲𝗵̲𝗮̲𝘁̲ ̲𝗵̲𝗮̲𝗻̲𝗱̲𝗹̲𝗲̲𝘀̲ ̲𝗺̲𝗶̲𝗹̲𝗹̲𝗶̲𝗼̲𝗻̲𝘀̲ ̲𝗼̲𝗳̲ ̲𝗿̲𝗲̲𝗾̲𝘂̲𝗲̲𝘀̲𝘁̲𝘀̲ ̲𝗽̲𝗲̲𝗿̲ ̲𝘀̲𝗲̲𝗰̲𝗼̲𝗻̲𝗱̲,̲ 𝗽𝗿𝗼𝗰𝗲𝘀𝘀𝗲𝘀 𝘁𝗵𝗲𝗺 𝗶𝗻 𝗿𝗲𝗮𝗹-𝘁𝗶𝗺𝗲, 𝘀𝘁𝗼𝗿𝗲𝘀 𝗰𝗿𝗶𝘁𝗶𝗰𝗮𝗹 𝗱𝗮𝘁𝗮 𝗶𝗻 𝗮 𝗯𝗹𝗮𝘇𝗶𝗻𝗴-𝗳𝗮𝘀𝘁 𝗱𝗮𝘁𝗮𝗯𝗮𝘀𝗲, and 𝗲𝘃𝗲𝗻 𝗮𝗹𝗲𝗿𝘁𝘀 𝘆𝗼𝘂 when something goes wrong?",
+        tags: ["System Design", "Redis", "Kafka", "PostGres DB", "Prometheus", "Grafana", "Redis-Queues"],
+        github: "https://github.com/dakshsawhneyy/AWS-Card-Game.git",
+        image: kafka,
+        live: "#",
+    },
+    {
+        title: "WearSphere E-commerce",
+        category: ["MERN","DevOps"],
+        description: "WearSphere is a fully automated 4-tier e-commerce platform built with MERN stack, deployed on AWS EKS with CI/CD pipelines by Jenkins. The project integrates DevSecOps practices for security, and includes Prometheus and Grafana for monitoring",
+        tags: ["React", "Node", "AWS", "K8s", "EKS", "DevSecOps", "Jenkins", "Agile", "ArgoCD"],
+        github: "https://github.com/dakshsawhneyy/WearSphere-Ecommerce-MERN.git",
+        image: wearsphereImg,
+        live: "https://wearsphere.dakshsawhneyy.online",
     },
     {
         title: "YouTube Media Downloader Pipeline",
@@ -40,15 +59,6 @@ const projects = [
         tags: ["Redis", "BullMQ", "Messaging Queue", "System Design", "Automation", "NodeJS", "Sharp"],
         github: "https://github.com/dakshsawhneyy/YT_Video_Downloader_Pipeline.git",
         image: picture_processing1,
-        live: "#",
-    },
-    {
-        title: "WearSphere E-commerce",
-        category: ["MERN","DevOps"],
-        description: "WearSphere is a fully automated 4-tier e-commerce platform built with MERN stack, deployed on AWS EKS with CI/CD pipelines by Jenkins. The project integrates DevSecOps practices for security, and includes Prometheus and Grafana for monitoring",
-        tags: ["React", "Node", "AWS", "K8s", "EKS", "DevSecOps", "Jenkins", "Agile", "ArgoCD"],
-        github: "https://github.com/dakshsawhneyy/WearSphere-Ecommerce-MERN.git",
-        image: wearsphereImg,
         live: "#",
     },
     {
