@@ -28,7 +28,7 @@ const projects = [
     {
         title: "Log Processing and Alerting System",
         category: ["System Design", "DevOps"],
-        description: "Ever thought of 𝗱̲𝗲̲𝘀̲𝗶̲𝗴̲𝗻̲𝗶̲𝗻̲𝗴̲ ̲𝗮̲ ̲𝘀̲𝘆̲𝘀̲𝘁̲𝗲̲𝗺̲ ̲𝘁̲𝗵̲𝗮̲𝘁̲ ̲𝗵̲𝗮̲𝗻̲𝗱̲𝗹̲𝗲̲𝘀̲ ̲𝗺̲𝗶̲𝗹̲𝗹̲𝗶̲𝗼̲𝗻̲𝘀̲ ̲𝗼̲𝗳̲ ̲𝗿̲𝗲̲𝗾̲𝘂̲𝗲̲𝘀̲𝘁̲𝘀̲ ̲𝗽̲𝗲̲𝗿̲ ̲𝘀̲𝗲̲𝗰̲𝗼̲𝗻̲𝗱̲,̲ 𝗽𝗿𝗼𝗰𝗲𝘀𝘀𝗲𝘀 𝘁𝗵𝗲𝗺 𝗶𝗻 𝗿𝗲𝗮𝗹-𝘁𝗶𝗺𝗲, 𝘀𝘁𝗼𝗿𝗲𝘀 𝗰𝗿𝗶𝘁𝗶𝗰𝗮𝗹 𝗱𝗮𝘁𝗮 𝗶𝗻 𝗮 𝗯𝗹𝗮𝘇𝗶𝗻𝗴-𝗳𝗮𝘀𝘁 𝗱𝗮𝘁𝗮𝗯𝗮𝘀𝗲, and 𝗲𝘃𝗲𝗻 𝗮𝗹𝗲𝗿𝘁𝘀 𝘆𝗼𝘂 when something goes wrong?",
+        description: "Ever thought of Designing a system that can handle millions of requests per second, 𝗽𝗿𝗼𝗰𝗲𝘀𝘀𝗲𝘀 𝘁𝗵𝗲𝗺 𝗶𝗻 𝗿𝗲𝗮𝗹-𝘁𝗶𝗺𝗲, 𝘀𝘁𝗼𝗿𝗲𝘀 𝗰𝗿𝗶𝘁𝗶𝗰𝗮𝗹 𝗱𝗮𝘁𝗮 𝗶𝗻 𝗮 𝗯𝗹𝗮𝘇𝗶𝗻𝗴-𝗳𝗮𝘀𝘁 𝗱𝗮𝘁𝗮𝗯𝗮𝘀𝗲, and 𝗲𝘃𝗲𝗻 𝗮𝗹𝗲𝗿𝘁𝘀 𝘆𝗼𝘂 when something goes wrong?",
         tags: ["System Design", "Redis", "Kafka", "PostGres DB", "Prometheus", "Grafana", "Redis-Queues"],
         github: "https://github.com/dakshsawhneyy/AWS-Card-Game.git",
         image: kafka,
@@ -143,5 +143,6 @@ const projects = [
         live: "#",
     },
 ]
+
 
 export default projects
