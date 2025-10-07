@@ -21,7 +21,7 @@ const observability = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/
 const deploy_sphere = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/deploy_sphere.png"
 const micro_services = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/micro_services.png"
 const aws_1_million = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/aws_1_million.png"
-
+const log_ingesion = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/log_ingesion.png"
 
 
 const projects = [
@@ -58,7 +58,7 @@ const projects = [
         description: "Built a cross-cloud, resilient log ingestion and analytics pipeline using AWS Kinesis, Azure VMs, Kafka, Lambda, and Grafana for real-time monitoring and alerts.",
         tags: ["AWS", "Azure", "Multi Cloud", "Kinesis", "Kafka", "ClickHouse", "Slack Alerts", "Resilient Architecture", "Monitoring"],
         github: "https://github.com/dakshsawhneyy/Resilient-Log-Ingestion-Analytics-Pipeline.git",
-        image: aws_card_game,
+        image: log_ingesion,
         live: "#",
     },
     {

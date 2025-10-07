@@ -36,15 +36,15 @@ const Projects = () => {
         {filteredProjects.map((item, index) => (
           <Tilt key={index} glareEnable glareMaxOpacity={0.2} scale={1.05} transitionSpeed={400} className="bg-[#fefefe] dark:bg-[#0f0f0f] rounded-2xl border border-green-600/40 dark:border-green-700/40 backdrop-blur-md shadow-xl transition-all" >
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: index * 0.1 }} className="overflow-hidden rounded-xl" >
-              <img src={item.image} alt="project-img" className="w-full h-44 object-cover dark:border-b border-green-700/30" />
+              <img src={item.image} alt="project-img" className="w-full h-52 object-cover dark:border-b border-green-700/30" />
               <div className="p-4">
-                <h3 className="text-lg font-bold text-[#6366F1] dark:text-green-300 mb-1">{item.title}</h3>
+                <h3 className="text-md font-bold text-[#6366F1] dark:text-green-300 mb-1">{item.title}</h3>
                 <p className="text-sm text-[#475569] dark:text-green-400">{item.description}</p>
 
                 {/* Tags */}
                 <div className="flex flex-wrap gap-2 mt-3">
                   {item.tags.map((tag, ind) => (
-                    <span key={ind} className="text-xs px-1 sm:px-2 py-1 bg-green-200 text-green-900 dark:bg-green-400 dark:text-black rounded-full font-bold" >
+                    <span key={ind} className="text-xs px-1 sm:px-1 py-1 bg-green-200 text-green-900 dark:bg-green-400 dark:text-black rounded-full font-bold" >
                       {tag}
                     </span>
                   ))}
