@@ -12,8 +12,82 @@ const picture_processing1 = "https://daksh-portfolio-items.s3.us-east-1.amazonaw
 const kubelogstack = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/kubelogstack.png"
 const infra = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/infra.png"
 const kafka = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/kafka3.jpg"
+const finops = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/finops.png"
+const sre_framework = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/sre_framework.png"
+const chaos_panda = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/chaos_panda.png"
+const cross_system = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/cross_system.png"
+const notification = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/notification.png"
+const observability = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/observability.png"
+const deploy_sphere = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/deploy_sphere.png"
+const micro_services = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/micro_services.png"
+const aws_1_million = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/aws_1_million.png"
+
+
 
 const projects = [
+    {
+        title: "Scaling Infra from 1 to 1 Million+ Users",
+        category: ["Cloud", "System Design"],
+        description: "Designed and deployed multi-region AWS infrastructure using Terraform with global routing for scalable, resilient, and highly available applications.",
+        tags: ["AWS", "Cloud", "Terraform", "Route53", "CDN", "CloudFront", "GitOps", "WAF", "K8S"],
+        github: "https://github.com/dakshsawhneyy/AWS-1_to_1Million_Users.git",
+        image: aws_1_million,
+        live: "#",
+    },
+    {
+        title: "DeploySphere",
+        category: ["Cloud", "System Design"],
+        description: "Built DeploySphere, a cloud deployment platform using Kafka, S3, ClickHouse, ECS, ECR, and a custom reverse proxy for scalable application delivery.",
+        tags: ["AWS", "ECS", "Kafka", "ECR", "ClickHouse", "Deployment Platform", "Scalable Architecture", "CloudOps", "CI/CD"],
+        github: "https://github.com/dakshsawhneyy/DeploySphere.git",
+        image: deploy_sphere,
+        live: "#",
+    },
+    {
+        title: "Automated AWS FinOps Platform",
+        category: ["Cloud", "System Design", "DevOps"],
+        description: "Automated AWS FinOps platform using serverless architecture to optimize costs, manage unused resources, and send actionable alerts. Implements Lambda, SNS, and scheduled jobs for proactive cloud cost management.",
+        tags: ["AWS", "FinOps", "Serverless", "CloudOps", "Terraform", "Cloud Automation", "SNS", "Lambda", "EBS Cleanup"],
+        github: "https://github.com/dakshsawhneyy/Automated-AWS-FinOps-Platform.git",
+        image: finops,
+        live: "#",
+    },
+    {
+        title: "Multi Cloud - Log Ingesion - Pipeline",
+        category: ["Cloud", "System Design", "DevOps"],
+        description: "Built a cross-cloud, resilient log ingestion and analytics pipeline using AWS Kinesis, Azure VMs, Kafka, Lambda, and Grafana for real-time monitoring and alerts.",
+        tags: ["AWS", "Azure", "Multi Cloud", "Kinesis", "Kafka", "ClickHouse", "Slack Alerts", "Resilient Architecture", "Monitoring"],
+        github: "https://github.com/dakshsawhneyy/Resilient-Log-Ingestion-Analytics-Pipeline.git",
+        image: aws_card_game,
+        live: "#",
+    },
+    {
+        title: "Chaos Panda(My own chaos engg. tool)",
+        category: ["Cloud", "System Design"],
+        description: "Developed a Kubernetes-based chaos engineering platform using Istio and Chaos Panda to test resilience of microservices with automated failure injection and canary deployments",
+        tags: ["Resilience Testing", "Chaos Panda", "CI/CD", "Microservices", "Canary Deployment", "Cloud Automation", "Istio", "Kubernetes", "Terraform"],
+        github: "https://github.com/dakshsawhneyy/Chaos_Panda_k8S.git",
+        image: chaos_panda,
+        live: "#",
+    },
+    {
+        title: "SRE Framework",
+        category: ["Cloud", "System Design"],
+        description: "Built a serverless microservices framework on AWS using Lambda, API Gateway, and DynamoDB with canary deployments and X-Ray tracing for reliability and observability.",
+        tags: ["AWS", "Microservices", "Serverless", "API Gateway", "DynamoDB", "Cloud Automation", "Canary Deployment", "Observability", "X-Ray"],
+        github: "https://github.com/dakshsawhneyy/SRE_Framework.git",
+        image: sre_framework,
+        live: "#",
+    },
+    {
+        title: "Event Driven Notification System",
+        category: ["System Design"],
+        description: "Built an event-driven notification system using AWS Lambda, SQS, and SES to automate messaging and email alerts based on system events.",
+        tags: ["AWS", "Event-Driven", "Serverless", "Cloud Automation", "Messaging", "Email Alerts", "SQS", "SNS", "Lambda"],
+        github: "https://github.com/dakshsawhneyy/event_driven_notification_system.git",
+        image: notification,
+        live: "#",
+    },
     {
         title: "AWS Card Game",
         category: ["Cloud, DevOps"],
@@ -21,6 +95,15 @@ const projects = [
         tags: ["AWS", "Cloud", "Devops", "CI/CD", "DynamoDB", "Lambda", "Serverless", "Athena", "Amplify"],
         github: "https://github.com/dakshsawhneyy/AWS-Card-Game.git",
         image: aws_card_game,
+        live: "#",
+    },
+    {
+        title: "Cross-System-Observability-Platform",
+        category: ["Cloud, DevOps"],
+        description: "Implemented a cross-system observability platform using Kubernetes, Prometheus, Fluent Bit, and Jaeger for centralized logging, metrics, and tracing.",
+        tags: ["Kubernetes", "Observability", "Fluent Bit", "Jaeger", "Prometheus", "Microservices", "ServiceMonitor", "Tracing", "CloudOps"],
+        github: "https://github.com/dakshsawhneyy/Cross-System-Observability-Platform.git",
+        image: cross_system,
         live: "#",
     },
     {
@@ -42,12 +125,30 @@ const projects = [
         live: "https://wearsphere.dakshsawhneyy.online",
     },
     {
+        title: "Full-Stack-Observability-Platform",
+        category: ["DevOps"],
+        description: "Developed a full-stack observability platform using Docker, FluentD, Elasticsearch, and Prometheus for centralized logging, metrics, and monitoring.",
+        tags: ["Observability", "Full-Stack", "Docker", "FluentD", "Elasticsearch", "Prometheus", "Monitoring", "Logging", "Metrics"],
+        github: "https://github.com/dakshsawhneyy/Full-Stack-Observability-Platform.git",
+        image: observability,
+        live: "#",
+    },
+    {
         title: "YouTube Media Downloader Pipeline",
         category: ["Python"],
         description: "A powerful desktop + backend + DevOps project that extracts, stores, and manages video metadata — complete with GUI interface, logging, Dockerization, CI/CD, and monitoring.",
         tags: ["Python", "Loguru", "Prometheus", "CI/CD", "Grafana", "SQLite", "GitHub Actions", "Tkinter"],
         github: "https://github.com/dakshsawhneyy/YT_Video_Downloader_Pipeline.git",
         image: ytPipeline,
+        live: "#",
+    },
+    {
+        title: "Kafka Connecting Micro Services",
+        category: ["System Design"],
+        description: "Developed a microservices application with Kafka-based producer-consumer services including payment, email, order, and analytics, with a complete frontend client.",
+        tags: ["Microservices", "Kafka", "Producer-Consumer", "Scalable Architecture", "CloudOps", "Docker"],
+        github: "https://github.com/dakshsawhneyy/Micro-Services-App.git",
+        image: micro_services,
         live: "#",
     },
     {
