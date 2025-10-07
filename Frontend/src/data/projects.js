@@ -9,7 +9,7 @@ import food from "../assets/food_delivery.jpg"
 import foo from "../assets/food.png"
 import spotify from "../assets/spotify.png"
 import soon from "../assets/soon.avif"
-import aws_card_game from "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/aws_card_game.png"
+const aws_card_game = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/aws_card_game.png";
 import picture_processing1 from "../assets/picture_processing1.png"
 import kubelogstack from "../assets/kubelogstack.png"
 import infra from "../assets/infra.png"
@@ -23,7 +23,7 @@ const projects = [
         tags: ["AWS", "Cloud", "Devops", "CI/CD", "DynamoDB", "Lambda", "Serverless", "Athena", "Amplify"],
         github: "https://github.com/dakshsawhneyy/AWS-Card-Game.git",
         image: aws_card_game,
-        live: "https://master.dmyndyok8l8sp.amplifyapp.com",
+        live: "#",
     },
     {
         title: "Log Processing and Alerting System",
