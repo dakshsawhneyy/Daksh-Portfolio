@@ -1,25 +1,23 @@
-import wearsphereImg from "../assets/wearsphere.png"
-import ytPipeline from "../assets/youtube-pipeline.png"
-import cost_bot from "../assets/cost_bot.jpg"
-import invoice from "../assets/invoice.jpg"
-import log_analyser from "../assets/log_analyser.jpg"
-import todo from "../assets/todo.jpg"
-import ansible from "../assets/ansible.jpg"
-import food from "../assets/food_delivery.jpg"
-import foo from "../assets/food.png"
-import spotify from "../assets/spotify.png"
-import soon from "../assets/soon.avif"
+const wearsphereImg = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/wearsphere.png"
+const ytPipeline = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/youtube-pipeline.png"
+const cost_bot = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/cost_bot.jpg"
+const invoice = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/invoice.jpg"
+const log_analyser = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/log_analyser.jpg"
+const todo = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/todo.jpg"
+const ansible = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/ansible.jpg"
+const food = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/food.png"
+const spotify = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/spotify.png"
 const aws_card_game = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/aws_card_game.png";
-import picture_processing1 from "../assets/picture_processing1.png"
-import kubelogstack from "../assets/kubelogstack.png"
-import infra from "../assets/infra.png"
-import kafka from "../assets/kafka3.jpg"
+const picture_processing1 = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/picture_processing1.png"
+const kubelogstack = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/kubelogstack.png"
+const infra = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/infra.png"
+const kafka = "https://daksh-portfolio-items.s3.us-east-1.amazonaws.com/projects/kafka3.jpg"
 
 const projects = [
     {
         title: "AWS Card Game",
         category: ["Cloud, DevOps"],
-        description: "AWS-Card-Game - a fully serverless, production-grade, multiplayer card game using approx. 𝟮𝟬+ 𝗔𝗪𝗦 𝘀𝗲𝗿𝘃𝗶𝗰𝗲𝘀. From real-time game state, live health tracking, multiplayer turn logic, in-game chat",
+        description: "AWS-Card-Game - a fully serverless, production-grade, multiplayer card game using approx. 𝟮𝟬+ 𝗔𝗪𝗦 𝘀𝗲𝗿𝘃𝗶𝗰𝗲𝘀. = real-time game state, live health tracking, multiplayer turn logic, in-game chat",
         tags: ["AWS", "Cloud", "Devops", "CI/CD", "DynamoDB", "Lambda", "Serverless", "Athena", "Amplify"],
         github: "https://github.com/dakshsawhneyy/AWS-Card-Game.git",
         image: aws_card_game,
@@ -100,7 +98,7 @@ const projects = [
     {
         title: "KubeLogStack",
         category: ["DevOps"],
-        description: "KubeLogStack is a production-ready Kubernetes-native log management pipeline. It collects logs from every node, stores them in a persistent database, and automates daily backups to AWS S3",
+        description: "KubeLogStack is a production-ready Kubernetes-native log management pipeline. It collects logs = every node, stores them in a persistent database, and automates daily backups to AWS S3",
         tags: ["daemonset", "statefulset", "k8s", "cronjob", "log-pvc", "mongodb", "kind"],
         github: "https://github.com/dakshsawhneyy/KubeLogStack.git",
         image: kubelogstack,
@@ -130,7 +128,7 @@ const projects = [
         description: "A full-stack food delivery web application built using the MERN stack (MongoDB, Express.js, React.js, Node.js). Also contain Admin Panel to manage food items and orders",
         tags: ["MongoDB", "ExpressJS", "React", "NodeJS", "Tailwind"],
         github: "https://github.com/dakshsawhneyy/Food_Delivery_Mern_Stack.git",
-        image: foo,
+        image: food,
         live: "#",
     },
     {
