@@ -44,18 +44,18 @@ jobs:
             tags: ${{ secrets.DOCKER_USERNAME }}/daksh-portfolio-frontend:latest
 
         # Image Scanning for svc-A --- Trivy
-        # - name: Image scanning of Frontend using Trivy
-        #   uses: aquasecurity/trivy-action@master
-        #   with:
-        #     # Scan a container image instead of the filesystem
-        #     scan-type: 'image'
-        #     # The full reference to the image we just pushed to Docker Hub
-        #     image-ref: '${{ secrets.DOCKER_USERNAME }}/daksh-portfolio-frontend:latest'
-        #     # Format the output as a table in the logs
-        #     format: table
-        #     # Fail the build if any HIGH or CRITICAL severity vulnerabilities are found
-        #     exit-code: 1
-        #     severity: 'CRITICAL'
+        - name: Image scanning of Frontend using Trivy
+          uses: aquasecurity/trivy-action@master
+          with:
+            # Scan a container image instead of the filesystem
+            scan-type: 'image'
+            # The full reference to the image we just pushed to Docker Hub
+            image-ref: '${{ secrets.DOCKER_USERNAME }}/daksh-portfolio-frontend:latest'
+            # Format the output as a table in the logs
+            format: table
+            # Fail the build if any HIGH or CRITICAL severity vulnerabilities are found
+            exit-code: 1
+            severity: 'CRITICAL'
 
         - name: Build and Push Docker Image of Backend
           uses: docker/build-push-action@v5
