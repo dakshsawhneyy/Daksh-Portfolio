@@ -33,7 +33,7 @@ const projects = [
         description: "Designed and deployed multi-region AWS infrastructure using Terraform with global routing for scalable, resilient, and highly available applications.",
         tags: ["AWS", "Cloud", "Terraform", "Route53", "CDN", "CloudFront", "GitOps", "WAF", "K8S"],
         github: "https://github.com/dakshsawhneyy/AWS-1_to_1Million_Users.git",
-        image: aws,
+        image: aws_1_million,
         live: "#",
     },
     {
