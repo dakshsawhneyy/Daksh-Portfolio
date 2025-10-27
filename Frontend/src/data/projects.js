@@ -22,11 +22,21 @@ const notification = "https://d13b09r5pqtq1e.cloudfront.net/projects/notificatio
 const observability = "https://d13b09r5pqtq1e.cloudfront.net/projects/observability.png"
 const deploy_sphere = "https://d13b09r5pqtq1e.cloudfront.net/projects/deploy_sphere.png"
 const micro_services = "https://d13b09r5pqtq1e.cloudfront.net/projects/micro_services.png"
-const aws_1_million = "https://d13b09r5pqtq1e.cloudfront.net/projects/aws_1_million.png"
+const aws_1_million = "https://d13b09r5pqtq1e.cloudfront.net/projects/image_2025-10-27_092900266.png"
 const log_ingesion = "https://d13b09r5pqtq1e.cloudfront.net/projects/log_ingesion.png"
+const multi_cloud = "https://d13b09r5pqtq1e.cloudfront.net/projects/image_2025-10-27_092910305.png"
 
 
 const projects = [
+    {
+        title: "Multi Cloud Orchestration",
+        category: ["Cloud", "System Design"],
+        description: "A zero-touch CI/CD pipeline that deploys a web app across AWS and Azure from a single codebase. Built with Terraform Workspaces, Ansible, GitHub Actions, and Datadog for full automation and observability",
+        tags: ["AWS", "Cloud", "Terraform", "AZURE", "Ansible", "Terraform Workspaces", "GitHub Actions", "Datadog", "Observability"],
+        github: "https://github.com/dakshsawhneyy/Multi-Cloud-Orchestration.git",
+        image: multi_cloud,
+        live: "#",
+    },
     {
         title: "Scaling Infra from 1 to 1 Million+ Users",
         category: ["Cloud", "System Design"],
