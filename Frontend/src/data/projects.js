@@ -25,9 +25,28 @@ const micro_services = "https://d13b09r5pqtq1e.cloudfront.net/projects/micro_ser
 const aws_1_million = "https://d13b09r5pqtq1e.cloudfront.net/projects/image_2025-10-27_092900266.png"
 const log_ingesion = "https://d13b09r5pqtq1e.cloudfront.net/projects/log_ingesion.png"
 const multi_cloud = "https://d13b09r5pqtq1e.cloudfront.net/projects/image_2025-10-27_092910305.png"
-
+const ecs_orchestration = "https://d13b09r5pqtq1e.cloudfront.net/projects/371c2715-e6ac-46f7-8e59-5a44e94d579a.jpg"
+const ai_finops = "https://d13b09r5pqtq1e.cloudfront.net/projects/f0d605ea-57b2-4bd8-8973-8caa95c2cb35.jpg"
 
 const projects = [
+    {
+        title: "ECS Managed Orchestration",
+        category: ["Cloud", "System Design"],
+        description: "cloud-native, scalable pipeline designed to ingest, process, and store log data efficiently. It is built on an event-driven, microservice architecture orchestrated by Amazon ECS with Fargate.",
+        tags: ["AWS", "Cloud", "Terraform", "ECS", "Fargate", "Terraform Workspaces", "GitHub Actions", "CloudWatch", "Chaos"],
+        github: "https://github.com/dakshsawhneyy/ECS-Managed-Orchestration.git",
+        image: ecs_orchestration,
+        live: "#",
+    },
+    {
+        title: "AI FinOps Platform",
+        category: ["Cloud", "System Design", "DevOps"],
+        description: "This project implements a real-time, event-driven FinOps platform on AWS EKS to monitor and visualize specialized AI/ML costs that are not covered by standard cloud billing dashboards.",
+        tags: ["AWS", "Cloud", "Terraform", "Kafka", "EKS", "OpenCost", "Grafana", "Prometheus", "Python", "Helm"],
+        github: "https://github.com/dakshsawhneyy/AI-FinOps-Platform.git",
+        image: ai_finops,
+        live: "#",
+    },
     {
         title: "Multi Cloud Orchestration",
         category: ["Cloud", "System Design"],
