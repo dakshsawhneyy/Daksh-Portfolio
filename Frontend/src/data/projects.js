@@ -33,7 +33,7 @@ const projects = [
         title: "ECS Managed Orchestration",
         category: ["Cloud", "System Design"],
         description: "cloud-native, scalable pipeline designed to ingest, process, and store log data efficiently. It is built on an event-driven, microservice architecture orchestrated by Amazon ECS with Fargate.",
-        tags: ["AWS", "Cloud", "Terraform", "ECS", "Fargate", "Terraform Workspaces", "GitHub Actions", "CloudWatch", "Chaos"],
+        tags: ["AWS", "Cloud", "Terraform", "ECS", "Fargate", "CW-X-Ray", "GitHub Actions", "CloudWatch", "Chaos"],
         github: "https://github.com/dakshsawhneyy/ECS-Managed-Orchestration.git",
         image: ecs_orchestration,
         live: "#",
