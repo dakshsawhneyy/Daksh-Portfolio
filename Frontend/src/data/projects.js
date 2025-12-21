@@ -27,8 +27,18 @@ const log_ingesion = "https://d13b09r5pqtq1e.cloudfront.net/projects/log_ingesio
 const multi_cloud = "https://d13b09r5pqtq1e.cloudfront.net/projects/image_2025-10-27_092910305.png"
 const ecs_orchestration = "https://d13b09r5pqtq1e.cloudfront.net/projects/371c2715-e6ac-46f7-8e59-5a44e94d579a.jpg"
 const ai_finops = "https://d13b09r5pqtq1e.cloudfront.net/projects/f0d605ea-57b2-4bd8-8973-8caa95c2cb35.jpg"
+const aiops = "https://d13b09r5pqtq1e.cloudfront.net/projects/AIOps.png"
 
 const projects = [
+    {
+        title: "MultiCloud - AIOps Driven Auto Healing SRE System",
+        category: ["Cloud", "System Design"],
+        description: "multi-cloud AIOps-driven SRE platform that autonomously detects anomalies and self-heals Kubernetes workloads using ML-powered intelligence.",
+        tags: [,"#AIOps" ,"#SRE" ,"#DevOps" ,"#MLOps" ,"#MultiCloud" ,"#Kubernetes" ,"#AWS" ,"#Azure" ,"#Terraform"],
+        github: "https://github.com/dakshsawhneyy/AIOps-Driven-Auto-Healing-SRE-System.git",
+        image: aiops,
+        live: "#",
+    },
     {
         title: "ECS Managed Orchestration",
         category: ["Cloud", "System Design"],
