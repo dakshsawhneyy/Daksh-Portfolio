@@ -32,7 +32,7 @@ const Projects = () => {
       </div>
 
       {/* Project Cards */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {filteredProjects.map((item, index) => (
           <Tilt key={index} glareEnable glareMaxOpacity={0.2} scale={1.05} transitionSpeed={400} className="bg-[#fefefe] dark:bg-[#0f0f0f] rounded-2xl border border-green-600/40 dark:border-green-700/40 backdrop-blur-md shadow-xl transition-all" >
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: index * 0.1 }} className="overflow-hidden rounded-xl" >
@@ -76,3 +76,4 @@ const Projects = () => {
 
 
 export default Projects
+
