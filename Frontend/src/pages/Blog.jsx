@@ -26,7 +26,7 @@ const Blog = () => {
       </div>
 
       {/* Blog Entries */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
         {blogs.map((item, index) => (
           <Tilt key={index} glareEnable glareMaxOpacity={0.2} scale={1.05} transitionSpeed={400} className="bg-white dark:bg-[#0f0f0f] relative overflow-hidden rounded-2xl shadow-2xl backdrop-blur-lg border border-green-700/50">
             <motion.div key={index} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }} className=" p-4 rounded-lg hover:shadow-green-400/30 transition-all cursor-pointer " >
@@ -45,3 +45,4 @@ const Blog = () => {
 }
 
 export default Blog
+
