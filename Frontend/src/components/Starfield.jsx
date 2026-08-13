@@ -1,33 +1,42 @@
-import React from 'react'
-import Particles from 'react-tsparticles'
-import { loadStarsPreset } from 'tsparticles-preset-stars';
+import React, { useEffect, useState } from 'react'
+import Particles, { initParticlesEngine } from '@tsparticles/react'
+import { loadStarsPreset } from '@tsparticles/preset-stars';
 
 const Starfield = () => {
-    
-    const particlesInit = async(main) => {
-        await(loadStarsPreset(main))
-    }
+    const [init, setInit] = useState(false);
+
+    // Mandated v3 lifecycle engine initialization
+    useEffect(() => {
+        initParticlesEngine(async (engine) => {
+            await loadStarsPreset(engine);
+        }).then(() => {
+            setInit(true);
+        });
+    }, []);
     
     const isDark = document.documentElement.classList.contains("dark")
     
-    return (
-        <Particles
-            id="tsparticles"
-            init={particlesInit}
-            options={{
-                preset: "stars",
-                background: {
-                    color:{
-                        value: isDark ? "#000000" : "#FDFDFD"
+    if (init) {
+        return (
+            <Particles
+                id="tsparticles"
+                options={{
+                    preset: "stars",
+                    background: {
+                        color:{
+                            value: isDark ? "#000000" : "#FDFDFD"
+                        },
                     },
-                },
-                fullscreen: {
-                    enable: true,
-                    zIndex: -1,
-                },
-            }}
-        />
-    )
+                    fullscreen: {
+                        enable: true,
+                        zIndex: -1,
+                    },
+                }}
+            />
+        )
+    }
+
+    return null;
 }
 
 export default Starfield
