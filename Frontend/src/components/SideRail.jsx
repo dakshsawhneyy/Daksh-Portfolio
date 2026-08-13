@@ -1,0 +1,22 @@
+import React from 'react'
+import { useNavigate } from 'react-router-dom'
+
+const SideRail = ({ modules = [], hovered, setHovered, onSelect }) => {
+
+  return (
+    <aside className="side-rail" aria-hidden>
+      <div className="rail-top muted small">SYSTEM 01</div>
+      <nav className="rail-list">
+        {modules.map((m, i) => (
+          <button key={m.key} data-interactive data-cursor="open" onMouseEnter={() => setHovered(m.key)} onMouseLeave={() => setHovered(null)} onClick={() => { onSelect(m.key) }} className={`rail-item ${hovered === m.key ? 'hover' : ''}`}>
+            <span className="rail-index">{String(i+1).padStart(2,'0')}</span>
+            <span className="rail-title">{m.title}</span>
+          </button>
+        ))}
+      </nav>
+      <div className="rail-bottom muted small">⌘K</div>
+    </aside>
+  )
+}
+
+export default SideRail

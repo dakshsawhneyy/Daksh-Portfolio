@@ -6,7 +6,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="backdrop-blur-md bg-white dark:bg-black border-t border-white/10 text-primary dark:text-success font-mono px-6 pt-5 pb-20 md:pb-5 sm:pb-10 drop-shadow-2xl border-t-gray-300 dark:border-t-green-400">
+    <footer className="backdrop-blur-md bg-white dark:bg-black text-primary dark:text-success font-mono px-6 pt-5 pb-20 md:pb-5 sm:pb-10 drop-shadow-2xl">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
 
         {/* Hacker Style Terminal Text */}

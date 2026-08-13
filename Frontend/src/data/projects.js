@@ -34,6 +34,35 @@ const projects = [
         title: "MultiCloud - AIOps Driven Auto Healing SRE System",
         category: ["Cloud", "System Design"],
         description: "multi-cloud AIOps-driven SRE platform that autonomously detects anomalies and self-heals Kubernetes workloads using ML-powered intelligence.",
+        year: 2026,
+        heroStatement: "An autonomous SRE platform that detects and heals production faults across multi-cloud clusters, reducing toil and improving reliability by automating remediation.",
+        context: [
+            "Manual incident response at scale led to delayed recovery and engineering burnout.",
+            "The system needed to operate across AWS and Azure with consistent guarantees.",
+            "Goal: reduce MTTR and enable safe automated remediation driven by observability and ML signals."
+        ],
+        system: {
+            diagram: aiops,
+            overview: "Event-driven architecture: telemetry → anomaly detection → decision engine → automated remediation playbooks.",
+            components: ["Prometheus / Metrics", "Kafka / Event Bus", "ML Anomaly Detector", "Policy Engine", "Safe Remediation Runners"]
+        },
+        experience: {
+            note: "Interactive operator console and remediation visualizer (demo available on request).",
+            demo: null,
+            video: null
+        },
+        details: [
+            "Declarative remediation playbooks with safety gates",
+            "Canary rollbacks and progressive verification",
+            "End-to-end observability pipelines and tracing",
+            "Role-based runbooks integrated with incident workflows"
+        ],
+        outcome: {
+            mttr: "-78% MTTR",
+            incidentsReduced: "-65% SEV frequency",
+            uptime: "99.995%",
+            lessons: ["Design for observability first","Automate tactical remediations, not business logic"]
+        },
         tags: [,"#AIOps" ,"#SRE" ,"#DevOps" ,"#MLOps" ,"#MultiCloud" ,"#Kubernetes" ,"#AWS" ,"#Azure" ,"#Terraform"],
         github: "https://github.com/dakshsawhneyy/AIOps-Driven-Auto-Healing-SRE-System.git",
         image: aiops,

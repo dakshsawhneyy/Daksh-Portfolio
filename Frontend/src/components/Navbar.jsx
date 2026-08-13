@@ -10,23 +10,23 @@ const Navbar = ({darkMode, setDarkMode, toggleDarkMode}) => {
     // Creating useLocation for highlighting current route icon
     const location = useLocation()
     // Helper function to see if path matches
-    const isActive = (path) => {
-        location.pathname === path;
-    }
+    const isActive = (path) => location.pathname === path;
 
 
     const [showExtras, setShowExtras] = useState(true);
-    let lastScrollY = window.scrollY;
+    const lastScrollY = useState(typeof window !== 'undefined' ? window.scrollY : 0)[0];
+    const scrollRef = useState(lastScrollY)[0];
 
     useEffect(() => {
+    let last = window.scrollY;
     const handleScroll = () => {
         const currentScrollY = window.scrollY;
-        if (currentScrollY > lastScrollY) {
+        if (currentScrollY > last) {
         setShowExtras(false); // scrolling down
         } else {
         setShowExtras(true); // scrolling up
         }
-        lastScrollY = currentScrollY;
+        last = currentScrollY;
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -35,13 +35,15 @@ const Navbar = ({darkMode, setDarkMode, toggleDarkMode}) => {
 
     return (
         <>
-            <nav className="hidden md:flex fixed top-5 left-1/2 -translate-x-1/2 z-50 max-w-6xl w-full px-6 justify-between items-center">
+                <nav className="hidden md:flex fixed top-5 left-1/2 -translate-x-1/2 z-50 max-w-6xl w-full px-6 justify-between items-center">
                     {/* Logo */}
-                    <Link to="/" className={`text-2xl font-grotesk font-bold text-primary dark:text-success transition-all duration-300 ${showExtras ? "opacity-100 scale-100" : "opacity-0 scale-90 pointer-events-none"}`}>Daksh</Link>
+                    <Link to="/" className={`text-2xl font-grotesk font-bold transition-all duration-300 ${showExtras ? "opacity-100 scale-100" : "opacity-0 scale-90 pointer-events-none"}`}>
+                      <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-300 to-emerald-400">Daksh</span>
+                    </Link>
                     
                     {/* Nav Links */}
-                    <div className="flex gap-6 px-10 py-3 backdrop-blur-md bg-white/30 dark:bg-bgDark/40 shadow-lg rounded-full border border-white/20 dark:border-gray-700 transition-all duration-300">
-                        <Link to="/" className={`relative text-sm font-semibold uppercase tracking-wide ${isActive("/") ? "text-primary" : "text-gray-800 dark:text-white hover:text-primary"}  transition-all duration-300`}>Home <span className={`absolute left-0 -bottom-1 h-0.5 w-0 bg-primary dark:bg-success transition-all duration-300 ${location.pathname === "/" ? "w-full" : "group-hover:w-full"}`}></span></Link>
+                    <div className="flex gap-6 px-10 py-3 glass-card shadow-lg rounded-full border border-white/6 transition-all duration-300">
+                        <Link to="/" className={`relative text-sm font-semibold uppercase tracking-wide ${isActive("/") ? "text-accent" : "text-gray-800 dark:text-white hover:text-accent"}  transition-all duration-300`}>Home <span className={`absolute left-0 -bottom-1 h-0.5 w-0 bg-accent transition-all duration-300 ${location.pathname === "/" ? "w-full" : "group-hover:w-full"}`}></span></Link>
                         <Link to="/about" className={`relative text-sm font-semibold uppercase tracking-wide ${isActive("/about") ? "text-primary" : "text-gray-800 dark:text-white hover:text-primary"} transition-all duration-300`}>About <span className={`absolute left-0 -bottom-1 h-0.5 w-0 bg-primary dark:bg-success transition-all duration-300 ${location.pathname === "/about" ? "w-full" : "group-hover:w-full"}`}></span></Link>
                         <Link to="/blog" className={`relative text-sm font-semibold uppercase tracking-wide ${isActive("/blog") ? "text-primary" : "text-gray-800 dark:text-white hover:text-primary"} transition-all duration-300`}>Blogs <span className={`absolute left-0 -bottom-1 h-0.5 w-0 bg-primary dark:bg-success transition-all duration-300 ${location.pathname === "/blog" ? "w-full" : "group-hover:w-full"}`}></span></Link>
                         <Link to="/projects" className={`relative text-sm font-semibold uppercase tracking-wide ${isActive("/projects") ? "text-primary" : "text-gray-800 dark:text-white hover:text-primary"} transition-all duration-300`}>Projects <span className={`absolute left-0 -bottom-1 h-0.5 w-0 bg-primary dark:bg-success transition-all duration-300 ${location.pathname === "/projects" ? "w-full" : "group-hover:w-full"}`}></span></Link>
@@ -50,7 +52,7 @@ const Navbar = ({darkMode, setDarkMode, toggleDarkMode}) => {
                     </div>
 
                     {/* Dark Mode Button */}
-                    <button onClick={toggleDarkMode} className={`text-2xl transition-all duration-300 ${showExtras ? "opacity-100 scale-100" : "opacity-0 scale-90 pointer-events-none"} text-gray-800 dark:text-white hover:text-primary`}>
+                    <button onClick={toggleDarkMode} aria-label="Toggle theme" className={`text-2xl transition-all duration-300 ${showExtras ? "opacity-100 scale-100" : "opacity-0 scale-90 pointer-events-none"} text-gray-800 dark:text-white hover:text-accent`}>
                         {darkMode ? <FiSun /> : <FiMoon />}
                     </button>
             </nav>
