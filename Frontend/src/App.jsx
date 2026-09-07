@@ -1,5 +1,6 @@
 import { Route, Routes, useNavigate, useLocation } from "react-router-dom"
 import './App.css'
+import './portfolio-polish.css'
 import Home from "./pages/Home"
 import About from "./pages/About"
 import Navbar from "./components/Navbar"
