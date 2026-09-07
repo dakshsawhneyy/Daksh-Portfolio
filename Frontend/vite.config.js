@@ -1,19 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { viteStaticCopy } from 'vite-plugin-static-copy'
-import { resolve } from 'path'
 
 export default defineConfig({
-  plugins: [
-    react(),
-    viteStaticCopy({
-      targets: [
-        {
-          src: resolve(__dirname, 'public/_redirects'),
-          dest: '.', // will put it in dist/
-          rename: '_redirects'
-        }
-      ]
-    })
-  ]
+  plugins: [react()],
+  appType: 'spa',
+  preview: {
+    host: '0.0.0.0',
+    port: 5173,
+  },
 })

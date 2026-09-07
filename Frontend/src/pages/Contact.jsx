@@ -1,106 +1,17 @@
-import React, { useState } from 'react'
-import { motion } from 'framer-motion'
-import { Mail, Linkedin, Github, Phone, MapPin } from 'lucide-react'
-import Starfield from '../components/Starfield'
-import axios from 'axios'
+import { ArrowUpRight, Github, Linkedin, Mail, MapPin } from 'lucide-react'
+import { useState } from 'react'
 
 const Contact = () => {
-
-  // Making state to store form data and send to backend
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: ''
-  })
-
-  // Making state for fetching the state of status
-  const [status, setStatus] = useState('')
-
-  // making a state to show popUp
-  const [showPopup, setShowPopup] = useState(false)
-
-  // Function to Change FormData from input
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
+  const [form, setForm] = useState({ name: '', email: '', message: '' })
+  const [sent, setSent] = useState(false)
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    const subject = encodeURIComponent(`Portfolio enquiry from ${form.name}`)
+    const body = encodeURIComponent(`${form.message}\n\nReply to: ${form.email}`)
+    window.location.href = `mailto:dakshsawhneyy@gmail.com?subject=${subject}&body=${body}`
+    setSent(true)
   }
-
-  // Function to send details to backend when form submits
-  const handleSubmit = async(e) => {
-    e.preventDefault()
-    setStatus('Sending...')
-
-    try {
-      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/message`, formData)
-      if(res.data.success){
-        setStatus("Message Sent")
-        setFormData({ name:'', email:'', message:'' })
-        setShowPopup(true)
-        setTimeout(() => {setShowPopup(false)}, 2000);
-      }else{
-        setStatus("Failed to send message")
-      }
-    } catch (error) {
-      setStatus("Server Error")
-    }
-  }
-
-  return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-gradient-to-br from-gray-100 to-white dark:from-gray-900 dark:to-bgDark">
-      
-      <Starfield />
-
-      {/* Left Panel: Info & Socials */}
-      <motion.div className="lg:w-1/2 flex flex-col justify-center items-start p-8 lg:p-16 gap-6 backdrop-blur-xl bg-white/30 dark:bg-gray-800/40 rounded-tr-3xl rounded-br-3xl m-4 lg:m-8 shadow-xl" initial={{ x: -100, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.6 }}>
-        <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-success mb-2">
-          console.log("Let's Build Something Together")
-        </h2>
-        <p className="text-gray-700 dark:text-accent text-md">
-          Whether you've got a project in mind or just want to say hi, I'm all ears.
-        </p>
-
-        {/* Contact Details */}
-        <div className="flex flex-col gap-4 mt-6">
-          <div className="flex items-center gap-3 text-gray-800 dark:text-white">
-            <Mail size={20} /> <a href="mailto:dakshsawhneyy@gmail.com">dakshsawhneyy@gmail.com</a>
-          </div>
-          <div className="flex items-center gap-3 text-gray-800 dark:text-white">
-            <Phone size={20} /> <a href="tel:+919622727121">+91 9622727121</a>
-          </div>
-          <div className="flex items-center gap-3 text-gray-800 dark:text-white">
-            <MapPin size={20} /> Jammu, Jammu and Kashmir, India
-          </div>
-        </div>
-
-        {/* Social Links */}
-        <div className="flex gap-6 mt-8">
-          {[ 
-            { Icon: Github, url: 'https://github.com/dakshsawhneyy' },
-            { Icon: Linkedin, url: 'https://linkedin.com/in/dakshsawhneyy' },
-          ].map(({ Icon, url }, i) => (
-            <a key={i} href={url} target="_blank" rel="noopener" className="p-2 rounded-full bg-white/20 dark:bg-gray-700/30 hover:bg-white/30 transition">
-              <Icon size={24} className="text-gray-900 dark:text-white hover:text-primary" />
-            </a>
-          ))}
-        </div>
-      </motion.div>
-
-      {/* Right Panel: Form */}
-      <motion.form onSubmit={handleSubmit} target="_blank" className="lg:w-1/2 p-8 lg:p-16 m-4 lg:m-8 backdrop-blur-xl bg-white/30 dark:bg-gray-800/40 rounded-tl-3xl rounded-bl-3xl shadow-xl" initial={{ x: 100, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ duration: 0.6 }}>
-        <input type="hidden" name="_captcha" value="false" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <input name="name" onChange={handleChange} value={formData.name} type="text" placeholder="Your Name" required className="w-full px-4 py-3 rounded-lg bg-white dark:bg-gray-900 border dark:text-white border-gray-300 dark:border-gray-600 focus:outline-primary transition" />
-          <input name="email" onChange={handleChange} value={formData.email} type="email" placeholder="Your Email" required className="w-full px-4 py-3 rounded-lg bg-white dark:bg-gray-900 border dark:text-white border-gray-300 dark:border-gray-600 focus:outline-primary transition" />
-        </div>
-        <textarea name="message" onChange={handleChange} value={formData.message} rows="5" placeholder="Your Message" required className="w-full mt-4 px-4 py-3 rounded-lg bg-white dark:bg-gray-900 border dark:text-white border-gray-300 dark:border-gray-600 focus:outline-primary transition"></textarea>
-        <button type="submit" className="mt-6 w-full py-3 font-semibold bg-primary text-white rounded-lg hover:opacity-90 transition">
-          Send Message
-        </button>
-      </motion.form>
-      {showPopup && <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="fixed top-6 right-6 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
-          Message Sent!
-        </motion.div>}
-    </div>
-  )
+  return <main className="content-page page-wrap contact-page"><section className="content-intro"><div><p className="eyebrow">Start a conversation</p><h1>Let’s build something<br /><em>useful.</em></h1></div><p className="intro-aside">Have a platform problem, a reliability question, or a project that needs a clearer shape? I would like to hear about it.</p></section><section className="contact-layout"><div className="contact-details"><p className="contact-lede">The best way to reach me is email. I usually reply within a day.</p><a className="contact-email" href="mailto:dakshsawhneyy@gmail.com">dakshsawhneyy@gmail.com <ArrowUpRight size={18} /></a><div className="contact-facts"><span><MapPin size={16} /> Jammu, India</span><span><Mail size={16} /> Available for selected work</span></div><div className="contact-socials"><a href="https://github.com/dakshsawhneyy" target="_blank" rel="noreferrer"><Github size={19} /> GitHub</a><a href="https://linkedin.com/in/dakshsawhneyy" target="_blank" rel="noreferrer"><Linkedin size={19} /> LinkedIn</a></div></div><form className="contact-form" onSubmit={handleSubmit}><label>Name<input required value={form.name} onChange={event => setForm({ ...form, name: event.target.value })} placeholder="Your name" /></label><label>Email<input required type="email" value={form.email} onChange={event => setForm({ ...form, email: event.target.value })} placeholder="you@company.com" /></label><label>What are you working on?<textarea required rows="5" value={form.message} onChange={event => setForm({ ...form, message: event.target.value })} placeholder="A few words about the problem..." /></label><button className="button button-dark" type="submit">Open email draft <ArrowUpRight size={17} /></button>{sent && <p className="form-note">Your email draft is ready.</p>}</form></section></main>
 }
 
 export default Contact

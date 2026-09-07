@@ -1,80 +1,16 @@
+import { ArrowUpRight, Moon, Sun } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
-import { FiSun, FiMoon } from "react-icons/fi"
-import { FiHome, FiUser, FiBriefcase, FiEdit3, FiMail, 	FiBarChart2} from "react-icons/fi"
-import { useEffect, useState } from 'react'
-import Starfield from './Starfield'
 
+const Navbar = ({ darkMode, toggleDarkMode }) => {
+  const location = useLocation()
+  const links = [['About', '/about'], ['Projects', '/projects'], ['Writing', '/blog'], ['Contact', '/contact']]
+  const isActive = (path) => location.pathname === path || location.pathname.startsWith(path + '/')
 
-const Navbar = ({darkMode, setDarkMode, toggleDarkMode}) => {
-
-    // Creating useLocation for highlighting current route icon
-    const location = useLocation()
-    // Helper function to see if path matches
-    const isActive = (path) => location.pathname === path;
-
-
-    const [showExtras, setShowExtras] = useState(true);
-    const lastScrollY = useState(typeof window !== 'undefined' ? window.scrollY : 0)[0];
-    const scrollRef = useState(lastScrollY)[0];
-
-    useEffect(() => {
-    let last = window.scrollY;
-    const handleScroll = () => {
-        const currentScrollY = window.scrollY;
-        if (currentScrollY > last) {
-        setShowExtras(false); // scrolling down
-        } else {
-        setShowExtras(true); // scrolling up
-        }
-        last = currentScrollY;
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
-
-    return (
-        <>
-                <nav className="hidden md:flex fixed top-5 left-1/2 -translate-x-1/2 z-50 max-w-6xl w-full px-6 justify-between items-center">
-                    {/* Logo */}
-                    <Link to="/" className={`text-2xl font-grotesk font-bold transition-all duration-300 ${showExtras ? "opacity-100 scale-100" : "opacity-0 scale-90 pointer-events-none"}`}>
-                      <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-300 to-emerald-400">Daksh</span>
-                    </Link>
-                    
-                    {/* Nav Links */}
-                    <div className="flex gap-6 px-10 py-3 glass-card shadow-lg rounded-full border border-white/6 transition-all duration-300">
-                        <Link to="/" className={`relative text-sm font-semibold uppercase tracking-wide ${isActive("/") ? "text-accent" : "text-gray-800 dark:text-white hover:text-accent"}  transition-all duration-300`}>Home <span className={`absolute left-0 -bottom-1 h-0.5 w-0 bg-accent transition-all duration-300 ${location.pathname === "/" ? "w-full" : "group-hover:w-full"}`}></span></Link>
-                        <Link to="/about" className={`relative text-sm font-semibold uppercase tracking-wide ${isActive("/about") ? "text-primary" : "text-gray-800 dark:text-white hover:text-primary"} transition-all duration-300`}>About <span className={`absolute left-0 -bottom-1 h-0.5 w-0 bg-primary dark:bg-success transition-all duration-300 ${location.pathname === "/about" ? "w-full" : "group-hover:w-full"}`}></span></Link>
-                        <Link to="/blog" className={`relative text-sm font-semibold uppercase tracking-wide ${isActive("/blog") ? "text-primary" : "text-gray-800 dark:text-white hover:text-primary"} transition-all duration-300`}>Blogs <span className={`absolute left-0 -bottom-1 h-0.5 w-0 bg-primary dark:bg-success transition-all duration-300 ${location.pathname === "/blog" ? "w-full" : "group-hover:w-full"}`}></span></Link>
-                        <Link to="/projects" className={`relative text-sm font-semibold uppercase tracking-wide ${isActive("/projects") ? "text-primary" : "text-gray-800 dark:text-white hover:text-primary"} transition-all duration-300`}>Projects <span className={`absolute left-0 -bottom-1 h-0.5 w-0 bg-primary dark:bg-success transition-all duration-300 ${location.pathname === "/projects" ? "w-full" : "group-hover:w-full"}`}></span></Link>
-                        <Link to="/metrics" className={`relative text-sm font-semibold uppercase tracking-wide ${isActive("/metrics") ? "text-primary" : "text-gray-800 dark:text-white hover:text-primary"} transition-all duration-300`}>Metrics <span className={`absolute left-0 -bottom-1 h-0.5 w-0 bg-primary dark:bg-success transition-all duration-300 ${location.pathname === "/metrics" ? "w-full" : "group-hover:w-full"}`}></span></Link>
-                        <Link to="/contact" className={`relative text-sm font-semibold uppercase tracking-wide ${isActive("/contact") ? "text-primary" : "text-gray-800 dark:text-white hover:text-primary"} transition-all duration-300`}>Contact <span className={`absolute left-0 -bottom-1 h-0.5 w-0 bg-primary dark:bg-success transition-all duration-300 ${location.pathname === "/contact" ? "w-full" : "group-hover:w-full"}`}></span></Link>
-                    </div>
-
-                    {/* Dark Mode Button */}
-                    <button onClick={toggleDarkMode} aria-label="Toggle theme" className={`text-2xl transition-all duration-300 ${showExtras ? "opacity-100 scale-100" : "opacity-0 scale-90 pointer-events-none"} text-gray-800 dark:text-white hover:text-accent`}>
-                        {darkMode ? <FiSun /> : <FiMoon />}
-                    </button>
-            </nav>
-
-            {/* For Mobile Screen */}
-            <nav className='md:hidden fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-white/30 dark:bg-bgDark/30 backdrop-blur-3xl shadow-lg rounded-full px-5 sm:px-6 py-3 z-50 flex items-center justify-between gap-5'>
-                <div className='flex justify-between items-center gap-5 sm:gap-6'>
-                    <Link to={"/"} className={`text-xl ${isActive("/") ? "text-primary dark:text-success" : "text-gray-800 dark:text-white hover:text-primary hover:dark:text-success"}`}> <FiHome/> </Link>
-                    <Link to={"/about"} className={`text-xl ${isActive("/about") ? "text-primary dark:text-success" : "text-gray-800 dark:text-white hover:text-primary hover:dark:text-success"}`}> <FiUser/> </Link>
-                    <Link to={"/blog"} className={`text-xl ${isActive("/blog") ? "text-primary dark:text-success" : "text-gray-800 dark:text-white hover:text-primary hover:dark:text-success"}`}> <FiEdit3/> </Link>
-                    <Link to={"/projects"} className={`text-xl ${isActive("/projects") ? "text-primary dark:text-success" : "text-gray-800 dark:text-white hover:text-primary hover:dark:text-success"}`}> <FiBriefcase/> </Link>
-                    <Link to={"/metrics"} className={`text-xl ${isActive("/metrics") ? "text-primary dark:text-success" : "text-gray-800 dark:text-white hover:text-primary hover:dark:text-success"}`}> <FiBarChart2/> </Link>
-                    <Link to={"/contact"} className={`text-xl ${isActive("/contact") ? "text-primary dark:text-success" : "text-gray-800 dark:text-white hover:text-primary hover:dark:text-success"}`}> <FiMail/> </Link>
-                </div>
-
-                {/* Dark Mode Toggle */}
-                <button onClick={toggleDarkMode} className=" text-xl text-gray-800 dark:text-white hover:text-primary transition-all">
-                    {darkMode ? <FiSun /> : <FiMoon />}
-                </button>
-            </nav>
-        </>
-    )
+  return <header className="site-nav">
+    <Link to="/" className="brand-mark"><span>DS</span><strong>Daksh Sawhney</strong></Link>
+    <nav className="nav-links" aria-label="Primary navigation">{links.map(([label, path]) => <Link key={path} to={path} className={isActive(path) ? 'active' : ''}>{label}</Link>)}</nav>
+    <div className="nav-actions"><button className="theme-toggle" onClick={toggleDarkMode} aria-label="Toggle theme">{darkMode ? <Sun size={18} /> : <Moon size={18} />}</button><Link className="nav-resume" to="/contact">Let's talk <ArrowUpRight size={15} /></Link></div>
+  </header>
 }
 
 export default Navbar

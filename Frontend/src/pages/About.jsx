@@ -1,82 +1,13 @@
-import { timeline, certs, skills } from "../data/about"
-import { motion } from "framer-motion"
-import { Award } from "lucide-react"
-import Techwheel from "../components/Techwheel"
-import { ExternalLink, Image as ImageIcon } from "lucide-react";
+import { ArrowUpRight, Award, Check } from 'lucide-react'
+import { certs, skills, timeline } from '../data/about'
 
-const About = () => {
-  return (
-    <div className="min-h-screen bg-white dark:bg-black text-[#6366F1] dark:text-success px-4 py-10 md:pt-20 md :pt-20 sm:px-6 md:px-10 font-mono">
-      
-      {/* Terminal-style Heading */}
-      <div className="text-center mb-12 z-10">
-        <motion.h2 className="text-2xl sm:text-3xl md:text-4xl font-bold terminal-blink" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
-          $ whoami
-        </motion.h2>
-        <p className="text-[#475569] dark:text-accent mt-2">// A deep dive into who I am, what I build, and why I do it.</p>
-        <hr className="my-4 border-green-800" />
-      </div>
-
-      {/* Timeline */}
-      <div className="max-w-5xl mx-auto">
-        {timeline.map((item, index) => (
-          <motion.div key={index} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.15 }} className="mb-8 border-l-2 border-green-500 pl-4">
-            <p className="text-xs text-[#475569] dark:text-accent">~ {item.year}</p>
-            <h3 className="text-lg font-semibold terminal-glow">{item.title}</h3>
-            <p className="text-green-500 text-sm">{item.description}</p>
-          </motion.div>
-        ))}
-      </div>
-
-      <hr className="my-4 border-green-800" />
-
-      {/* Skills Section */}
-      <div className="text-center my-10">
-        <h3 className="text-xl sm:text-3xl md:text-4xl font-bold terminal-glow mt-15">$ tech-stack --show-all</h3>
-        <p className="text-[#475569] dark:text-accent mt-2">// All the tools I wield on my terminal</p>
-      </div>
-
-      <Techwheel />
-
-      <div className="max-w-6xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        {skills.map((item, index) => (
-          <motion.div key={index} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }} className="bg-[#0f0f0f] border border-green-700/50 rounded-lg p-4 text-center hover:scale-105 transition cursor-pointer shadow-md hover:shadow-green-400/20">
-            <span className="block text-green-200 tracking-wide text-sm sm:text-base">{item}</span>
-          </motion.div>
-        ))}
-      </div>
-
-      {/* Certifications */}
-      <div className="text-center mt-20 mb-10">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold terminal-blink">$ ls ~/certifications</h2>
-        <p className="text-[#475569] dark:text-accent mt-2">// Proof of execution</p>
-      </div>
-
-      <div className="max-w-6xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-        {certs.map((cert, i) => (
-          <motion.a key={i} href={cert.link} target="_blank" className="relative group bg-[#0f0f0f] border border-green-700/50 p-3 sm:p-5 rounded-lg shadow-md hover:shadow-green-400/30 transition text-center" initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}>
-            <div className="text-3xl mb-2 text-green-400">
-              <Award size={28} />
-            </div>
-            <p className="text-sm sm:text-md text-green-200">{cert.title}</p>
-            {/* Action Buttons */}
-            <div className="flex justify-center gap-2 mt-2">
-              {cert.link && <a href={cert.link} target="_blank" rel="noopener noreferrer" className="text-green-300 hover:text-green-500 transition" title="Open Certificate Link"> <ExternalLink size={20} /> </a>}
-              {cert.image && <button onClick={() => window.open(cert.image, "__blank")} className="inline-flex items-center gap-1 text-green-300 hover:text-green-500 transition-colors border border-green-600 rounded px-3 py-2 text-sm mt-2" title="View Certificate Image"><ImageIcon size={20} /><span> View Here</span></button> }
-            </div>
-          </motion.a>
-        ))}
-      </div>
-
-      {/* Currently Grinding */}
-      <div className="text-center mt-20 mb-12">
-        <p className="text-md font-semibold text-success mb-2">$ currently --grinding</p>
-        <p className="text-[#475569] dark:text-accent max-w-2xl mx-auto text-sm">
-          DevSecOps tools, Resume polishing, Cloud security practices, Helm charts, System Design for DevOps, open-source contributions, and internship applications.
-        </p>
-      </div>
-    </div>
-  )
-}
+const About = () => <main className="content-page page-wrap about-page">
+  <section className="content-intro about-intro"><div><p className="eyebrow">A little context</p><h1>Engineer by trade,<br /><em>systems thinker</em> by habit.</h1></div><p className="intro-aside">I work at the intersection of cloud infrastructure, reliability engineering, and thoughtful product design. The goal is always the same: make hard things easier to operate.</p></section>
+  <section className="about-statement"><p className="eyebrow">My point of view</p><p>Good infrastructure should be powerful enough for the edge cases and calm enough for the everyday.</p></section>
+  <section className="about-section"><div className="about-section-label"><span>01</span><h2>How I got here</h2></div><div className="timeline-editorial">{timeline.map((item, index) => <article key={`${item.year}-${index}`}><span>{item.year}</span><div><h3>{item.title}</h3><p>{item.description}</p></div></article>)}</div></section>
+  <section className="about-section"><div className="about-section-label"><span>02</span><h2>What I bring</h2></div><div className="capability-grid">{['Cloud architecture', 'Reliability & observability', 'DevSecOps delivery', 'Platform thinking'].map((title, index) => <article key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{['Designing infrastructure that scales without becoming mysterious.', 'Turning telemetry into decisions teams can act on during incidents.', 'Shipping repeatable, secure delivery pipelines with clear guardrails.', 'Building tools that give engineers leverage, not another dashboard.'][index]}</p></article>)}</div></section>
+  <section className="about-section"><div className="about-section-label"><span>03</span><h2>Working toolkit</h2></div><div className="skill-cloud">{skills.map((skill, index) => <span key={`${skill}-${index}`}><Check size={13} />{skill}</span>)}</div></section>
+  <section className="about-section credentials"><div className="about-section-label"><span>04</span><h2>Credentials</h2></div><div className="credential-list">{certs.map((cert, index) => <a href={cert.link || cert.image || '#'} target="_blank" rel="noreferrer" key={`${cert.title}-${index}`}><Award size={18} /><span>{cert.title}</span><ArrowUpRight size={16} /></a>)}</div></section>
+</main>
 
 export default About

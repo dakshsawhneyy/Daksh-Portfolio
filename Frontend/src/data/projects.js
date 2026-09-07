@@ -1,5 +1,3 @@
-import aws from "../assets/aws_1_million.png"
-
 const wearsphereImg = "https://d13b09r5pqtq1e.cloudfront.net/projects/wearsphere.png"
 const ytPipeline = "https://d13b09r5pqtq1e.cloudfront.net/projects/youtube-pipeline.png"
 const cost_bot = "https://d13b09r5pqtq1e.cloudfront.net/projects/cost_bot.jpg"
@@ -7,8 +5,6 @@ const invoice = "https://d13b09r5pqtq1e.cloudfront.net/projects/invoice.jpg"
 const log_analyser = "https://d13b09r5pqtq1e.cloudfront.net/projects/log_analyser.jpg"
 const todo = "https://d13b09r5pqtq1e.cloudfront.net/projects/todo.jpg"
 const ansible = "https://d13b09r5pqtq1e.cloudfront.net/projects/ansible.jpg"
-const food = "https://d13b09r5pqtq1e.cloudfront.net/projects/food.png"
-const spotify = "https://d13b09r5pqtq1e.cloudfront.net/projects/spotify.png"
 const aws_card_game = "https://d13b09r5pqtq1e.cloudfront.net/projects/aws_card_game.png";
 const picture_processing1 = "https://d13b09r5pqtq1e.cloudfront.net/projects/picture_processing1.png"
 const kubelogstack = "https://d13b09r5pqtq1e.cloudfront.net/projects/kubelogstack.png"
@@ -63,7 +59,7 @@ const projects = [
             uptime: "99.995%",
             lessons: ["Design for observability first","Automate tactical remediations, not business logic"]
         },
-        tags: [,"#AIOps" ,"#SRE" ,"#DevOps" ,"#MLOps" ,"#MultiCloud" ,"#Kubernetes" ,"#AWS" ,"#Azure" ,"#Terraform"],
+        tags: ["#AIOps" ,"#SRE" ,"#DevOps" ,"#MLOps" ,"#MultiCloud" ,"#Kubernetes" ,"#AWS" ,"#Azure" ,"#Terraform"],
         github: "https://github.com/dakshsawhneyy/AIOps-Driven-Auto-Healing-SRE-System.git",
         image: aiops,
         live: "#",
@@ -187,7 +183,7 @@ const projects = [
     },
     {
         title: "WearSphere E-commerce",
-        category: ["MERN","DevOps"],
+        category: ["Cloud", "DevOps"],
         description: "WearSphere is a fully automated 4-tier e-commerce platform built with MERN stack, deployed on AWS EKS with CI/CD pipelines by Jenkins. The project integrates DevSecOps practices for security, and includes Prometheus and Grafana for monitoring",
         tags: ["React", "Node", "AWS", "K8s", "EKS", "DevSecOps", "Jenkins", "Agile", "ArgoCD"],
         github: "https://github.com/dakshsawhneyy/WearSphere-Ecommerce-MERN.git",
@@ -291,24 +287,6 @@ const projects = [
         tags: ["Ansible", "IAC", "EC2", "AWS"],
         github: "https://github.com/dakshsawhneyy/todo_list_manager_shell_scripting.git",
         image: ansible,
-        live: "#",
-    },
-    {
-        title: "Food Delivery App",
-        category: ["MERN"],
-        description: "A full-stack food delivery web application built using the MERN stack (MongoDB, Express.js, React.js, Node.js). Also contain Admin Panel to manage food items and orders",
-        tags: ["MongoDB", "ExpressJS", "React", "NodeJS", "Tailwind"],
-        github: "https://github.com/dakshsawhneyy/Food_Delivery_Mern_Stack.git",
-        image: food,
-        live: "#",
-    },
-    {
-        title: "Spotify Clone",
-        category: ["MERN"],
-        description: "A full-featured Spotify-like music streaming web application built using the MERN (MongoDB, Express, React, Node.js) stack. Has an admin panel for uploading, listing and deleting songs",
-        tags: ["MongoDB", "ExpressJS", "React", "NodeJS", "Tailwind"],
-        github: "https://github.com/dakshsawhneyy/Spotify_Mern_Clone.git",
-        image: spotify,
         live: "#",
     },
 ]

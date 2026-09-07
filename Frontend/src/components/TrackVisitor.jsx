@@ -6,19 +6,21 @@ const TrackVisitor = () => {
 
     const location = useLocation();
 
-    // When location.pathname changes, track the visitor details
     useEffect(() => {
-        const track = () => {
+        const backendUrl = import.meta.env.VITE_BACKEND_URL
+        if (!backendUrl || import.meta.env.VITE_ENABLE_ANALYTICS !== 'true') return
+
+        const track = async () => {
             try {
-                axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/visitor`, {
-                    path: location.pathname,    // Passing path because backend knows, user exploring which path
+                await axios.post(`${backendUrl}/api/visitor`, {
+                    path: location.pathname,
                 })
-            } catch (error) {
-                console.log('Tracking Failed', error)
+            } catch {
+                // Analytics must never prevent the portfolio from rendering.
             }
         }
 
-        track()
+        void track()
     }, [location.pathname])
 
     return null

@@ -4,18 +4,19 @@ WORKDIR /app
 
 COPY package*.json ./
 RUN npm ci 
-#RUN npm install # -ci = clean install -- better than npm install
 
 COPY . .
+RUN npm run build
 
-# Stage 2
+# Keep Vite available in the runtime image for the existing deployment contract.
 FROM node:21-alpine
 
 WORKDIR /app
 
-# Only copy whats important
-COPY --from=builder /app ./
+COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
 
 EXPOSE 5173
 
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "preview"]

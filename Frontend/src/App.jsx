@@ -16,7 +16,6 @@ import LivingCursor from "./components/LivingCursor"
 import SideRail from "./components/SideRail"
 import SystemWorkspace from "./components/SystemWorkspace"
 import CommandPalette from "./components/CommandPalette"
-import Landing from "./pages/Landing"
 
 const App = () => {
 
@@ -82,12 +81,13 @@ const App = () => {
   }, [activeModule])
 
   return (
-    <div>
+    <div className="portfolio-app">
       <TrackVisitor />
       <LivingCursor />
+      <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
 
       <Routes>
-        <Route path="/" element={<Landing />} />
+        <Route path="/" element={<Home darkMode={darkMode} setDarkMode={setDarkMode} />} />
         <Route path="/system" element={<>
             <SideRail modules={modules} hovered={hoveredModule} setHovered={setHoveredModule} onSelect={(k)=>setActiveModule(k)} />
             <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} commands={[...modules, {key:'random',title:'RANDOM',subtitle:'Open a random item'},{key:'toggle-theme',title:'Toggle Theme',subtitle:'Switch light/dark'}]} onExecute={(key)=>{
