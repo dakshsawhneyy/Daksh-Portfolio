@@ -3,7 +3,7 @@ import React from 'react'
 const SideRail = ({ modules = [], hovered, setHovered, onSelect }) => {
 
   return (
-    <aside className="side-rail" aria-hidden>
+    <aside className="side-rail" aria-label="System modules">
       <div className="rail-top muted small">SYSTEM 01</div>
       <nav className="rail-list">
         {modules.map((m, i) => (
@@ -13,7 +13,7 @@ const SideRail = ({ modules = [], hovered, setHovered, onSelect }) => {
           </button>
         ))}
       </nav>
-      <div className="rail-bottom muted small">⌘K</div>
+      <div className="rail-bottom muted small" aria-label="Open command palette shortcut">⌘K</div>
     </aside>
   )
 }

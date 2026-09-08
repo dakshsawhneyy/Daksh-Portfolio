@@ -103,6 +103,7 @@ const App = () => {
         <Route path="/projects" element={<Projects />}></Route>
         <Route path="/metrics" element={<Navigate to="/about" replace />}></Route>
         <Route path="/contact" element={<Contact />}></Route>
+        <Route path="*" element={<Navigate to="/" replace />}></Route>
       </Routes>
 
       {!(location.pathname === '/system' || location.pathname.startsWith('/projects/')) && <Footer/>}

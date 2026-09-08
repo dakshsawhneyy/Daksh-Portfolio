@@ -1,5 +1,6 @@
 import React from 'react'
 import { motion as Motion, AnimatePresence } from 'framer-motion'
+import previewImage from '../assets/soon.avif'
 
 const ModulePreview = ({ moduleKey, modulesMap, onOpen }) => {
   const info = modulesMap[moduleKey]
@@ -12,7 +13,7 @@ const ModulePreview = ({ moduleKey, modulesMap, onOpen }) => {
           <div className="preview-sub muted" style={{marginTop:6}}>{info.subtitle}</div>
 
           <div className="preview-body" style={{marginTop:12}}>
-            <div className="preview-visual" style={{background:`url('/assets/soon.avif') center/cover no-repeat`}} />
+            <div className="preview-visual" role="img" aria-label={`${info.title} preview`} style={{background:`url(${previewImage}) center/cover no-repeat`}} />
             <div className="preview-meta muted" style={{marginTop:10}}>TYPE: {info.type || 'SYSTEM'}</div>
             <div className="preview-desc" style={{marginTop:8}}>{info.preview || 'No preview available.'}</div>
 
@@ -23,7 +24,7 @@ const ModulePreview = ({ moduleKey, modulesMap, onOpen }) => {
             </div>
 
             <div className="preview-actions" style={{marginTop:12}}>
-              <button className="open-btn" onClick={() => onOpen && onOpen(info.key)}>OPEN →</button>
+              <button className="open-btn" onClick={() => onOpen && onOpen(info.key)} aria-label={`Open ${info.title}`}>OPEN →</button>
             </div>
           </div>
         </Motion.aside>
