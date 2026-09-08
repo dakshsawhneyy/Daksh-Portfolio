@@ -27,7 +27,7 @@ const aiops = "https://d13b09r5pqtq1e.cloudfront.net/projects/AIOps.png"
 
 const projects = [
     {
-        title: "MultiCloud - AIOps Driven Auto Healing SRE System",
+        title: "MultiCloud-AIOps",
         category: ["Cloud", "System Design"],
         description: "multi-cloud AIOps-driven SRE platform that autonomously detects anomalies and self-heals Kubernetes workloads using ML-powered intelligence.",
         year: 2026,
@@ -291,5 +291,13 @@ const projects = [
     },
 ]
 
+const incidentZero = {
+    title: "Incident Zero",
+    category: ["Reliability", "System Design"],
+    description: "A failure simulation and response workflow for turning noisy signals into documented recovery.",
+    year: 2026,
+    tags: ["Incident Response", "SRE", "Observability", "RCA", "Reliability"],
+    image: aiops,
+}
 
-export default projects
+export default [incidentZero, projects[0], projects[4]]

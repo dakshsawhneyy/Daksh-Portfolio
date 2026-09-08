@@ -5,7 +5,6 @@ import Home from "./pages/Home"
 import About from "./pages/About"
 import Navbar from "./components/Navbar"
 import Projects from "./pages/Projects"
-import ProjectDetail from "./pages/ProjectDetail"
 import Blog from "./pages/Blog"
 import Contact from "./pages/Contact"
 import { useEffect, useState } from "react"
@@ -77,7 +76,7 @@ const App = () => {
   return (
     <div className="portfolio-app">
       <TrackVisitor />
-      <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+      <Navbar />
 
       <Routes>
         <Route path="/" element={<Home darkMode={darkMode} setDarkMode={setDarkMode} />} />
@@ -102,12 +101,11 @@ const App = () => {
         <Route path="/home" element={<Home darkMode={darkMode} setDarkMode={setDarkMode} />}></Route>
         <Route path="/blog" element={<Blog />}></Route>
         <Route path="/projects" element={<Projects />}></Route>
-        <Route path="/projects/:slug" element={<ProjectDetail />}></Route>
         <Route path="/metrics" element={<Navigate to="/about" replace />}></Route>
         <Route path="/contact" element={<Contact />}></Route>
       </Routes>
 
-      {!(location.pathname === '/' || location.pathname === '/system' || location.pathname.startsWith('/projects/')) && <Footer/>}
+      {!(location.pathname === '/system' || location.pathname.startsWith('/projects/')) && <Footer/>}
     </div>
   )
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import projects from '../data/projects'
 import { motion as Motion, AnimatePresence } from 'framer-motion'
+import CloudTopology from '../components/CloudTopology'
 
 const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 const heroLines = (title) => {
@@ -250,6 +251,7 @@ const ProjectDetail = () => {
           <Motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
             <h2>03 — SYSTEM</h2>
             <p className="muted">{project.system?.overview}</p>
+            <CloudTopology />
             <div style={{marginTop:12}}>
               <SystemFlow system={project.system || {}} />
             </div>
