@@ -1,7 +1,7 @@
-import { Activity, ArrowUpRight, BookOpen, FileText, Github, Home, Mail, UserRound, Waypoints } from 'lucide-react'
+import { Activity, ArrowUpRight, BookOpen, FileText, Github, Home, Mail, Terminal, UserRound, Waypoints } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 
-const Navbar = () => {
+const Navbar = ({ onOpenSreMode }) => {
   const location = useLocation()
   const links = [
     { label: 'Home', short: 'HOME', path: '/', icon: Home },
@@ -17,7 +17,7 @@ const Navbar = () => {
   return <header className="site-nav" aria-label="Reliability Lab navigation">
     <div className="nav-console-head"><Link to="/" className="brand-mark" aria-label="Daksh Sawhney home"><span>DS</span><strong>Daksh Sawhney</strong><small><Activity size={11} /> RELIABILITY LAB</small></Link><span className="nav-rail-label">RCP / 01</span></div>
     <nav className="nav-links" aria-label="Primary navigation">{links.map(({ label, short, path, icon: Icon }, index) => <Link key={label} to={path} className={isActive(path) ? 'active' : ''} title={label}><b>0{index + 1}</b><Icon size={16} /><span>{short}</span></Link>)}</nav>
-    <div className="nav-actions"><span className="nav-status"><i /> <span>LAB / READY</span></span><a className="nav-resume nav-download" href="/resume/Daksh-Resume.pdf" target="_blank" rel="noreferrer" aria-label="Open resume" title="Open resume"><FileText size={15} /><span>Resume</span><ArrowUpRight size={15} /></a><a className="nav-github" href="https://github.com/dakshsawhneyy" target="_blank" rel="noreferrer" aria-label="Open GitHub" title="Open GitHub"><Github size={16} /></a></div>
+    <div className="nav-actions"><span className="nav-status"><i /> <span>LAB / READY</span></span><button type="button" className="nav-terminal" onClick={onOpenSreMode} aria-label="Open SRE Mode terminal" title="Open SRE Mode terminal"><Terminal size={16} /><span>SRE</span></button><a className="nav-resume nav-download" href="/resume/Daksh-Resume.pdf" target="_blank" rel="noreferrer" aria-label="Open resume" title="Open resume"><FileText size={15} /><span>Resume</span><ArrowUpRight size={15} /></a><a className="nav-github" href="https://github.com/dakshsawhneyy" target="_blank" rel="noreferrer" aria-label="Open GitHub" title="Open GitHub"><Github size={16} /></a></div>
   </header>
 }
 

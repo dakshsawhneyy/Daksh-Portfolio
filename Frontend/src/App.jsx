@@ -13,6 +13,7 @@ import TrackVisitor from "./components/TrackVisitor"
 import SideRail from "./components/SideRail"
 import SystemWorkspace from "./components/SystemWorkspace"
 import CommandPalette from "./components/CommandPalette"
+import SreTerminal from "./components/SreTerminal"
 
 const App = () => {
 
@@ -36,6 +37,7 @@ const App = () => {
   const [hoveredModule, setHoveredModule] = useState(null)
   const [activeModule, setActiveModule] = useState(null)
   const [paletteOpen, setPaletteOpen] = useState(false)
+  const [sreModeOpen, setSreModeOpen] = useState(false)
   const navigate = useNavigate()
 
   const modules = [
@@ -76,7 +78,8 @@ const App = () => {
   return (
     <div className="portfolio-app">
       <TrackVisitor />
-      <Navbar />
+      <Navbar onOpenSreMode={() => setSreModeOpen(true)} />
+      <SreTerminal open={sreModeOpen} onClose={() => setSreModeOpen(false)} />
 
       <Routes>
         <Route path="/" element={<Home darkMode={darkMode} setDarkMode={setDarkMode} />} />
