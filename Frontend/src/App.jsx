@@ -85,7 +85,7 @@ const App = () => {
     <div className="portfolio-app">
       <TrackVisitor />
       <LivingCursor />
-      <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+      {location.pathname !== '/' && <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}
 
       <Routes>
         <Route path="/" element={<Home darkMode={darkMode} setDarkMode={setDarkMode} />} />
@@ -115,7 +115,7 @@ const App = () => {
         <Route path="/contact" element={<Contact />}></Route>
       </Routes>
 
-      {!(location.pathname === '/system' || location.pathname.startsWith('/projects/')) && <Footer/>}
+      {!(location.pathname === '/' || location.pathname === '/system' || location.pathname.startsWith('/projects/')) && <Footer/>}
     </div>
   )
 }

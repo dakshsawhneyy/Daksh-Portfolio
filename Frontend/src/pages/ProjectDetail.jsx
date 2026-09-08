@@ -1,9 +1,14 @@
-import React, { useMemo, useRef, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import projects from '../data/projects'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion as Motion, AnimatePresence } from 'framer-motion'
 
 const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+const heroLines = (title) => {
+  const words = title.split(' ')
+  const size = Math.max(1, Math.ceil(words.length / 3))
+  return [0, 1, 2].map(index => words.slice(index * size, (index + 1) * size).join(' ')).filter(Boolean)
+}
 
 const MediaRenderer = ({ project }) => {
   // supports image, video, demo (iframe) gracefully
@@ -192,13 +197,12 @@ const ProjectDetail = () => {
   const idx = projects.findIndex(p => slugify(p.title) === slug)
   const project = projects[idx]
   const next = projects[(idx + 1) % projects.length]
-  const heroRef = useRef()
-
   useEffect(() => {
     if (!project) navigate('/projects')
   }, [project, navigate])
 
   if (!project) return null
+  const titleLines = heroLines(project.title)
 
   return (
     <div className="project-detail-root">
@@ -206,9 +210,7 @@ const ProjectDetail = () => {
         <div className="pd-hero-inner cinematic-inner">
           <div className="pd-kicker muted">PROJECT / {String(idx+1).padStart(2,'0')}</div>
           <div className="pd-hero-lines">
-            <div className="hero-large"><span className="hero-word">MULTICLOUD</span></div>
-            <div className="hero-large sub"><span className="hero-word">AUTO-HEALING</span></div>
-            <div className="hero-large sub"><span className="hero-word">INFRASTRUCTURE</span></div>
+            {titleLines.map((line, index) => <div className={`hero-large ${index ? 'sub' : ''}`} key={line}><span className="hero-word">{line}</span></div>)}
           </div>
           <div className="pd-hero-blurb">A system that detects,<br/>decides, and repairs<br/>distributed failures.</div>
           <div className="pd-meta muted small-meta">{project.title} • {project.year || '2026'} • DESIGN / SYSTEMS / ENGINEERING</div>
@@ -220,14 +222,14 @@ const ProjectDetail = () => {
 
       <main className="pd-main">
         <section className="pd-chapter pd-entry">
-          <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
+          <Motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
             <h2>01 — ENTRY</h2>
             <p className="lead">{project.heroStatement || project.description}</p>
-          </motion.div>
+          </Motion.div>
         </section>
 
         <section className="pd-chapter pd-context">
-          <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
+          <Motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
             <h2>02 — CONTEXT</h2>
             <div className="context-tension">
               <div className="t-line">FAILURES DON'T WAIT.</div>
@@ -241,11 +243,11 @@ const ProjectDetail = () => {
                 <p key={i} className="context-line">{c}</p>
               ))}
             </div>
-          </motion.div>
+          </Motion.div>
         </section>
 
         <section className="pd-chapter pd-system">
-          <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
+          <Motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
             <h2>03 — SYSTEM</h2>
             <p className="muted">{project.system?.overview}</p>
             <div style={{marginTop:12}}>
@@ -254,11 +256,11 @@ const ProjectDetail = () => {
             <ul className="system-components" style={{marginTop:14}}>
               {(project.system?.components || []).map((c, i) => <li key={i}>{c}</li>)}
             </ul>
-          </motion.div>
+          </Motion.div>
         </section>
 
         <section className="pd-chapter pd-experience">
-          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
+          <Motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
             <h2>04 — EXPERIENCE</h2>
             <div className="experience-viewport glass-card">
               {project.experience?.note && <div className="muted" style={{marginBottom:12}}>{project.experience.note}</div>}
@@ -266,20 +268,20 @@ const ProjectDetail = () => {
               {/* keep demo/video if available for playback */}
               { (project.video || project.demo) && <div style={{marginTop:12}}><MediaRenderer project={project} /></div> }
             </div>
-          </motion.div>
+          </Motion.div>
         </section>
 
         <section className="pd-chapter pd-details">
-          <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
+          <Motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
             <h2>05 — DETAILS</h2>
             <div className="detail-list">
               {(project.details || []).map((d, i) => <DetailItem key={i} text={d} />)}
             </div>
-          </motion.div>
+          </Motion.div>
         </section>
 
         <section className="pd-chapter pd-outcome">
-          <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
+          <Motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} viewport={{ once: true }}>
             <div className="outcome-hero">
               <div className="oh-line">FROM</div>
               <div className="oh-line big">FAILURE</div>
@@ -297,10 +299,10 @@ const ProjectDetail = () => {
               <div className="current-project">CURRENT PROJECT<br/><strong>01 / MULTICLOUD</strong><div className="muted">SYSTEM COMPLETE</div></div>
               <div className="next-project">
                 <div className="muted">NEXT PROJECT</div>
-                <button className="next-btn" onClick={() => navigate(`/projects/${slugify(next.title)}`)} data-interactive data-cursor="open">02 / {next.title.split(' ')[0].toUpperCase()} — OPEN →</button>
+                <button className="next-btn" onClick={() => navigate(`/projects/${slugify(next.title)}`)} data-interactive data-cursor="open">NEXT / {next.title.split(' ')[0].toUpperCase()} — OPEN →</button>
               </div>
             </div>
-          </motion.div>
+          </Motion.div>
         </section>
       </main>
 

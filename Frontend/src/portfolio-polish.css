@@ -158,3 +158,46 @@
     font-size: 23px;
   }
 }
+
+/* Keep the interactive system workspace usable on narrow screens. */
+@media (max-width: 900px) {
+  .main-with-rail.system-root { display: block; min-height: calc(100vh - 68px); padding: 70px 18px 28px; overflow: hidden; }
+  .main-with-rail.system-root .system-stage { padding: 24px 0; }
+  .main-with-rail.system-root .system-stage-wrapper { display: block; min-width: 0; }
+  .main-with-rail.system-root .grid-wrap { grid-template-columns: 1fr; gap: 16px; width: 100%; margin: 24px 0; }
+  .main-with-rail.system-root .module-tile { width: 100%; box-sizing: border-box; }
+  .main-with-rail.system-root .status-indicator { position: absolute; top: 22px; right: 18px; }
+}
+
+@media (max-width: 680px) {
+  .reference-nav { flex-wrap: wrap; justify-content: flex-start; row-gap: 7px; }
+  .reference-nav a { font-size: 10px; }
+  .site-nav .nav-download { display: none; }
+}
+
+/* Shared control-room treatment for the metrics route. */
+.metrics-page { min-height: calc(100vh - 78px); padding: 80px max(18px, 5vw) 110px; background: var(--paper); color: var(--ink); }
+.resume-link { margin-top: 20px; }
+.metrics-header { display: flex; align-items: end; justify-content: space-between; gap: 40px; max-width: 1240px; margin: 0 auto 48px; }
+.metrics-header h1 { margin: 0; font: 600 clamp(3rem, 7vw, 6.5rem)/.92 'Space Grotesk', sans-serif; letter-spacing: -.07em; }
+.metrics-header > p { max-width: 310px; margin: 0 0 5px; color: var(--muted-ink); font-size: 14px; line-height: 1.5; }
+.metrics-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; max-width: 1240px; margin: 0 auto; }
+.metric-box { min-height: 115px; padding: 18px; background: var(--panel); border-top: 3px solid var(--coral); }
+.metric-box p { margin: 0 0 24px; color: var(--muted-ink); font-size: 11px; text-transform: uppercase; letter-spacing: .1em; }
+.metric-box h3 { margin: 0; color: var(--ink); font: 600 clamp(1.1rem, 2vw, 1.7rem)/1 'Space Grotesk', sans-serif; }
+.metrics-charts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; max-width: 1240px; margin: 12px auto 0; padding: 0; }
+.chart-card { min-width: 0; padding: 24px; background: var(--panel); border-top: 1px solid var(--line); }
+.chart-card h3 { margin: 0 0 14px; color: var(--ink); font: 600 18px 'Space Grotesk', sans-serif; }
+.chart-card .recharts-text { fill: var(--muted-ink); font-size: 10px; }
+
+@media (max-width: 900px) {
+  .metrics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .metrics-header { align-items: start; flex-direction: column; gap: 18px; }
+}
+
+@media (max-width: 560px) {
+  .metrics-page { padding: 55px 18px 80px; }
+  .metrics-grid, .metrics-charts { grid-template-columns: 1fr; }
+  .metrics-header h1 { font-size: 3.5rem; }
+  .chart-card { padding: 14px 8px; }
+}

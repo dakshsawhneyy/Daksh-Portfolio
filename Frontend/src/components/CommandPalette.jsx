@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion as Motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
 
 const CommandPalette = ({ open, onClose, commands = [], onExecute }) => {
@@ -30,8 +30,8 @@ const CommandPalette = ({ open, onClose, commands = [], onExecute }) => {
   return (
     <AnimatePresence>
       {open && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="palette-overlay" onMouseDown={onClose}>
-          <motion.div initial={{ y: -8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }} className="palette-card" onMouseDown={e => e.stopPropagation()}>
+        <Motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="palette-overlay" onMouseDown={onClose}>
+          <Motion.div initial={{ y: -8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }} className="palette-card" onMouseDown={e => e.stopPropagation()}>
             <input ref={inputRef} value={query} onChange={e => setQuery(e.target.value)} placeholder="Jump to... (⌘K)" className="palette-input" />
 
             <div className="palette-list">
@@ -43,8 +43,8 @@ const CommandPalette = ({ open, onClose, commands = [], onExecute }) => {
               ))}
               {filtered.length === 0 && <div className="palette-empty muted">No results</div>}
             </div>
-          </motion.div>
-        </motion.div>
+          </Motion.div>
+        </Motion.div>
       )}
     </AnimatePresence>
   )

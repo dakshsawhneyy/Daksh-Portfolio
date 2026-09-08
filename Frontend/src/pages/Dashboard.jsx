@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import MetricsPanel from '../components/MetricsPanel'
 import { generateMetrics } from '../data/Dashboard'
 
@@ -18,18 +18,21 @@ const Dashboard = () => {
     }, [])
 
     const MetricBox = ({label, value}) => (
-        <div className="bg-white w-full dark:bg-[#0f0f0f] border border-green-500/30 p-5 rounded-xl shadow-xl hover:shadow-green-300/30 transition-all">
-            <p className="text-sm sm:text-md text-gray-500 dark:text-green-200 mb-2">{label}</p>
-            <h3 className="text-2xl sm:text-3xl font-bold tracking-wider">{value}</h3>
+        <div className="metric-box">
+            <p>{label}</p>
+            <h3>{value}</h3>
         </div>
     )
 
   return (
-    <div className='min-h-screen px-4 py-16 md:pt-24 bg-white dark:bg-black text-primary dark:text-success font-mono'>
-        <h1 className="text-3xl md:text-3xl mb-10 terminal-blink text-center dark:text-green-600">$ watch ~/metrics/logs.sh</h1>
+    <main className="metrics-page">
+        <header className="metrics-header">
+            <div><p className="eyebrow">Observability / live workspace</p><h1>SRE control room</h1></div>
+            <p>Streaming synthetic signals across the systems I build, operate, and automate.</p>
+        </header>
 
         {/* Dashboards */}
-        <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6'>
+        <div className="metrics-grid">
             <MetricBox label="CPU Usage" value={`${metrics.cpuUsage}`}></MetricBox>
             <MetricBox label="Memory Usage" value={`${metrics.memoryUsage}`}></MetricBox>
             <MetricBox label="Deployment Speed" value={`${metrics.deploymentSpeed}`}></MetricBox>
@@ -45,7 +48,7 @@ const Dashboard = () => {
         {/* Line chart panel below */}
         <MetricsPanel />
 
-    </div>
+    </main>
   )
 }
 

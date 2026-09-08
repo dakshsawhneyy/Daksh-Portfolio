@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const Landing = ({ onViewWorkProp }) => {
+const Landing = () => {
   const navigate = useNavigate()
   const [booting, setBooting] = useState(false)
   const [progress, setProgress] = useState(0)

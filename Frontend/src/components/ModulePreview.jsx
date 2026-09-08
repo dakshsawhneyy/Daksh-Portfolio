@@ -1,5 +1,5 @@
 import React from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion as Motion, AnimatePresence } from 'framer-motion'
 
 const ModulePreview = ({ moduleKey, modulesMap, onOpen }) => {
   const info = modulesMap[moduleKey]
@@ -7,7 +7,7 @@ const ModulePreview = ({ moduleKey, modulesMap, onOpen }) => {
   return (
     <AnimatePresence>
       {moduleKey && info && (
-        <motion.aside initial={{ opacity: 0, x: 26 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} transition={{ duration: 0.36 }} className="module-preview">
+        <Motion.aside initial={{ opacity: 0, x: 26 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} transition={{ duration: 0.36 }} className="module-preview">
           <div className="preview-header">{info.title}</div>
           <div className="preview-sub muted" style={{marginTop:6}}>{info.subtitle}</div>
 
@@ -26,7 +26,7 @@ const ModulePreview = ({ moduleKey, modulesMap, onOpen }) => {
               <button className="open-btn" onClick={() => onOpen && onOpen(info.key)}>OPEN →</button>
             </div>
           </div>
-        </motion.aside>
+        </Motion.aside>
       )}
     </AnimatePresence>
   )

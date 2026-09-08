@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { motion } from 'framer-motion'
+import { motion as Motion } from 'framer-motion'
 
 const SystemShell = ({ onEnterSystem, onViewWork }) => {
   const panelRef = useRef()
@@ -48,7 +48,7 @@ const SystemShell = ({ onEnterSystem, onViewWork }) => {
       <div className="ambient-info top-left">SYSTEM // PERSONAL_INTERFACE</div>
       <div className="ambient-info top-right">BUILD 26.08.13</div>
 
-      <motion.div ref={panelRef} initial={{ scale: 0.98, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.6 }} className={`sys-panel glass-card max-w-3xl w-full p-8 rounded-2xl ${booting ? 'booting' : ''}`}>
+      <Motion.div ref={panelRef} initial={{ scale: 0.98, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.6 }} className={`sys-panel glass-card max-w-3xl w-full p-8 rounded-2xl ${booting ? 'booting' : ''}`}>
         <div className="sys-inner">
           <div className="sys-line small muted">&nbsp;</div>
 
@@ -74,7 +74,7 @@ const SystemShell = ({ onEnterSystem, onViewWork }) => {
             BUILD 26.08.13 &nbsp;&nbsp; LOCATION: EARTH &nbsp;&nbsp; STATUS: CREATING
           </div>
         </div>
-      </motion.div>
+      </Motion.div>
 
       <div className="bottom-left muted small">LOCATION: INDIA</div>
 
