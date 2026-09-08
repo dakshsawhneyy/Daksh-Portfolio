@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 
 const Navbar = ({ darkMode, toggleDarkMode }) => {
   const location = useLocation()
-  const links = [['About', '/about'], ['Projects', '/projects'], ['Writing', '/blog'], ['Contact', '/contact']]
+  const links = [['About', '/about'], ['Projects', '/projects'], ['Notes', '/blog'], ['Contact', '/contact']]
   const isActive = (path) => location.pathname === path || location.pathname.startsWith(path + '/')
 
   return <header className="site-nav">
