@@ -18,26 +18,27 @@ const projectLines = projects.map(p => ({
 const COMMANDS = {
   'show projects':   () => projectLines,
   'projects':        () => projectLines,
-  'show about':      () => [{ type:'output', text:'Daksh Sawhney — Cloud & SRE Engineer. Builds multicloud infrastructure, self-healing platforms, and teaches 280+ hours of DevOps & Cloud content.' }],
-  'about':           () => [{ type:'output', text:'Daksh Sawhney — Cloud & SRE Engineer. Builds multicloud infrastructure, self-healing platforms, and teaches 280+ hours of DevOps & Cloud content.' }],
-  'show skills':     () => [{ type:'output', text:'AWS · Azure · Kubernetes · Terraform · Prometheus · Grafana · GitHub Actions · Python · Chaos Engineering · AIOps' }],
-  'skills':          () => [{ type:'output', text:'AWS · Azure · Kubernetes · Terraform · Prometheus · Grafana · GitHub Actions · Python · Chaos Engineering · AIOps' }],
-  'show contact':    () => [{ type:'output', text:'Email → dakshsawhneyy@gmail.com  |  GitHub → github.com/dakshsawhneyy  |  LinkedIn → linkedin.com/in/dakshsawhneyy' }],
-  'contact':         () => [{ type:'output', text:'Email → dakshsawhneyy@gmail.com  |  GitHub → github.com/dakshsawhneyy  |  LinkedIn → linkedin.com/in/dakshsawhneyy' }],
-  'show resume':     () => [{ type:'output', text:'Resume: /resume/Daksh-Resume.pdf — open the Resume button in the nav rail to download.' }],
-  'whoami':          () => [{ type:'output', text:'daksh · cloud-engineer · sre · educator · builder' }],
-  'uptime':          () => [{ type:'output', text:'portfolio: operational · systems: ready · coffee: depleted' }],
-  'ls':              () => [{ type:'output', text:'about.md   projects/   blog/   contact.md   resume.pdf' }],
+  'show about':      () => [{ type:'output', text:'Daksh Sawhney — Cloud & DevOps Engineer + Multi-Cloud Instructor. AWS Intern at IPage UMS. Teaching 180h+ DevOps and 100h+ multi-cloud curriculum at SelfCode Academy.' }],
+  'about':           () => [{ type:'output', text:'Daksh Sawhney — Cloud & DevOps Engineer + Multi-Cloud Instructor. AWS Intern at IPage UMS. Teaching 180h+ DevOps and 100h+ multi-cloud curriculum at SelfCode Academy.' }],
+  'show skills':     () => [{ type:'output', text:'AWS · Azure · GCP · Kubernetes · Terraform · Prometheus · Grafana · GitHub Actions · Python · Bash · IAM/RBAC · FinOps · Chaos Engineering' }],
+  'skills':          () => [{ type:'output', text:'AWS · Azure · GCP · Kubernetes · Terraform · Prometheus · Grafana · GitHub Actions · Python · Bash · IAM/RBAC · FinOps · Chaos Engineering' }],
+  'show contact':    () => [{ type:'output', text:'dakshsawhneyy@gmail.com  ·  github.com/dakshsawhneyy  ·  linkedin.com/in/dakshsawhneyy' }],
+  'contact':         () => [{ type:'output', text:'dakshsawhneyy@gmail.com  ·  github.com/dakshsawhneyy  ·  linkedin.com/in/dakshsawhneyy' }],
+  'show resume':     () => [{ type:'output', text:'Opening resume… /resume/Daksh-Resume.pdf — click the Resume button in the nav sidebar.' }],
+  'whoami':          () => [{ type:'output', text:'daksh · cloud-devops-engineer · multi-cloud-instructor · sre · builder' }],
+  'uptime':          () => [{ type:'output', text:'portfolio: operational · systems: running · coffee: low' }],
+  'ls':              () => [{ type:'output', text:'about/   projects/   blog/   contact/   resume.pdf' }],
   'help':            () => QUICK_COMMANDS.map(c => ({ type:'command-list', text:`${c.cmd.padEnd(18)}— ${c.hint}` })),
   'show commands':   () => QUICK_COMMANDS.map(c => ({ type:'command-list', text:`${c.cmd.padEnd(18)}— ${c.hint}` })),
 }
 
 const WELCOME = [
-  { type: 'system',  text: '╭─ PORTFOLIO TERMINAL ─────────────────────────╮' },
-  { type: 'system',  text: '│  Interactive explorer for Daksh\'s portfolio   │' },
-  { type: 'system',  text: '╰──────────────────────────────────────────────╯' },
+  { type: 'system',  text: 'daksh@portfolio ~ %' },
   { type: 'muted',   text: '' },
-  { type: 'muted',   text: 'Quick commands — click or type:' },
+  { type: 'output',  text: 'Daksh Sawhney — Cloud & DevOps Engineer' },
+  { type: 'output',  text: 'AWS · Azure · Kubernetes · Terraform · SRE' },
+  { type: 'muted',   text: '' },
+  { type: 'muted',   text: 'Try: show projects  ·  show about  ·  show contact' },
 ]
 
 const SreTerminal = ({ open, onClose }) => {

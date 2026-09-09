@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import './App.css'
 import './portfolio-polish.css'
 import './pages-unified.css'
+import './responsive.css'
 import Home from "./pages/Home"
 import About from "./pages/About"
 import Navbar from "./components/Navbar"

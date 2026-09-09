@@ -1,0 +1,623 @@
+/* ══════════════════════════════════════════════════════════════════
+   RESPONSIVE — single authoritative file, loaded last.
+   Fixes: desktop nav text labels, mobile/tablet breakages,
+   overflow, font-size overflows, card grid collapses.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────
+   NAV — desktop vertical rail (≥681px)
+   Restore text labels (previously broken by display:none on b)
+   ───────────────────────────────────────────────────────────────── */
+@media (min-width: 681px) {
+  /* Vertical rail — wider so text fits */
+  .portfolio-app {
+    padding-left: 88px !important;
+  }
+  .portfolio-app .site-nav {
+    position: fixed !important;
+    z-index: 100 !important;
+    left: 0 !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    right: auto !important;
+    width: 72px !important;
+    height: 100vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 14px 0 !important;
+    border: none !important;
+    border-right: 1px solid var(--line) !important;
+    background: rgba(245,243,238,.97) !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 2px 0 16px rgba(17,18,16,.05) !important;
+    margin: 0 !important;
+  }
+
+  /* Logo */
+  .portfolio-app .site-nav .brand-mark {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0 !important;
+    padding: 4px 0 !important;
+  }
+  .portfolio-app .site-nav .brand-mark svg {
+    writing-mode: horizontal-tb !important;
+    transform: none !important;
+  }
+  .portfolio-app .site-nav .brand-mark span { display: none !important; }
+
+  /* Nav links — rotated text label */
+  .portfolio-app .site-nav .nav-links {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    gap: 0 !important;
+    flex: 1 !important;
+    justify-content: center !important;
+  }
+  .portfolio-app .site-nav .nav-links a {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    width: 100% !important;
+    height: 64px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-left: 3px solid transparent !important;
+    writing-mode: horizontal-tb !important;
+    transform: none !important;
+    color: var(--muted-ink) !important;
+    text-decoration: none !important;
+    transition: background .15s, color .15s, border-color .15s !important;
+  }
+  .portfolio-app .site-nav .nav-links a svg {
+    writing-mode: horizontal-tb !important;
+    transform: none !important;
+    flex-shrink: 0 !important;
+  }
+  .portfolio-app .site-nav .nav-links a b {
+    display: block !important;
+    font: 700 7px ui-monospace, SFMono-Regular, Menlo, monospace !important;
+    letter-spacing: .1em !important;
+    color: inherit !important;
+    writing-mode: horizontal-tb !important;
+    transform: none !important;
+    line-height: 1 !important;
+  }
+  .portfolio-app .site-nav .nav-links a:hover {
+    background: rgba(135,132,210,.08) !important;
+    color: var(--ink) !important;
+    border-left-color: transparent !important;
+  }
+  .portfolio-app .site-nav .nav-links a.active {
+    background: rgba(232,104,74,.07) !important;
+    color: var(--coral) !important;
+    border-left-color: var(--coral) !important;
+  }
+  /* kill all old pseudo-element indicators */
+  .portfolio-app .site-nav .nav-links a::before,
+  .portfolio-app .site-nav .nav-links a::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  /* Action buttons */
+  .portfolio-app .site-nav .nav-actions {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding-bottom: 4px !important;
+  }
+  .portfolio-app .site-nav .nav-terminal,
+  .portfolio-app .site-nav .nav-resume,
+  .portfolio-app .site-nav .nav-github {
+    display: grid !important;
+    place-items: center !important;
+    width: 36px !important;
+    height: 36px !important;
+    padding: 0 !important;
+    font-size: inherit !important;
+    overflow: visible !important;
+    border: 1px solid var(--line) !important;
+    border-radius: 7px !important;
+    background: transparent !important;
+    color: var(--muted-ink) !important;
+    cursor: pointer !important;
+    text-decoration: none !important;
+    transition: border-color .15s, color .15s, background .15s !important;
+    writing-mode: horizontal-tb !important;
+  }
+  .portfolio-app .site-nav .nav-terminal svg,
+  .portfolio-app .site-nav .nav-resume svg,
+  .portfolio-app .site-nav .nav-github svg {
+    display: block !important;
+    width: 15px !important;
+    height: 15px !important;
+    writing-mode: horizontal-tb !important;
+    transform: none !important;
+    flex-shrink: 0 !important;
+  }
+  .portfolio-app .site-nav .nav-terminal:hover,
+  .portfolio-app .site-nav .nav-resume:hover,
+  .portfolio-app .site-nav .nav-github:hover {
+    border-color: var(--coral) !important;
+    color: var(--coral) !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   NAV — mobile bottom bar (≤680px)
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .portfolio-app {
+    padding-left: 0 !important;
+    padding-bottom: 72px !important;
+  }
+  .portfolio-app .site-nav {
+    position: fixed !important;
+    z-index: 100 !important;
+    left: 8px !important;
+    right: 8px !important;
+    bottom: 8px !important;
+    top: auto !important;
+    height: 60px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: stretch !important;
+    padding: 0 8px !important;
+    margin: 0 !important;
+    border: 1px solid var(--line) !important;
+    border-radius: 14px !important;
+    background: rgba(245,243,238,.97) !important;
+    box-shadow: 0 8px 32px rgba(17,18,16,.12) !important;
+    backdrop-filter: blur(12px) !important;
+    width: auto !important;
+  }
+
+  /* Logo */
+  .portfolio-app .site-nav .brand-mark {
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 6px 0 2px !important;
+    flex-shrink: 0 !important;
+  }
+  .portfolio-app .site-nav .brand-mark svg {
+    width: 26px !important; height: 26px !important;
+    writing-mode: horizontal-tb !important;
+    transform: none !important;
+  }
+  .portfolio-app .site-nav .brand-mark span { display: none !important; }
+
+  /* Nav links — icons + tiny labels */
+  .portfolio-app .site-nav .nav-links {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: stretch !important;
+    flex: 1 !important;
+    height: 100% !important;
+    margin: 0 !important;
+    gap: 0 !important;
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+  }
+  .portfolio-app .site-nav .nav-links::-webkit-scrollbar { display: none !important; }
+  .portfolio-app .site-nav .nav-links a {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 3px !important;
+    flex: 1 0 52px !important;
+    height: 100% !important;
+    padding: 0 2px !important;
+    border: 0 !important;
+    border-top: 2px solid transparent !important;
+    border-left: none !important;
+    writing-mode: horizontal-tb !important;
+    transform: none !important;
+    color: var(--muted-ink) !important;
+    font-size: 0 !important;
+    text-decoration: none !important;
+    transition: color .15s, border-color .15s !important;
+  }
+  .portfolio-app .site-nav .nav-links a svg {
+    width: 17px !important; height: 17px !important;
+    writing-mode: horizontal-tb !important;
+    transform: none !important;
+  }
+  .portfolio-app .site-nav .nav-links a b {
+    display: block !important;
+    font: 700 7px ui-monospace, monospace !important;
+    letter-spacing: .06em !important;
+    color: inherit !important;
+    line-height: 1 !important;
+  }
+  .portfolio-app .site-nav .nav-links a:hover { color: var(--ink) !important; }
+  .portfolio-app .site-nav .nav-links a.active {
+    color: var(--coral) !important;
+    border-top-color: var(--coral) !important;
+  }
+  .portfolio-app .site-nav .nav-links a::before,
+  .portfolio-app .site-nav .nav-links a::after {
+    display: none !important; content: none !important;
+  }
+
+  /* Action buttons on mobile — only terminal visible */
+  .portfolio-app .site-nav .nav-actions {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 4px !important;
+    flex-shrink: 0 !important;
+  }
+  .portfolio-app .site-nav .nav-terminal {
+    display: grid !important;
+    place-items: center !important;
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 7px !important;
+    border: 1px solid var(--line) !important;
+    background: transparent !important;
+    color: var(--muted-ink) !important;
+    font-size: inherit !important;
+    overflow: visible !important;
+    writing-mode: horizontal-tb !important;
+    cursor: pointer !important;
+  }
+  .portfolio-app .site-nav .nav-terminal svg {
+    display: block !important;
+    width: 14px !important; height: 14px !important;
+    writing-mode: horizontal-tb !important;
+    transform: none !important;
+  }
+  /* Hide resume + github on mobile — not enough space */
+  .portfolio-app .site-nav .nav-resume,
+  .portfolio-app .site-nav .nav-github {
+    display: none !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   GLOBAL — prevent horizontal overflow everywhere
+   ───────────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+html, body {
+  overflow-x: hidden !important;
+  max-width: 100vw;
+}
+img, video, iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   HOME PAGE — tablet + mobile
+   ───────────────────────────────────────────────────────────────── */
+/* Tablet (681–860px) */
+@media (max-width: 860px) and (min-width: 681px) {
+  .hv2-hero-inner {
+    grid-template-columns: 1fr !important;
+  }
+  .hv2-dashboard {
+    width: 100% !important;
+    max-width: 520px !important;
+    margin: 0 auto !important;
+  }
+  .hv2-metrics {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+  .hv2-section {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
+  .hv2-loop-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .hv2-loop-grid .hv2-loop-card:last-child {
+    grid-column: span 2 !important;
+  }
+}
+
+/* Mobile (≤680px) */
+@media (max-width: 680px) {
+  .hv2-hero {
+    min-height: unset !important;
+    padding: 48px 16px 36px !important;
+  }
+  .hv2-hero-inner {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
+  .hv2-h1 {
+    font-size: clamp(2.4rem, 11vw, 3.6rem) !important;
+    margin-bottom: 18px !important;
+  }
+  .hv2-sub { font-size: 14px !important; margin-bottom: 22px !important; }
+  .hv2-tech-strip span { font-size: 9px !important; padding: 4px 8px !important; }
+
+  .hv2-metrics {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .hv2-metric-card:last-child {
+    grid-column: span 2 !important;
+  }
+  .hv2-mc-value { font-size: 1.6rem !important; }
+  .hv2-mc-label { font-size: 11px !important; }
+
+  .hv2-section {
+    grid-template-columns: 1fr !important;
+    padding: 44px 16px !important;
+    gap: 28px !important;
+  }
+  .hv2-section-lead h2 {
+    font-size: clamp(1.7rem, 7vw, 2.4rem) !important;
+  }
+
+  /* Incident simulator on mobile */
+  .isim-root { padding: 14px !important; }
+  .isim-tabs { gap: 4px !important; }
+  .isim-tab { font-size: 9px !important; padding: 3px 7px !important; }
+  .isim-services { display: none !important; } /* hide on tiny screens */
+
+  /* Feedback loop */
+  .hv2-loop-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .hv2-loop-grid .hv2-loop-card:last-child { grid-column: auto !important; }
+  .hv2-loop-card { padding: 20px 16px !important; }
+
+  /* Stack layers */
+  .hv2-stack-row { flex-direction: column !important; gap: 0 !important; }
+  .hv2-stack-content {
+    flex-direction: column !important;
+    gap: 4px !important;
+    padding: 12px 12px !important;
+  }
+  .hv2-stack-index { display: none !important; }
+  .hv2-stack-label { font-size: 10px !important; }
+  .hv2-stack-detail { font-size: 12px !important; }
+
+  /* CTA */
+  .hv2-cta { padding: 48px 16px !important; }
+  .hv2-cta h2 { font-size: clamp(2rem, 9vw, 3rem) !important; }
+  .hv2-cta-actions { flex-direction: column !important; align-items: stretch !important; }
+  .hv2-cta-actions a { justify-content: center !important; }
+
+  /* Dashboard */
+  .hv2-dashboard { width: 100% !important; }
+  .hv2-dash-kpis { grid-template-columns: repeat(2, 1fr) !important; }
+  .hv2-kpi { padding: 10px 8px !important; }
+  .hv2-kpi-val { font-size: 15px !important; }
+  .hv2-kpi-label { font-size: 7px !important; }
+  .hv2-dash-svc-lat { display: none !important; }
+  .hv2-dash-chart { padding: 10px 12px 8px !important; }
+
+  /* On-call ticker */
+  .hv2-oncall-inner span { padding: 0 14px !important; font-size: 9px !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   ABOUT PAGE — tablet + mobile
+   ───────────────────────────────────────────────────────────────── */
+/* Tablet */
+@media (max-width: 1024px) and (min-width: 681px) {
+  .ap3-hero-grid {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+  .ap3-hero-photo-col { justify-content: flex-start !important; }
+  .ap3-photo-frame { width: 220px !important; height: 270px !important; }
+  .ap3-photo-bg { width: 200px !important; height: 240px !important; }
+  .ap3-stats-bar { grid-template-columns: repeat(2, 1fr) !important; }
+  .ap3-stats-bar .ap3-stat-cell:nth-child(n+3) {
+    border-top: 1px solid var(--pu-border) !important;
+  }
+  .ap3-section-inner { grid-template-columns: 1fr !important; gap: 24px !important; }
+  .ap3-section-label { position: static !important; }
+  .ap3-caps { grid-template-columns: 1fr 1fr !important; }
+  .ap3-skill-tree { grid-template-columns: 1fr 1fr !important; }
+}
+
+/* Mobile */
+@media (max-width: 680px) {
+  .ap3-hero { padding: 40px 16px 0 !important; }
+  .ap3-hero-grid {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
+  .ap3-name {
+    font-size: clamp(2.6rem, 14vw, 4.5rem) !important;
+    margin-bottom: 10px !important;
+  }
+  .ap3-bio { font-size: 14px !important; }
+  .ap3-actions { flex-wrap: wrap !important; gap: 8px !important; }
+  .ap3-btn { padding: 10px 16px !important; font-size: 12px !important; }
+
+  .ap3-hero-photo-col { justify-content: center !important; }
+  .ap3-photo-frame { width: 180px !important; height: 220px !important; }
+  .ap3-photo-bg { width: 165px !important; height: 195px !important; }
+  .ap3-badge-tr { top: -8px !important; left: -4px !important; right: auto !important; }
+  .ap3-badge-bl { bottom: 30px !important; right: -4px !important; left: auto !important; }
+  .ap3-float-card { padding: 7px 10px !important; gap: 7px !important; }
+  .ap3-fc-val { font-size: 11px !important; }
+  .ap3-fc-sub { font-size: 9px !important; }
+
+  .ap3-stats-bar { grid-template-columns: repeat(2, 1fr) !important; }
+  .ap3-stat-val { font-size: clamp(1.4rem, 7vw, 2rem) !important; }
+
+  .ap3-section { padding: 44px 16px !important; }
+  .ap3-section-inner { grid-template-columns: 1fr !important; gap: 20px !important; }
+  .ap3-section-label { position: static !important; }
+  .ap3-section-title { font-size: 1.2rem !important; }
+
+  .ap3-caps { grid-template-columns: 1fr !important; }
+  .ap3-cap-card { padding: 20px 16px !important; }
+
+  .ap3-skill-tree { grid-template-columns: 1fr !important; }
+  .ap3-st-group { padding: 14px 12px !important; }
+  .ap3-st-name { font-size: 11px !important; }
+
+  .ap3-timeline { }
+  .ap3-tl-card h3 { font-size: 1rem !important; }
+  .ap3-tl-card p { font-size: 13px !important; }
+
+  .ap3-cert-grid { grid-template-columns: 1fr !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   PROJECTS PAGE — tablet + mobile
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) and (min-width: 481px) {
+  .pv2-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    padding: 20px 16px 60px !important;
+    gap: 14px !important;
+  }
+  .pv2-card-featured {
+    grid-column: span 2 !important;
+    grid-template-columns: 1fr !important;
+  }
+}
+@media (max-width: 480px) {
+  .pv2-page-header { padding: 36px 16px 20px !important; }
+  .pv2-h1 { font-size: clamp(2.2rem, 12vw, 3.5rem) !important; }
+  .pv2-toolbar { padding: 0 16px !important; height: 48px !important; }
+  .pv2-grid {
+    grid-template-columns: 1fr !important;
+    padding: 16px 16px 64px !important;
+    gap: 12px !important;
+  }
+  .pv2-card-featured { grid-column: auto !important; }
+  .pv2-card-img { height: 180px !important; }
+  .pv2-card-body h2 { font-size: 1rem !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   BLOG PAGE — mobile
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .bp3-hero { padding: 44px 16px 28px !important; }
+  .bp3-h1 { font-size: clamp(2rem, 10vw, 3.2rem) !important; }
+  .bp3-hero-inner { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; }
+  .bp3-featured { grid-template-columns: 1fr !important; }
+  .bp3-feat-visual { min-height: 160px !important; }
+  .bp3-feat-body { padding: 18px 16px !important; }
+  .bp3-feat-title { font-size: 1.1rem !important; }
+  .bp3-body { padding: 28px 16px 72px !important; }
+  .bp3-article { grid-template-columns: 38px 1fr 36px !important; gap: 10px !important; }
+  .bp3-art-title { font-size: 1rem !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   CONTACT PAGE — mobile
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .cp3-hero { padding: 44px 16px 28px !important; }
+  .cp3-h1 { font-size: clamp(2rem, 10vw, 3.5rem) !important; }
+  .cp3-hero-inner { grid-template-columns: 1fr !important; }
+  .cp3-body {
+    grid-template-columns: 1fr !important;
+    padding: 32px 16px 72px !important;
+    gap: 28px !important;
+  }
+  .cp3-form-card { padding: 20px 16px !important; border-radius: 10px !important; }
+  .cp3-email-link { font-size: 0.95rem !important; word-break: break-all !important; }
+  .cp3-socials { flex-direction: column !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   FOOTER — mobile
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .site-footer .sf-rule { padding: 0 16px !important; }
+  .site-footer .sf-inner {
+    grid-template-columns: 1fr !important;
+    padding: 36px 16px 28px !important;
+    gap: 28px !important;
+  }
+  .site-footer .sf-statement { grid-column: auto !important; }
+  .site-footer .sf-heading { font-size: clamp(1.4rem, 7vw, 2rem) !important; }
+  .site-footer .sf-actions { flex-direction: column !important; }
+  .site-footer .sf-btn-primary,
+  .site-footer .sf-btn-outline { justify-content: center !important; }
+  .site-footer .sf-bottom { padding: 12px 16px !important; flex-direction: column !important; gap: 4px !important; }
+  .site-footer .sf-stack { display: none !important; }
+}
+@media (max-width: 860px) and (min-width: 681px) {
+  .site-footer .sf-inner { grid-template-columns: 1fr 1fr !important; gap: 28px !important; }
+  .site-footer .sf-statement { grid-column: span 2 !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   SRE TERMINAL — mobile
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .sre-terminal-overlay { padding: 8px !important; align-items: flex-end !important; }
+  .sre-terminal {
+    width: 100% !important;
+    border-radius: 14px 14px 0 0 !important;
+    max-height: 75vh !important;
+  }
+  .sre-terminal-body { min-height: 200px !important; max-height: 42vh !important; padding: 12px 14px 8px !important; }
+  .sre-quick-chips { padding: 8px 12px 0 !important; gap: 4px !important; }
+  .sre-chip { font-size: 9px !important; padding: 3px 8px !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   TEXT SIZE SAFETY — prevent any text from overflowing
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  /* Kill any clamp that could still be too large */
+  h1 { font-size: clamp(1.8rem, 12vw, 3.5rem) !important; }
+  h2 { font-size: clamp(1.4rem, 8vw, 2.2rem) !important; }
+
+  /* These specific headline classes need explicit caps */
+  .ap3-name    { font-size: clamp(2.2rem, 13vw, 3.8rem) !important; }
+  .pv2-h1,
+  .bp3-h1,
+  .cp3-h1      { font-size: clamp(1.8rem, 11vw, 3rem) !important; }
+
+  /* Dashboard KPIs don't overflow */
+  .hv2-kpi-val { font-size: 14px !important; }
+  .hv2-dash-kpis { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* Stat cells in about */
+  .ap3-stat-val { font-size: 1.3rem !important; }
+  .ap3-stat-lbl { font-size: 10px !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   MISC MOBILE FIXES
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  /* About photo section background — don't let it overflow frame */
+  .ap3-photo-bg::before { background-size: 18px 18px !important; }
+
+  /* Skill tree on mobile — single column */
+  .ap3-skill-tree { grid-template-columns: 1fr !important; }
+
+  /* Teaching section cards — full width */
+  .ap3-section [style*="padding: '20px 24px'"],
+  .ap3-section > div > div { max-width: 100% !important; }
+
+  /* Project cards bottom padding for nav overlap */
+  .pv2-root { padding-bottom: 72px !important; }
+  .about-page-v3 { padding-bottom: 72px !important; }
+  .blog-page-v3 { padding-bottom: 72px !important; }
+  .contact-page-v3 { padding-bottom: 72px !important; }
+  .home-v2 { padding-bottom: 72px !important; }
+}

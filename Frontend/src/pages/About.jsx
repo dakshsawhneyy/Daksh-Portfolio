@@ -1,28 +1,26 @@
-import { ArrowUpRight, MapPin, Github, Linkedin, FileText, Zap, Shield, GitBranch, Layers, BookOpen, Clock } from 'lucide-react'
+import { MapPin, Github, Linkedin, FileText, Zap, Shield, GitBranch, Layers, BookOpen, Briefcase, GraduationCap, ExternalLink } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { timeline } from '../data/about'
+import { timeline, skillGroups } from '../data/about'
 import '../pages-unified.css'
+import '../about-v2.css'
 
 const fadeUp  = { hidden: { opacity: 0, y: 28 }, visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.22,1,0.36,1] } } }
 const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.09 } } }
 
-const skillGroups = [
-  { label: 'Cloud',          color: '#2d8bbf', items: ['AWS', 'Azure', 'GCP'] },
-  { label: 'Orchestration',  color: '#27ae78', items: ['Kubernetes', 'Docker', 'Helm', 'ArgoCD'] },
-  { label: 'Infrastructure', color: '#d4940a', items: ['Terraform', 'Ansible', 'NGINX'] },
-  { label: 'Observability',  color: '#e8674a', items: ['Prometheus', 'Grafana', 'SonarQube', 'Trivy'] },
-  { label: 'CI/CD & Automation', color: '#7c79ca', items: ['GitHub Actions', 'Jenkins', 'GitLab', 'Python', 'Bash'] },
-]
-
-const tlClass = (item) => {
-  if (item.type === 'teaching')  return 'is-teaching'
-  if (item.type === 'education') return 'is-education'
-  return 'is-current'
+const tlIcon = (type) => {
+  if (type === 'teaching')  return <BookOpen size={16} />
+  if (type === 'education') return <GraduationCap size={16} />
+  return <Briefcase size={16} />
 }
-const tlBadge = (item) => {
-  if (item.type === 'teaching')  return 'EDUCATOR'
-  if (item.type === 'education') return 'EDUCATION'
-  return 'ENGINEERING'
+const tlColor = (type) => {
+  if (type === 'teaching')  return '#27ae78'
+  if (type === 'education') return '#7c79ca'
+  return '#2d8bbf'
+}
+const tlBadge = (type) => {
+  if (type === 'teaching')  return 'INSTRUCTOR'
+  if (type === 'education') return 'EDUCATION'
+  return 'INTERNSHIP'
 }
 
 const About = () => (
@@ -32,11 +30,11 @@ const About = () => (
     <section className="ap3-hero">
       <div className="ap3-hero-grid">
 
-        {/* left — copy */}
+        {/* left copy */}
         <motion.div className="ap3-hero-copy" initial="hidden" animate="visible" variants={stagger}>
           <motion.div className="ap3-available" variants={fadeUp}>
             <span className="ap3-available-dot" />
-            Open to Cloud / SRE roles
+            Open to Cloud / SRE roles · Aug 2027
           </motion.div>
 
           <motion.h1 className="ap3-name" variants={fadeUp}>
@@ -44,19 +42,19 @@ const About = () => (
           </motion.h1>
 
           <motion.p className="ap3-role" variants={fadeUp}>
-            Cloud &amp; SRE Engineer · Educator · Builder
+            Cloud &amp; DevOps Engineer · Multi-Cloud Instructor · Builder
           </motion.p>
 
           <motion.p className="ap3-bio" variants={fadeUp}>
             I build <strong>multicloud systems</strong> that run in production —
-            resilient infrastructure, self-healing platforms, and observability stacks.
-            Alongside that, I <strong>teach DevOps and Cloud engineering</strong>,
-            turning complex systems into something learnable and actionable.
+            self-healing platforms, observability pipelines, and reliable infrastructure.
+            I also <strong>teach multi-cloud engineering</strong> at SelfCode Academy,
+            covering AWS, Azure, and GCP from networking through to production deployments.
           </motion.p>
 
           <motion.div className="ap3-actions" variants={fadeUp}>
             <a className="ap3-btn ap3-btn-primary" href="/resume/Daksh-Resume.pdf" target="_blank" rel="noreferrer">
-              <FileText size={15} /> Resume
+              <FileText size={15} /> View Resume
             </a>
             <a className="ap3-btn ap3-btn-outline" href="https://github.com/dakshsawhneyy" target="_blank" rel="noreferrer">
               <Github size={15} /> GitHub
@@ -77,35 +75,80 @@ const About = () => (
           className="ap3-hero-photo-col"
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.65, delay: 0.2, ease: [0.22,1,0.36,1] }}
+          transition={{ duration: 0.7, delay: 0.25, ease: [0.22,1,0.36,1] }}
         >
-          <div className="ap3-photo-wrap">
-            <div className="ap3-stat-pill ap3-pill-1">
-              <strong>180h+</strong>
-              <span>DevOps taught</span>
-            </div>
-            <div className="ap3-stat-pill ap3-pill-2">
-              <strong>25+</strong>
-              <span>Systems shipped</span>
-            </div>
+          <div className="ap3-photo-frame">
+            <div className="ap3-corner ap3-corner-tl" />
+            <div className="ap3-corner ap3-corner-tr" />
+            <div className="ap3-corner ap3-corner-bl" />
+            <div className="ap3-corner ap3-corner-br" />
+            <div className="ap3-photo-bg" />
             <img
               className="ap3-photo"
               src="/profile_photo/photo-removebg-preview.png"
-              alt="Daksh Sawhney — Cloud & SRE Engineer"
+              alt="Daksh Sawhney"
               loading="eager"
             />
+
+            {/* Multi-Cloud Instructor — top, shifted left to clear hair */}
+            <motion.div
+              className="ap3-float-card ap3-badge-tr"
+              initial={{ opacity: 0, y: -12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.7, duration: 0.5 }}
+            >
+              {/* SelfCode Academy logo mark */}
+              <div className="ap3-company-logo ap3-logo-selfcode">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-label="SelfCode Academy">
+                  <rect width="28" height="28" rx="7" fill="#0f172a"/>
+                  {/* brackets */}
+                  <path d="M8 9L5 14l3 5" stroke="#38bdf8" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M20 9l3 5-3 5" stroke="#38bdf8" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  {/* slash */}
+                  <path d="M16 8l-4 12" stroke="#e8674a" strokeWidth="1.8" strokeLinecap="round"/>
+                </svg>
+              </div>
+              <div>
+                <div className="ap3-fc-val">Multi-Cloud Instructor</div>
+                <div className="ap3-fc-sub">SelfCode Academy · 2026</div>
+              </div>
+            </motion.div>
+
+            {/* AWS Intern — bottom-right */}
+            <motion.div
+              className="ap3-float-card ap3-badge-bl"
+              initial={{ opacity: 0, x: 16 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.85, duration: 0.5 }}
+            >
+              {/* AWS logo */}
+              <div className="ap3-company-logo ap3-logo-aws">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-label="Amazon Web Services">
+                  <rect width="28" height="28" rx="7" fill="#232f3e"/>
+                  {/* AWS smile arc */}
+                  <path d="M7.5 17.5c1.8 1.6 4.2 2.5 6.5 2.5s4.7-.9 6.5-2.5" stroke="#ff9900" strokeWidth="1.8" strokeLinecap="round"/>
+                  {/* Arrow tip on smile */}
+                  <path d="M19.5 16l1.5 1.5-1.5 1" stroke="#ff9900" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                  {/* "aws" text-like mark */}
+                  <text x="5.5" y="15" fontFamily="Arial, sans-serif" fontSize="7.5" fontWeight="800" fill="white" letterSpacing="0.5">aws</text>
+                </svg>
+              </div>
+              <div>
+                <div className="ap3-fc-val">AWS Cloud Intern</div>
+                <div className="ap3-fc-sub">IPage UMS · 2025</div>
+              </div>
+            </motion.div>
           </div>
         </motion.div>
-
       </div>
 
-      {/* stats bar — real achievements only */}
+      {/* stats bar */}
       <motion.div className="ap3-stats-bar" initial="hidden" animate="visible" variants={stagger}>
         {[
-          { val: '180h+', label: 'DevOps content taught' },
-          { val: '100h+', label: 'Multicloud sessions run' },
-          { val: '25+',   label: 'Production systems built' },
-          { val: '78%',   label: 'MTTR reduction achieved' },
+          { val: '180h+', label: 'DevOps content taught'      },
+          { val: '100h+', label: 'Multi-cloud content taught'  },
+          { val: '40%',   label: 'P95 latency cut (AWS intern)' },
+          { val: '8.2',   label: 'CGPA — B.Tech CSE'          },
         ].map(({ val, label }) => (
           <motion.div key={label} className="ap3-stat-cell" variants={fadeUp}>
             <span className="ap3-stat-val">{val}</span>
@@ -115,7 +158,7 @@ const About = () => (
       </motion.div>
     </section>
 
-    {/* ═══════════ JOURNEY — only what matters ═══════════ */}
+    {/* ═══════════ HOW I GOT HERE ═══════════ */}
     <motion.section
       className="ap3-section"
       style={{ background: 'var(--pu-paper)' }}
@@ -128,38 +171,45 @@ const About = () => (
         <motion.div className="ap3-section-label" variants={fadeUp}>
           <span className="ap3-section-num">01</span>
           <h2 className="ap3-section-title">How I got here</h2>
-          <p className="ap3-section-sub">What I've been building and teaching.</p>
+          <p className="ap3-section-sub">Experience and education, chronologically.</p>
         </motion.div>
 
         <div className="ap3-timeline">
-          {timeline.map((item, i) => (
-            <motion.div
-              key={`${item.year}-${i}`}
-              className={`ap3-tl-item ${tlClass(item)}`}
-              variants={fadeUp}
-            >
-              <div className="ap3-tl-gutter">
-                <div className="ap3-tl-dot" />
-                {i < timeline.length - 1 && <div className="ap3-tl-connector" />}
-              </div>
-              <div className="ap3-tl-card">
-                <div className="ap3-tl-top">
-                  <span className="ap3-tl-year">{item.year}</span>
-                  <span className="ap3-tl-tag">{tlBadge(item)}</span>
+          {timeline.map((item, i) => {
+            const color = tlColor(item.type)
+            return (
+              <motion.div key={i} className="ap3-tl-item" variants={fadeUp}>
+                <div className="ap3-tl-gutter">
+                  <div className="ap3-tl-icon-wrap" style={{ background: color + '18', border: `2px solid ${color}40`, color }}>
+                    {tlIcon(item.type)}
+                  </div>
+                  {i < timeline.length - 1 && <div className="ap3-tl-connector" />}
                 </div>
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
-              </div>
-            </motion.div>
-          ))}
+                <div className="ap3-tl-card">
+                  <div className="ap3-tl-top">
+                    <span className="ap3-tl-year">{item.year}</span>
+                    <span className="ap3-tl-tag" style={{ color, borderColor: color + '40', background: color + '10' }}>
+                      {tlBadge(item.type)}
+                    </span>
+                    {item.extra && (
+                      <span className="ap3-tl-extra">{item.extra}</span>
+                    )}
+                  </div>
+                  <h3>{item.title}</h3>
+                  {item.role && <div className="ap3-tl-role">{item.role}</div>}
+                  <p>{item.description}</p>
+                </div>
+              </motion.div>
+            )
+          })}
         </div>
       </div>
     </motion.section>
 
-    {/* ═══════════ TEACHING NUMBERS ═══════════ */}
+    {/* ═══════════ TEACHING — hours + what's covered ═══════════ */}
     <motion.section
       className="ap3-section"
-      style={{ background: '#f0ede5' }}
+      style={{ background: '#f5f2ea' }}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: '-50px' }}
@@ -168,71 +218,67 @@ const About = () => (
       <div className="ap3-section-inner">
         <motion.div className="ap3-section-label" variants={fadeUp}>
           <span className="ap3-section-num">02</span>
-          <h2 className="ap3-section-title">Teaching &amp; education</h2>
-          <p className="ap3-section-sub">Hours of structured content, not student counts.</p>
+          <h2 className="ap3-section-title">Teaching &amp; instruction</h2>
+          <p className="ap3-section-sub">Multi-Cloud Instructor at SelfCode Academy.</p>
         </motion.div>
 
         <motion.div variants={stagger} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           {[
             {
-              icon: <Clock size={20} />,
               color: '#e8674a',
-              stat: '180+ hours',
-              title: 'DevOps — End to End',
-              body: 'Linux fundamentals → Docker → Kubernetes → CI/CD → security scanning → production deployments. Full structured curriculum with hands-on projects at every stage.',
+              hours: '180+ hours',
+              track: 'DevOps — End to End',
+              bullets: [
+                'Docker · Kubernetes · Terraform · CI/CD · Incident Response',
+                'Promoted to multi-cloud track after completing this curriculum',
+              ],
             },
             {
-              icon: <Clock size={20} />,
               color: '#2d8bbf',
-              stat: '100+ hours',
-              title: 'Multicloud Engineering',
-              body: 'AWS and Azure from the ground up — core services, Terraform IaC, cross-cloud networking, cost management, and real-world architecture patterns.',
+              hours: '100+ hours',
+              track: 'Multi-Cloud Engineering (AWS · Azure · GCP)',
+              bullets: [
+                'VPC/VNet networking · IAM & RBAC · Terraform multi-cloud IaC',
+                'Container orchestration: EKS, AKS, GKE · Serverless · FinOps',
+              ],
             },
             {
-              icon: <GitBranch size={20} />,
               color: '#7c79ca',
-              stat: 'Project-led',
-              title: 'Every lesson tied to a working system',
-              body: 'No death by slides. Every module is anchored to a real project — students deploy, break, observe, and fix actual infrastructure.',
+              hours: '2 Capstone tracks',
+              track: '9h and 5h end-to-end project builds',
+              bullets: [
+                'Full cycle: architecture design → infra provisioning → CI/CD → production deployment',
+                'Each learner left with a deployed system, a runbook, and an RCA they wrote themselves',
+              ],
             },
-          ].map(({ icon, color, stat, title, body }) => (
+          ].map(({ color, hours, track, bullets }) => (
             <motion.div
-              key={title}
+              key={track}
               variants={fadeUp}
               style={{
-                display: 'grid',
-                gridTemplateColumns: '44px 1fr',
-                gap: '14px 16px',
-                padding: '20px 22px',
+                padding: '20px 24px',
                 background: '#fff',
-                border: '1px solid var(--pu-border)',
-                borderRadius: 12,
-                alignItems: 'start',
+                border: `1px solid ${color}30`,
+                borderLeft: `4px solid ${color}`,
+                borderRadius: 10,
               }}
             >
-              <div style={{
-                display: 'grid', placeItems: 'center',
-                width: 44, height: 44,
-                background: color + '12',
-                border: `1px solid ${color}30`,
-                borderRadius: 10,
-                color,
-                flexShrink: 0,
-              }}>{icon}</div>
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 5, flexWrap: 'wrap' }}>
-                  <span style={{ fontWeight: 800, fontSize: 17, color: 'var(--pu-ink)', fontFamily: "'Space Grotesk', sans-serif", letterSpacing: '-.02em' }}>{stat}</span>
-                  <span style={{ fontWeight: 600, fontSize: 13, color: 'var(--pu-muted)' }}>·  {title}</span>
-                </div>
-                <div style={{ fontSize: 13, lineHeight: 1.65, color: 'var(--pu-muted)' }}>{body}</div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 8, flexWrap: 'wrap' }}>
+                <span style={{ fontWeight: 800, fontSize: 18, color, fontFamily: "'Space Grotesk',sans-serif", letterSpacing: '-.02em' }}>{hours}</span>
+                <span style={{ fontWeight: 600, fontSize: 14, color: 'var(--pu-ink)' }}>{track}</span>
               </div>
+              <ul style={{ margin: 0, paddingLeft: 18, display: 'flex', flexDirection: 'column', gap: 5 }}>
+                {bullets.map(b => (
+                  <li key={b} style={{ fontSize: 13, lineHeight: 1.6, color: 'var(--pu-muted)' }}>{b}</li>
+                ))}
+              </ul>
             </motion.div>
           ))}
         </motion.div>
       </div>
     </motion.section>
 
-    {/* ═══════════ CAPABILITIES ═══════════ */}
+    {/* ═══════════ WHAT I BRING ═══════════ */}
     <motion.section
       className="ap3-section"
       style={{ background: 'var(--pu-paper)' }}
@@ -245,34 +291,34 @@ const About = () => (
         <motion.div className="ap3-section-label" variants={fadeUp}>
           <span className="ap3-section-num">03</span>
           <h2 className="ap3-section-title">What I bring</h2>
-          <p className="ap3-section-sub">Four areas where I build and operate.</p>
+          <p className="ap3-section-sub">Real outcomes, not bullet-point skills.</p>
         </motion.div>
 
         <motion.div className="ap3-caps" variants={stagger}>
           {[
             {
-              icon: <Layers size={22}/>, color:'#2d8bbf',
-              title: 'Cloud Architecture',
-              body: 'Designed multi-region AWS infra with Terraform, Route53 global routing, CloudFront CDN, WAF, and EKS. Scaled systems from single instances to 1M+ user load.',
-              tags: ['AWS', 'Azure', 'Terraform', 'EKS', 'Route53'],
+              icon: <Layers size={22}/>, color: '#2d8bbf',
+              title: 'Cloud & Infrastructure',
+              body: 'Built serverless APIs on AWS Lambda + API Gateway + DynamoDB that cut P95 latency 40%. Designed multi-region EKS infrastructure, Route53 global routing, and CloudFront CDN for 50K concurrent-user load.',
+              tags: ['AWS EKS', 'Lambda', 'Terraform', 'Route53', 'AKS'],
             },
             {
-              icon: <Shield size={22}/>, color:'#27ae78',
+              icon: <Shield size={22}/>, color: '#27ae78',
               title: 'Reliability & Observability',
-              body: 'Built SRE frameworks with Prometheus, Grafana, and X-Ray tracing. Reduced MTTR by 78% and SEV frequency by 65% with ML-driven AIOps and automated playbooks.',
-              tags: ['Prometheus', 'Grafana', 'SLO/SLI', 'AIOps', 'RCA'],
+              body: 'Set up CloudWatch dashboards, alarms, and on-call runbooks that cut MTTR 30% during live incidents. Built Incident Zero — a production failure-simulation platform used for SRE training.',
+              tags: ['Prometheus', 'Grafana', 'CloudWatch', 'SLO/SLI', 'RCA'],
             },
             {
-              icon: <GitBranch size={22}/>, color:'#d4940a',
-              title: 'DevSecOps Delivery',
-              body: 'End-to-end pipelines with GitHub Actions, Jenkins, ArgoCD, Trivy, and SonarQube. Cut deployment time by 70% with zero-touch GitOps across AWS and Azure.',
-              tags: ['GitHub Actions', 'Jenkins', 'Trivy', 'ArgoCD', 'GitOps'],
+              icon: <GitBranch size={22}/>, color: '#d4940a',
+              title: 'CI/CD & DevSecOps',
+              body: 'Automated Terraform + GitHub Actions pipelines that cut deploy time from 40 min to 12 min (70% reduction). Integrated Trivy, SonarQube, and least-privilege IAM across all pipelines.',
+              tags: ['GitHub Actions', 'ArgoCD', 'Trivy', 'GitOps', 'IAM'],
             },
             {
-              icon: <Zap size={22}/>, color:'#e8674a',
-              title: 'Platform Engineering',
-              body: 'Built chaos engineering tools, FinOps platforms, log ingestion pipelines, and a custom deployment platform (DeploySphere) handling real-time traffic at scale.',
-              tags: ['Kubernetes', 'Helm', 'Kafka', 'ClickHouse', 'Chaos'],
+              icon: <Zap size={22}/>, color: '#e8674a',
+              title: 'Chaos & Platform Engineering',
+              body: 'Built Incident Zero chaos platform with 5 reproducible failure scenarios — CrashLoopBackOff, OOMKilled, DNS failures, DB exhaustion, latency spikes — each requiring logs-to-RCA resolution.',
+              tags: ['Kubernetes', 'Chaos Engineering', 'AIOps', 'FinOps', 'Helm'],
             },
           ].map(({ icon, color, title, body, tags }) => (
             <motion.div
@@ -294,10 +340,10 @@ const About = () => (
       </div>
     </motion.section>
 
-    {/* ═══════════ SKILLS ═══════════ */}
+    {/* ═══════════ TOOLKIT — skill-tree style ═══════════ */}
     <motion.section
       className="ap3-section"
-      style={{ background: '#f0ede5', borderBottom: 'none', paddingBottom: 'clamp(72px,10vh,120px)' }}
+      style={{ background: '#0e1512', borderBottom: 'none', paddingBottom: 'clamp(72px,10vh,120px)' }}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: '-50px' }}
@@ -305,20 +351,45 @@ const About = () => (
     >
       <div className="ap3-section-inner">
         <motion.div className="ap3-section-label" variants={fadeUp}>
-          <span className="ap3-section-num">04</span>
-          <h2 className="ap3-section-title">Working toolkit</h2>
-          <p className="ap3-section-sub">Technologies I use in production.</p>
+          <span className="ap3-section-num" style={{ color: '#72dfac' }}>04</span>
+          <h2 className="ap3-section-title" style={{ color: '#fff' }}>Toolkit</h2>
+          <p className="ap3-section-sub" style={{ color: 'rgba(200,234,214,.45)' }}>Proficiency mapped like a skill tree.</p>
         </motion.div>
 
-        <motion.div className="ap3-skill-groups" variants={stagger}>
+        <motion.div className="ap3-skill-tree" variants={stagger}>
           {skillGroups.map(({ label, color, items }) => (
-            <motion.div key={label} className="ap3-sg" variants={fadeUp}>
-              <div className="ap3-sg-label" style={{ color }}>
-                <span style={{ display:'inline-block', width:3, height:14, background:color, borderRadius:2, marginRight:6 }} />
-                {label}
+            <motion.div key={label} className="ap3-st-group" variants={fadeUp}>
+              <div className="ap3-st-header">
+                <span className="ap3-st-bar" style={{ background: color }} />
+                <span className="ap3-st-label" style={{ color }}>{label}</span>
               </div>
-              <div className="ap3-sg-pills">
-                {items.map(s => <span key={s} className="ap3-sg-pill">{s}</span>)}
+              <div className="ap3-st-items">
+                {items.map((s, idx) => {
+                  // first item = max skill (5 bars), scale down slightly per position
+                  const bars = Math.max(3, 5 - Math.floor(idx / 2))
+                  return (
+                    <motion.div
+                      key={s}
+                      className="ap3-st-item"
+                      variants={fadeUp}
+                      whileHover={{ scale: 1.02, transition: { duration: 0.15 } }}
+                    >
+                      <span className="ap3-st-name">{s.length > 30 ? s.slice(0,28)+'…' : s}</span>
+                      <div className="ap3-st-meter">
+                        {[1,2,3,4,5].map(b => (
+                          <span
+                            key={b}
+                            className="ap3-st-pip"
+                            style={{
+                              background: b <= bars ? color : 'rgba(255,255,255,0.07)',
+                              boxShadow: b <= bars ? `0 0 6px ${color}80` : 'none',
+                            }}
+                          />
+                        ))}
+                      </div>
+                    </motion.div>
+                  )
+                })}
               </div>
             </motion.div>
           ))}

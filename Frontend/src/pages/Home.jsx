@@ -1,4 +1,4 @@
-import { ArrowUpRight, MapPin, ShieldCheck, AlertTriangle, Search, Wrench, Activity, Terminal, Zap, GitBranch } from 'lucide-react'
+import { ArrowUpRight, MapPin, ShieldCheck, Search, Wrench, Activity, Terminal, Zap, GitBranch } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useInView, animate } from 'framer-motion'
@@ -58,121 +58,265 @@ const TypedText = ({ words }) => {
   return <span className="typed-word">{displayed}<span className="typed-cursor">|</span></span>
 }
 
-/* ─── live incident simulator ─── */
-const PHASES = ['idle', 'anomaly', 'analyzing', 'plan', 'executing', 'verifying', 'recovered']
-const PHASE_LABELS = {
-  idle:      { status: 'ALL SYSTEMS NOMINAL', color: '#72dfac', icon: '●' },
-  anomaly:   { status: 'ANOMALY DETECTED',    color: '#f08a69', icon: '▲' },
-  analyzing: { status: 'ANALYZING SIGNAL',    color: '#f0bc62', icon: '◌' },
-  plan:      { status: 'BUILDING PLAN',       color: '#f0bc62', icon: '◌' },
-  executing: { status: 'EXECUTING REMEDIATION', color: '#65cfe5', icon: '→' },
-  verifying: { status: 'VERIFYING RECOVERY',  color: '#65cfe5', icon: '◌' },
-  recovered: { status: 'SYSTEM RECOVERED',    color: '#72dfac', icon: '✓' },
-}
+/* ─── live SRE dashboard (hero right panel) ─── */
+const SPARKLINE_BASE = [28,35,32,45,38,52,48,61,44,57,53,68,62,71,65,80,74,88,76,92,85,79,95,88,82,97,91,86,99,94]
 
-const IncidentSim = () => {
-  const [phase, setPhase] = useState('idle')
-  const [health, setHealth] = useState(99.9)
-  const [log, setLog]       = useState(['[00:00] System initializing...', '[00:01] All services healthy.'])
-  const running = useRef(false)
+const LiveDashboard = () => {
+  const [spark, setSpark] = useState(SPARKLINE_BASE)
+  const [latency,  setLatency]  = useState(12)
+  const [errRate,  setErrRate]  = useState(0.01)
+  const [reqRate,  setReqRate]  = useState(2847)
+  const [alert,    setAlert]    = useState(false)
+  const [scanLine, setScanLine] = useState(0)
 
-  const addLog = (msg) => setLog(prev => [...prev.slice(-6), msg])
+  // tick live metrics
+  useEffect(() => {
+    const t = setInterval(() => {
+      setLatency(v  => +(Math.max(8,  Math.min(24,  v + (Math.random() - 0.48) * 2.5)).toFixed(0)))
+      setErrRate(v  => +(Math.max(0,  Math.min(0.06,v + (Math.random() - 0.5)  * 0.008)).toFixed(2)))
+      setReqRate(v  => +(Math.max(2400,Math.min(3400,v + (Math.random()-0.5)*120)).toFixed(0)))
+      setSpark(prev => {
+        const next = [...prev.slice(1), Math.max(20, Math.min(100, prev[prev.length-1] + (Math.random()-0.45)*12))]
+        return next
+      })
+    }, 1600)
+    return () => clearInterval(t)
+  }, [])
 
-  const runSimulation = () => {
-    if (running.current) return
-    running.current = true
-    const now = () => new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })
+  // scan-line animation
+  useEffect(() => {
+    const t = setInterval(() => setScanLine(v => (v + 1) % 100), 40)
+    return () => clearInterval(t)
+  }, [])
 
-    setPhase('anomaly'); setHealth(81.4)
-    addLog(`[${now()}] ⚠ payment-api latency +437% detected`)
+  // periodic alert spike
+  useEffect(() => {
+    const t = setInterval(() => {
+      setAlert(true); setLatency(68); setErrRate(0.22)
+      setTimeout(() => { setAlert(false); setLatency(13); setErrRate(0.01) }, 3800)
+    }, 25000)
+    return () => clearInterval(t)
+  }, [])
 
-    setTimeout(() => {
-      setPhase('analyzing')
-      addLog(`[${now()}] Anomaly confidence: 98.4%`)
-    }, 1200)
+  const pts = spark.map((v, i) => `${(i/(spark.length-1))*280},${58-(v/100)*50}`).join(' ')
+  const areaPoints = `0,58 ${pts} 280,58`
 
-    setTimeout(() => {
-      setPhase('plan')
-      addLog(`[${now()}] Remediation plan: isolate → shift → restart`)
-    }, 2600)
-
-    setTimeout(() => {
-      setPhase('executing')
-      addLog(`[${now()}] Isolating instance...`)
-    }, 4000)
-
-    setTimeout(() => {
-      addLog(`[${now()}] Traffic rerouted. Restarting worker...`)
-    }, 5000)
-
-    setTimeout(() => {
-      setPhase('verifying'); setHealth(97.2)
-      addLog(`[${now()}] Verification pass 1/3...`)
-    }, 6200)
-
-    setTimeout(() => {
-      setPhase('recovered'); setHealth(99.9)
-      addLog(`[${now()}] ✓ Recovery complete. Health 99.9%`)
-      running.current = false
-    }, 7800)
-  }
-
-  const reset = () => {
-    running.current = false
-    setPhase('idle'); setHealth(99.9)
-    setLog(['[00:00] System initializing...', '[00:01] All services healthy.'])
-  }
-
-  const meta = PHASE_LABELS[phase]
+  const services = [
+    { name: 'payment-api',  latency: '9ms',  ok: !alert },
+    { name: 'auth-service', latency: '4ms',  ok: true },
+    { name: 'k8s / EKS',   latency: '—',    ok: true },
+    { name: 'prometheus',   latency: '—',    ok: true },
+  ]
 
   return (
-    <div className="isim-root">
-      {/* header */}
-      <div className="isim-header">
-        <div className="isim-title"><Activity size={13} /> INCIDENT SIMULATOR</div>
-        <div className="isim-status" style={{ color: meta.color }}>
-          <span className="isim-dot" style={{ background: meta.color, boxShadow: `0 0 8px ${meta.color}` }} />
-          {meta.status}
+    <div className={`hv2-dash ${alert ? 'hv2-dash-alert' : ''}`}>
+      {/* scan-line overlay */}
+      <div className="hv2-dash-scanline" style={{ top: `${scanLine}%` }} aria-hidden />
+
+      {/* window chrome */}
+      <div className="hv2-dash-bar">
+        <div className="hv2-dash-dots">
+          <span className="hv2-dd-red" /><span className="hv2-dd-yellow" /><span className="hv2-dd-green" />
+        </div>
+        <span className="hv2-dash-title">reliability-lab — monitoring</span>
+        <span className="hv2-dash-live" style={{ color: alert ? '#f08a69' : '#72dfac' }}>
+          <span className="hv2-dash-live-dot" style={{ background: alert ? '#f08a69' : '#72dfac', boxShadow: `0 0 7px ${alert ? '#f08a69' : '#72dfac'}` }} />
+          {alert ? 'ALERT FIRING' : 'LIVE'}
+        </span>
+      </div>
+
+      {/* KPI row */}
+      <div className="hv2-dash-kpis">
+        <div className={`hv2-kpi ${alert ? 'hv2-kpi-alert' : ''}`}>
+          <span className="hv2-kpi-label">P95 LATENCY</span>
+          <motion.span className="hv2-kpi-val" key={latency}
+            initial={{ opacity:0.5, y:-4 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.25 }}>
+            {latency}<span className="hv2-kpi-unit">ms</span>
+          </motion.span>
+        </div>
+        <div className={`hv2-kpi ${alert ? 'hv2-kpi-alert' : ''}`}>
+          <span className="hv2-kpi-label">ERROR RATE</span>
+          <motion.span className="hv2-kpi-val" key={errRate}
+            initial={{ opacity:0.5, y:-4 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.25 }}>
+            {errRate}<span className="hv2-kpi-unit">%</span>
+          </motion.span>
+        </div>
+        <div className="hv2-kpi">
+          <span className="hv2-kpi-label">REQ / MIN</span>
+          <motion.span className="hv2-kpi-val hv2-kpi-blue" key={reqRate}
+            initial={{ opacity:0.5, y:-4 }} animate={{ opacity:1, y:0 }} transition={{ duration:0.25 }}>
+            {reqRate.toLocaleString()}<span className="hv2-kpi-unit"> rps</span>
+          </motion.span>
+        </div>
+        <div className="hv2-kpi">
+          <span className="hv2-kpi-label">UPTIME</span>
+          <span className="hv2-kpi-val hv2-kpi-green">99.97<span className="hv2-kpi-unit">%</span></span>
         </div>
       </div>
 
-      {/* health bar */}
-      <div className="isim-health">
-        <div className="isim-health-row">
-          <span>SYSTEM HEALTH</span>
-          <strong style={{ color: health < 90 ? '#f08a69' : '#72dfac' }}>{health.toFixed(1)}%</strong>
+      {/* sparkline */}
+      <div className="hv2-dash-chart">
+        <div className="hv2-chart-head">
+          <span className="hv2-chart-label">THROUGHPUT</span>
+          <span className="hv2-chart-range">30s window</span>
         </div>
-        <div className="isim-bar">
-          <motion.div
-            className="isim-bar-fill"
-            animate={{ width: `${health}%`, background: health < 90 ? '#f08a69' : '#72dfac' }}
-            transition={{ duration: 0.8, ease: 'easeOut' }}
-          />
-        </div>
+        <svg viewBox="0 0 280 62" preserveAspectRatio="none" className="hv2-sparkline-svg">
+          <defs>
+            <linearGradient id="sg1" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"   stopColor={alert ? '#f08a69' : '#72dfac'} stopOpacity="0.3" />
+              <stop offset="100%" stopColor={alert ? '#f08a69' : '#72dfac'} stopOpacity="0.02" />
+            </linearGradient>
+          </defs>
+          {/* grid lines */}
+          {[20,40,60].map(y => (
+            <line key={y} x1="0" y1={58-(y/100)*50} x2="280" y2={58-(y/100)*50}
+              stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
+          ))}
+          <polygon points={areaPoints} fill="url(#sg1)" />
+          <polyline points={pts} fill="none"
+            stroke={alert ? '#f08a69' : '#72dfac'}
+            strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round" />
+          {/* live dot */}
+          {(() => {
+            const last = spark[spark.length-1]
+            const cx = 280, cy = 58-(last/100)*50
+            return <>
+              <circle cx={cx} cy={cy} r="5" fill={alert?'#f08a69':'#72dfac'} opacity="0.2" />
+              <circle cx={cx} cy={cy} r="2.5" fill={alert?'#f08a69':'#72dfac'} />
+            </>
+          })()}
+        </svg>
       </div>
 
       {/* services */}
-      <div className="isim-services">
-        {['payment-api', 'auth-service', 'cache-layer', 'api-gateway'].map((svc, i) => (
-          <div key={svc} className={`isim-service ${i === 0 && phase !== 'idle' ? 'isim-svc-alert' : ''} ${i === 0 && phase === 'recovered' ? 'isim-svc-ok' : ''}`}>
-            <span className="isim-svc-dot" />
-            <span className="isim-svc-name">{svc}</span>
-            <span className="isim-svc-stat">
-              {i === 0 && phase === 'anomaly'   ? 'ANOMALY'    :
-               i === 0 && phase === 'analyzing' ? 'ANALYZING'  :
-               i === 0 && phase === 'plan'      ? 'ISOLATING'  :
-               i === 0 && phase === 'executing' ? 'RESTARTING' :
-               i === 0 && phase === 'verifying' ? 'VERIFYING'  :
-               i === 0 && phase === 'recovered' ? 'HEALTHY'    : 'HEALTHY'}
+      <div className="hv2-dash-services">
+        {services.map(s => (
+          <div key={s.name} className={`hv2-dash-svc ${!s.ok ? 'hv2-svc-bad' : ''}`}>
+            <span className="hv2-dash-svc-dot"
+              style={{ background: s.ok?'#72dfac':'#f08a69', boxShadow:`0 0 5px ${s.ok?'#72dfac':'#f08a69'}` }} />
+            <span className="hv2-dash-svc-name">{s.name}</span>
+            {s.latency !== '—' && <span className="hv2-dash-svc-lat">{s.latency}</span>}
+            <span className="hv2-dash-svc-status" style={{ color: s.ok?'#72dfac':'#f08a69' }}>
+              {s.ok ? 'OK' : 'DEGRADED'}
             </span>
           </div>
         ))}
       </div>
 
+      {/* alert banner */}
+      {alert && (
+        <motion.div className="hv2-alert-banner"
+          initial={{ opacity:0, y:4 }} animate={{ opacity:1, y:0 }}>
+          ▲ SLO BREACH — payment-api P99 at 68ms · auto-remediation firing
+        </motion.div>
+      )}
+
+      <div className="hv2-dash-footer">
+        <span>prometheus · grafana · cloudwatch</span>
+        <span className="hv2-dash-blink">● {alert ? 'INCIDENT ACTIVE' : 'ALL SYSTEMS GO'}</span>
+      </div>
+    </div>
+  )
+}
+
+/* ─── live incident simulator — matches actual Incident Zero scenarios ─── */
+const SCENARIOS = [
+  { id: 'crashloop', name: 'CrashLoopBackOff', svc: 'app-pod',       signal: 'Pod restart loop — back-off 5m', cause: 'Missing env var: DB_CONNECTION_STRING' },
+  { id: 'oom',       name: 'OOMKilled',         svc: 'worker-pod',    signal: 'Memory limit exceeded, SIGKILL',  cause: 'Heap allocation unbounded in worker' },
+  { id: 'dns',       name: 'K8s DNS Failure',   svc: 'coredns',       signal: 'Service lookups timing out',      cause: 'CoreDNS ConfigMap misconfiguration' },
+  { id: 'dbexhaust', name: 'DB Pool Exhausted',  svc: 'postgres',      signal: 'FATAL: remaining connection pool=0', cause: 'Missing connection-pool limit per pod' },
+  { id: 'latency',   name: 'Latency Spike',      svc: 'api-gateway',   signal: 'P99 latency 4.2s — SLO breach',   cause: 'HPA CPU threshold too high, pods undersized' },
+]
+
+const IncidentSim = () => {
+  const [scenarioIdx, setScenarioIdx] = useState(0)
+  const [phase, setPhase]   = useState('idle')
+  const [health, setHealth] = useState(99.9)
+  const [log, setLog]       = useState(['$ incident-zero --status', 'All systems nominal. Awaiting trigger.'])
+  const running = useRef(false)
+  const scenario = SCENARIOS[scenarioIdx]
+
+  const addLog = (msg) => setLog(prev => [...prev.slice(-5), msg])
+
+  const runSim = () => {
+    if (running.current) return
+    running.current = true
+
+    setPhase('anomaly'); setHealth(78.4)
+    addLog(`[ALERT] ${scenario.svc}: ${scenario.signal}`)
+
+    setTimeout(() => { setPhase('analyzing'); addLog(`[SRE] Correlating logs + metrics...`) }, 1400)
+    setTimeout(() => { setPhase('plan');      addLog(`[RCA] Root cause: ${scenario.cause}`) }, 2900)
+    setTimeout(() => { setPhase('executing'); addLog(`[FIX] Applying remediation...`) }, 4200)
+    setTimeout(() => { setPhase('verifying'); setHealth(95.1); addLog(`[CHECK] Verifying recovery...`) }, 5600)
+    setTimeout(() => {
+      setPhase('recovered'); setHealth(99.9)
+      addLog(`[✓] System recovered. Writing RCA report.`)
+      running.current = false
+    }, 7200)
+  }
+
+  const reset = () => {
+    running.current = false
+    setPhase('idle'); setHealth(99.9)
+    setLog(['$ incident-zero --status', 'All systems nominal. Awaiting trigger.'])
+  }
+
+  const PHASE_LABELS = {
+    idle:      { status: 'ALL SYSTEMS NOMINAL',     color: '#72dfac' },
+    anomaly:   { status: `ANOMALY — ${scenario.svc}`, color: '#f08a69' },
+    analyzing: { status: 'ANALYZING SIGNALS',        color: '#f0bc62' },
+    plan:      { status: 'ROOT CAUSE IDENTIFIED',    color: '#f0bc62' },
+    executing: { status: 'APPLYING REMEDIATION',     color: '#65cfe5' },
+    verifying: { status: 'VERIFYING RECOVERY',       color: '#65cfe5' },
+    recovered: { status: 'SYSTEM RECOVERED',         color: '#72dfac' },
+  }
+  const meta = PHASE_LABELS[phase]
+
+  return (
+    <div className="isim-root">
+      {/* scenario tabs */}
+      <div className="isim-tabs">
+        {SCENARIOS.map((s, i) => (
+          <button
+            key={s.id}
+            className={`isim-tab ${i === scenarioIdx ? 'active' : ''}`}
+            onClick={() => { if (phase === 'idle' || phase === 'recovered') { setScenarioIdx(i); reset() } }}
+            title={s.name}
+          >
+            {s.name}
+          </button>
+        ))}
+      </div>
+
+      {/* header */}
+      <div className="isim-header">
+        <div className="isim-title"><Activity size={13} /> INCIDENT ZERO / {scenario.name}</div>
+        <div className="isim-status" style={{ color: meta.color }}>
+          <span className="isim-dot" style={{ background: meta.color, boxShadow: `0 0 7px ${meta.color}` }} />
+          {meta.status}
+        </div>
+      </div>
+
+      {/* health */}
+      <div className="isim-health">
+        <div className="isim-health-row">
+          <span>SYSTEM HEALTH</span>
+          <strong style={{ color: health < 88 ? '#f08a69' : '#72dfac' }}>{health.toFixed(1)}%</strong>
+        </div>
+        <div className="isim-bar">
+          <motion.div
+            className="isim-bar-fill"
+            animate={{ width:`${health}%`, background: health < 88 ? '#f08a69' : '#72dfac' }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
+          />
+        </div>
+      </div>
+
       {/* log */}
       <div className="isim-log">
         {log.map((line, i) => (
-          <motion.div key={i} className="isim-log-line" initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}>
+          <motion.div key={i} className="isim-log-line" initial={{ opacity:0, x:-6 }} animate={{ opacity:1, x:0 }}>
             {line}
           </motion.div>
         ))}
@@ -181,11 +325,11 @@ const IncidentSim = () => {
       {/* actions */}
       <div className="isim-actions">
         {phase === 'idle' || phase === 'recovered' ? (
-          <button className="isim-btn isim-btn-trigger" onClick={runSimulation}>
+          <button className="isim-btn isim-btn-trigger" onClick={runSim}>
             <Zap size={13} /> {phase === 'recovered' ? 'Run again' : 'Trigger incident'}
           </button>
         ) : (
-          <span className="isim-running"><span className="isim-spinner" /> Simulation running…</span>
+          <span className="isim-running"><span className="isim-spinner" /> Running simulation…</span>
         )}
         {phase !== 'idle' && (
           <button className="isim-btn isim-btn-reset" onClick={reset}>Reset</button>
@@ -197,22 +341,6 @@ const IncidentSim = () => {
 
 /* ─── main component ─── */
 const Home = () => {
-  const incidents = [
-    { name: 'CrashLoopBackOff', desc: 'Container crashes repeatedly after start. Check OOM limits, missing env vars, or a bad image tag.' },
-    { name: 'OOMKilled',        desc: 'Process killed by kernel for exceeding memory limit. Review memory requests/limits and heap usage.' },
-    { name: 'Kubernetes DNS',   desc: 'CoreDNS failing to resolve service names. Check CoreDNS pod health and network policies.' },
-    { name: 'DB Exhaustion',    desc: 'Connection pool is full. Look for connection leaks, pool sizing issues, or upstream spikes.' },
-    { name: 'Latency Spike',    desc: 'P95/P99 exceeds SLO threshold. Correlate with deploys, resource saturation, or downstream slowness.' },
-  ]
-  const [activeIncident, setActiveIncident] = useState(0)
-  const [activePlaneStep, setActivePlaneStep] = useState(0)
-  const planeSteps = ['SIGNAL', 'ALERT', 'INVESTIGATE', 'DECIDE', 'RECOVER']
-
-  // animate the control plane steps in a loop
-  useEffect(() => {
-    const t = setInterval(() => setActivePlaneStep(s => (s + 1) % planeSteps.length), 1800)
-    return () => clearInterval(t)
-  }, [])
 
   return (
     <main className="home-v2">
@@ -264,55 +392,14 @@ const Home = () => {
             </motion.div>
           </motion.div>
 
-          {/* control panel */}
+          {/* live SRE dashboard panel — replaces the static flow */}
           <motion.div
-            className="hv2-control-panel"
+            className="hv2-dashboard"
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
           >
-            <div className="hv2-panel-header">
-              <span className="hv2-panel-led" />
-              <span>RELIABILITY LAB</span>
-              <span className="hv2-panel-sep">/</span>
-              <span>READY</span>
-              <span className="hv2-panel-tag">BUILD → BREAK → RECOVER</span>
-            </div>
-
-            <div className="hv2-panel-flow">
-              {planeSteps.map((step, i) => (
-                <motion.div
-                  key={step}
-                  className={`hv2-flow-step ${i === activePlaneStep ? 'active' : ''} ${i < activePlaneStep ? 'done' : ''}`}
-                  animate={i === activePlaneStep ? { x: 6 } : { x: 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <div className="hv2-flow-node">{String(i + 1).padStart(2, '0')}</div>
-                  <div className="hv2-flow-label">{step}</div>
-                  {i < activePlaneStep && <div className="hv2-flow-check">✓</div>}
-                </motion.div>
-              ))}
-            </div>
-
-            <div className="hv2-panel-metrics">
-              <div className="hv2-pm-item">
-                <span>P95 LATENCY</span>
-                <strong>12ms</strong>
-              </div>
-              <div className="hv2-pm-item">
-                <span>ERROR RATE</span>
-                <strong>0.01%</strong>
-              </div>
-              <div className="hv2-pm-item">
-                <span>UPTIME</span>
-                <strong>99.99%</strong>
-              </div>
-            </div>
-
-            <div className="hv2-panel-footer">
-              <span>telemetry → policy → runbook</span>
-              <b>SIMULATION / READY</b>
-            </div>
+            <LiveDashboard />
           </motion.div>
         </div>
       </section>
@@ -329,8 +416,8 @@ const Home = () => {
           { value: 40,  suffix: '%', label: 'P95 latency reduction',      icon: <Zap size={18} /> },
           { value: 78,  suffix: '%', label: 'MTTR reduction (AIOps)',      icon: <Activity size={18} /> },
           { value: 70,  suffix: '%', label: 'Deploy time cut',             icon: <GitBranch size={18} /> },
-          { value: 180, suffix: 'h', label: 'DevOps hours taught',         icon: <Terminal size={18} /> },
-          { value: 100, suffix: 'h', label: 'Multicloud hours taught',     icon: <ShieldCheck size={18} /> },
+          { value: 180, suffix: '+ h', label: 'DevOps hours taught',         icon: <Terminal size={18} /> },
+          { value: 100, suffix: '+ h', label: 'Multicloud hours taught',     icon: <ShieldCheck size={18} /> },
         ].map(({ value, suffix, label, icon }) => (
           <motion.div className="hv2-metric-card" key={label} variants={fadeUp}>
             <div className="hv2-mc-icon">{icon}</div>
@@ -354,31 +441,20 @@ const Home = () => {
           <p className="hv2-eyebrow">My own product · Incident Zero</p>
           <h2>What happens when<br /><em>a system breaks?</em></h2>
           <p>
-            <strong>Incident Zero</strong> is a failure simulation and response platform I built to practice and demonstrate SRE workflows.
-            It detects anomalies in real-time, runs automated remediation playbooks, and recovers — the same way production systems should.
-            Hit trigger below to see a live simulation.
+            <strong>Incident Zero</strong> is a failure simulation platform I built for SRE training.
+            Five real Kubernetes failure scenarios — CrashLoopBackOff, OOMKilled, DNS failures,
+            DB pool exhaustion, latency spikes — each requiring logs-to-RCA resolution.
+            Pick a scenario and hit trigger.
           </p>
-
-          {/* failure mode pills */}
-          <div className="hv2-failure-pills">
-            {incidents.map((inc, i) => (
-              <button
-                key={inc.name}
-                className={`hv2-pill ${activeIncident === i ? 'active' : ''}`}
-                onClick={() => setActiveIncident(i)}
-              >
-                <AlertTriangle size={11} /> {inc.name}
-              </button>
-            ))}
-          </div>
-          <motion.div
-            className="hv2-failure-desc"
-            key={activeIncident}
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
+          <a
+            className="hv2-btn-ghost"
+            href="https://incidentzero.monster"
+            target="_blank"
+            rel="noreferrer"
+            style={{ display:'inline-flex', alignItems:'center', gap:7, marginTop:12, fontSize:12, fontWeight:700, textDecoration:'none', padding:'9px 16px', border:'1.5px solid var(--h-line)', borderRadius:7, color:'var(--h-ink)', transition:'all .16s' }}
           >
-            {incidents[activeIncident].desc}
-          </motion.div>
+            Visit incidentzero.monster <ArrowUpRight size={13} />
+          </a>
         </motion.div>
 
         <motion.div variants={fadeUp}>

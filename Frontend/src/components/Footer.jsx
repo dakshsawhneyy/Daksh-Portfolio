@@ -1,87 +1,80 @@
-import { ArrowUpRight, Github, Linkedin, Mail, MapPin, Activity, FileText, ExternalLink } from 'lucide-react'
+import { ArrowUpRight, Github, Linkedin, Mail, MapPin, FileText, Activity } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
 
-const Footer = () => {
-  return (
-    <footer className="ft-root">
+const Footer = () => (
+  <footer className="site-footer">
 
-      {/* top noise texture overlay */}
-      <div className="ft-bg" aria-hidden />
+    {/* top rule with label */}
+    <div className="sf-rule">
+      <span className="sf-rule-label">
+        <Activity size={11} />
+        END OF SESSION · RELIABILITY LAB
+      </span>
+    </div>
 
-      <div className="ft-inner">
+    <div className="sf-inner">
 
-        {/* LEFT — CTA */}
-        <div className="ft-cta">
-          <div className="ft-cta-tag">
-            <span className="ft-tag-dot" />
-            <span>Available for work</span>
-          </div>
-          <h2 className="ft-heading">
-            Have a system<br />
-            <em>worth building?</em>
-          </h2>
-          <p className="ft-sub">
-            Multicloud infrastructure, reliability engineering,<br />
-            DevOps pipelines — let's talk.
-          </p>
-          <div className="ft-cta-actions">
-            <a className="ft-btn-primary" href="mailto:dakshsawhneyy@gmail.com">
-              Start a conversation <ArrowUpRight size={16} />
-            </a>
-            <a className="ft-btn-ghost" href="/resume/Daksh-Resume.pdf" target="_blank" rel="noreferrer">
-              <FileText size={15} /> Resume
-            </a>
-          </div>
+      {/* LEFT — statement + CTA */}
+      <div className="sf-statement">
+        <p className="sf-kicker">Open to full-time roles · Aug 2027</p>
+        <h2 className="sf-heading">
+          Have a reliability<br />
+          problem to solve?
+        </h2>
+        <p className="sf-sub">
+          Cloud infrastructure, SRE platforms,
+          multi-cloud architecture — reach out.
+        </p>
+        <div className="sf-actions">
+          <a className="sf-btn-primary" href="mailto:dakshsawhneyy@gmail.com">
+            Let's talk <ArrowUpRight size={14} />
+          </a>
+          <a className="sf-btn-outline" href="/resume/Daksh-Resume.pdf" target="_blank" rel="noreferrer">
+            <FileText size={13} /> Resume
+          </a>
         </div>
-
-        {/* MIDDLE — nav links */}
-        <div className="ft-nav">
-          <p className="ft-nav-label">Navigation</p>
-          <nav>
-            <Link to="/">Home</Link>
-            <Link to="/projects">Systems</Link>
-            <Link to="/about">About</Link>
-            <Link to="/blog">Blog</Link>
-            <Link to="/contact">Contact</Link>
-          </nav>
-        </div>
-
-        {/* RIGHT — identity */}
-        <div className="ft-identity">
-          <div className="ft-monogram">DS</div>
-          <p className="ft-name">Daksh Sawhney</p>
-          <p className="ft-role">Cloud &amp; SRE Engineer</p>
-          <div className="ft-location">
-            <MapPin size={12} /> Jammu, India
-          </div>
-          <div className="ft-socials">
-            <a href="https://github.com/dakshsawhneyy" target="_blank" rel="noreferrer" aria-label="GitHub">
-              <Github size={17} />
-            </a>
-            <a href="https://linkedin.com/in/dakshsawhneyy" target="_blank" rel="noreferrer" aria-label="LinkedIn">
-              <Linkedin size={17} />
-            </a>
-            <a href="mailto:dakshsawhneyy@gmail.com" aria-label="Email">
-              <Mail size={17} />
-            </a>
-          </div>
-        </div>
-
       </div>
 
-      {/* bottom bar */}
-      <div className="ft-bottom">
-        <span className="ft-copy">
-          <Activity size={11} /> © 2026 Daksh Sawhney — Cloud / SRE / DevOps
-        </span>
-        <span className="ft-stack">
-          AWS · Azure · Kubernetes · Terraform · Prometheus
-        </span>
+      {/* MIDDLE — nav */}
+      <div className="sf-col">
+        <p className="sf-col-label">Navigate</p>
+        <nav className="sf-links">
+          <Link to="/">Home</Link>
+          <Link to="/projects">Systems</Link>
+          <Link to="/about">About</Link>
+          <Link to="/blog">Writing</Link>
+          <Link to="/contact">Contact</Link>
+        </nav>
       </div>
 
-    </footer>
-  )
-}
+      {/* RIGHT — connect */}
+      <div className="sf-col">
+        <p className="sf-col-label">Connect</p>
+        <div className="sf-socials">
+          <a href="https://github.com/dakshsawhneyy" target="_blank" rel="noreferrer">
+            <Github size={15} /> GitHub
+          </a>
+          <a href="https://linkedin.com/in/dakshsawhneyy" target="_blank" rel="noreferrer">
+            <Linkedin size={15} /> LinkedIn
+          </a>
+          <a href="https://dakshsawhneyy.hashnode.dev" target="_blank" rel="noreferrer">
+            <Mail size={15} /> Hashnode
+          </a>
+        </div>
+        <div className="sf-location">
+          <MapPin size={11} /> Jammu, India
+        </div>
+      </div>
+
+    </div>
+
+    {/* bottom bar */}
+    <div className="sf-bottom">
+      <span className="sf-copy">© 2026 Daksh Sawhney</span>
+      <span className="sf-stack">AWS · Azure · Kubernetes · Terraform · Prometheus</span>
+    </div>
+
+  </footer>
+)
 
 export default Footer
