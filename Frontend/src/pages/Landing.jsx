@@ -51,7 +51,7 @@ const Landing = () => {
           <div className="terminal-header">SYSTEM // PERSONAL_INTERFACE</div>
           <div className="terminal-body">
             <div className="cmd">&gt; whoami</div>
-            <div className="result name">ARJUN</div>
+            <div className="result name">DAKSH</div>
             <div className="result role">Designer / Engineer / Builder</div>
 
             <div className="spacer" />

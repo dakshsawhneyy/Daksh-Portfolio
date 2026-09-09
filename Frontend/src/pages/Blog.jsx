@@ -1,12 +1,170 @@
-import { ArrowUpRight, Clock3, Rss } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { ArrowUpRight, Clock3, Rss, RefreshCw, BookOpen } from 'lucide-react'
+import { useEffect, useState, useCallback } from 'react'
+import { motion } from 'framer-motion'
 import { fetchBlogs } from '../data/blogService'
+import '../pages-unified.css'
+
+const fadeUp  = { hidden: { opacity: 0, y: 22 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22,1,0.36,1] } } }
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }
+
+const readTime = (text = '') => Math.max(1, Math.ceil(text.trim().split(/\s+/).length / 200))
 
 const Blog = () => {
-  const [blogs, setBlogs] = useState([])
+  const [blogs, setBlogs]     = useState([])
   const [loading, setLoading] = useState(true)
-  useEffect(() => { fetchBlogs().then(setBlogs).catch(() => setBlogs([])).finally(() => setLoading(false)) }, [])
-  return <main className="content-page page-wrap blog-page"><div className="content-intro"><div><p className="eyebrow">Notes from the field</p><h1>Writing on systems,<br /><em>failure & craft.</em></h1></div><a className="button button-outline" href="https://dakshsawhneyy.hashnode.dev" target="_blank" rel="noreferrer">Open Hashnode <Rss size={16} /></a></div><div className="blog-rule" />{loading ? <p className="empty-state">Loading the latest notes...</p> : blogs.length ? <div className="article-list">{blogs.map((item, index) => <article className="article-row" key={item.slug || index}><div className="article-number">{String(index + 1).padStart(2, '0')}</div><div className="article-copy"><div className="article-meta"><span>{new Date(item.publishedAt || Date.now()).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span><span><Clock3 size={13} /> 6 min read</span></div><h2>{item.title}</h2><p>{item.brief}</p></div><a className="article-link" href={`https://dakshsawhneyy.hashnode.dev/${item.slug}`} target="_blank" rel="noreferrer" aria-label={`Read ${item.title}`}><ArrowUpRight /></a></article>)}</div> : <p className="empty-state">Notes are temporarily unavailable. Open Hashnode to browse the archive.</p>}</main>
+  const [error, setError]     = useState(false)
+
+  const load = useCallback(() => {
+    setLoading(true); setError(false)
+    fetchBlogs()
+      .then(p => { setBlogs(p); setError(false) })
+      .catch(() => setError(true))
+      .finally(() => setLoading(false))
+  }, [])
+
+  useEffect(() => { load() }, [load])
+
+  const featured = blogs[0] || null
+  const rest     = blogs.slice(1)
+
+  return (
+    <main className="blog-page-v3">
+
+      {/* ── Hero ── */}
+      <section className="bp3-hero">
+        <div className="bp3-hero-inner">
+          <motion.div initial="hidden" animate="visible" variants={stagger}>
+            <motion.p className="bp3-eyebrow" variants={fadeUp}>
+              <BookOpen size={11} /> Notes from the field
+            </motion.p>
+            <motion.h1 className="bp3-h1" variants={fadeUp}>
+              Writing on systems,<br /><em>failure &amp; craft.</em>
+            </motion.h1>
+          </motion.div>
+          <motion.div
+            className="bp3-hero-right"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.4 }}
+          >
+            <a className="bp3-hashnode-btn" href="https://dakshsawhneyy.hashnode.dev" target="_blank" rel="noreferrer">
+              Open Hashnode <Rss size={14} />
+            </a>
+            {!loading && !error && (
+              <span className="bp3-count">{blogs.length} article{blogs.length !== 1 ? 's' : ''} published</span>
+            )}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── Body ── */}
+      <div className="bp3-body">
+
+        {/* loading */}
+        {loading && (
+          <div className="bp3-state">
+            <div className="bp3-spinner" />
+            <p>Fetching latest articles…</p>
+          </div>
+        )}
+
+        {/* error */}
+        {!loading && error && (
+          <div className="bp3-state">
+            <p>Couldn't load articles right now.</p>
+            <div style={{ display:'flex', gap:10, justifyContent:'center', flexWrap:'wrap', marginTop:14 }}>
+              <button className="bp3-retry-btn" onClick={load}><RefreshCw size={13}/> Retry</button>
+              <a className="bp3-retry-btn" href="https://dakshsawhneyy.hashnode.dev" target="_blank" rel="noreferrer">
+                Browse Hashnode <ArrowUpRight size={13}/>
+              </a>
+            </div>
+          </div>
+        )}
+
+        {/* content */}
+        {!loading && !error && blogs.length > 0 && (
+          <motion.div initial="hidden" animate="visible" variants={stagger}>
+
+            {/* featured first article */}
+            {featured && (
+              <motion.a
+                className="bp3-featured"
+                href={featured.url || `https://dakshsawhneyy.hashnode.dev/${featured.slug}`}
+                target="_blank"
+                rel="noreferrer"
+                variants={fadeUp}
+              >
+                <div className="bp3-feat-visual">
+                  <div className="bp3-feat-visual-inner">
+                    <span className="bp3-feat-num">01</span>
+                  </div>
+                  <span className="bp3-feat-badge">LATEST POST</span>
+                </div>
+                <div className="bp3-feat-body">
+                  <div className="bp3-feat-meta">
+                    <span>
+                      {new Date(featured.publishedAt || Date.now()).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' })}
+                    </span>
+                    <span><Clock3 size={11}/> {readTime(featured.brief)} min read</span>
+                  </div>
+                  <h2 className="bp3-feat-title">{featured.title}</h2>
+                  <p className="bp3-feat-brief">{featured.brief}</p>
+                  <span className="bp3-feat-cta">
+                    Read article <ArrowUpRight size={14}/>
+                  </span>
+                </div>
+              </motion.a>
+            )}
+
+            {/* remaining articles list */}
+            {rest.length > 0 && (
+              <div className="bp3-list">
+                {rest.map((item, i) => {
+                  const url  = item.url || `https://dakshsawhneyy.hashnode.dev/${item.slug}`
+                  const mins = readTime(item.brief)
+                  return (
+                    <motion.a
+                      key={item.slug || i}
+                      className="bp3-article"
+                      href={url}
+                      target="_blank"
+                      rel="noreferrer"
+                      variants={fadeUp}
+                    >
+                      <div className="bp3-art-num">{String(i + 2).padStart(2, '0')}</div>
+                      <div className="bp3-art-copy">
+                        <div className="bp3-art-meta">
+                          <span>
+                            {new Date(item.publishedAt || Date.now()).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' })}
+                          </span>
+                          <span><Clock3 size={11}/> {mins} min read</span>
+                        </div>
+                        <h2 className="bp3-art-title">{item.title}</h2>
+                        <p className="bp3-art-brief">{item.brief}</p>
+                      </div>
+                      <div className="bp3-art-arrow"><ArrowUpRight size={16}/></div>
+                    </motion.a>
+                  )
+                })}
+              </div>
+            )}
+
+          </motion.div>
+        )}
+
+        {/* empty */}
+        {!loading && !error && blogs.length === 0 && (
+          <div className="bp3-state">
+            <p>No articles found.</p>
+            <a className="bp3-retry-btn" href="https://dakshsawhneyy.hashnode.dev" target="_blank" rel="noreferrer">
+              Open Hashnode <ArrowUpRight size={13}/>
+            </a>
+          </div>
+        )}
+
+      </div>
+    </main>
+  )
 }
 
 export default Blog

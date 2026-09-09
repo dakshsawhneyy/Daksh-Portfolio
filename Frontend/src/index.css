@@ -10,8 +10,7 @@ html {
 
 body {
   font-family: 'Inter', sans-serif;
-  background: #070707; /* ensure full-viewport dark base to avoid white band */
-  color: #EAE8E2;
+  /* background and color set by App.css :root rules — do not override here */
 }
 
 :root{

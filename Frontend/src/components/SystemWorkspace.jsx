@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import SystemGrid from './SystemGrid'
 import ModulePreview from './ModulePreview'
 import { motion as Motion, AnimatePresence } from 'framer-motion'
+import { Home, ArrowUpRight } from 'lucide-react'
 
 const SystemWorkspace = ({ modules, hovered, setHovered, onSelect, activeModule }) => {
   const modulesMap = Object.fromEntries(modules.map(m => [m.key, m]))
@@ -24,6 +26,11 @@ const SystemWorkspace = ({ modules, hovered, setHovered, onSelect, activeModule 
 
   return (
     <div ref={rootRef} className="main-with-rail system-root" style={{'--mx':0,'--my':0}}>
+      {/* Escape hatch — always visible */}
+      <Link to="/" className="system-home-link" aria-label="Back to home">
+        <Home size={14} /> HOME
+      </Link>
+
       <div className="status-indicator muted">
         <Motion.span key={hovered || 'online'} initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }} transition={{ duration: 0.28 }}>
           {hovered ? `${hovered.toUpperCase()} // 07 LOADED` : 'SYSTEM ONLINE'}

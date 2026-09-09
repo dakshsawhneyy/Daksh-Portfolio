@@ -2,52 +2,32 @@ import gdg_certificate from "../assets/gdg_certificate.jpg"
 
 export const timeline = [
   {
-    year: "2025",
-    title: "Cloud + DevSecOps Grind",
-    description: "Building full-scale AWS & K8s projects, CI/CD pipelines, learning DevSecOps and hunting internships at top companies.",
+    year: "2025 – Present",
+    title: "DevOps & Cloud Educator",
+    description: "Teaching 180+ hours of DevOps and 100+ hours of multicloud cloud engineering — covering AWS, Azure, Kubernetes, Terraform, CI/CD, and SRE. Created structured, project-based learning tracks. Mentoring engineers through real-world system builds.",
+    type: "teaching",
+  },
+  {
+    year: "2024 – Present",
+    title: "Cloud & SRE Engineering",
+    description: "Building production-grade systems: multicloud AIOps platforms, self-healing Kubernetes infrastructure, FinOps tooling, chaos engineering frameworks, and full observability stacks across AWS and Azure.",
     type: "experience",
   },
   {
-    year: "2024",
-    title: "DevOps Journey Start",
-    description: "Started serious hands-on in AWS, Docker, Kubernetes, Jenkins, GitHub Actions, etc. Built real-world projects.",
-    type: "experience",
-  },
-  {
-    year: "2024",
-    title: "Web Development & MERN Stack Journey Begins",
-    description: "Dove deep into MongoDB, Express, React, and Node.js. Built full-stack projects with real-world functionality, focusing on clean architecture, REST APIs, authentication, and responsive UIs.",
-    type: "experience",
-  },
-  {
-    year: "2023 - 2027",
-    title: "B.Tech @ HBTU Kanpur",
-    description: "Pursuing B.Tech in Computer Science & Engineering. 3rd Tier college, but tier-1 efforts.",
+    year: "2023 – 2027",
+    title: "B.Tech Computer Science · HBTU Kanpur",
+    description: "Pursuing B.Tech in Computer Science & Engineering. Building production systems and teaching cloud engineering in parallel with academics.",
     type: "education",
   },
 ]
 
 export const skills = [
-  "React", "Node.js", "MongoDB", "Express.js", "C++", "Python", "Linux", "Docker", "Kubernetes",
-  "AWS", "Azure","Terraform", "Ansible", "Jenkins", "GitHub Action", "Prometheus", "Grafana",
-  "SonarQube", "Trivy", "Linux", "NGINX", "GitLab", 
+  "AWS", "Azure", "GCP",
+  "Kubernetes", "Docker", "Helm", "ArgoCD",
+  "Terraform", "Ansible", "NGINX",
+  "Prometheus", "Grafana", "SonarQube", "Trivy",
+  "GitHub Actions", "Jenkins", "GitLab",
+  "Python", "Bash", "Linux", "Node.js",
 ]
 
-export const certs = [
-  {
-    title: "DevOps on AWS: Code, Build, and Test",
-    link: "https://www.coursera.org/account/accomplishments/verify/Q4T5DOO30MM1",
-  },
-  {
-    title: "Build With India",
-    link: "https://unstop.com/certificate-preview/9fc4c0b3-17a9-4838-b19e-884e8429ac72?utm_campaign=",
-  },
-  {
-    title: "DevSecOps Certificate",
-    link: "https://www.coursera.org/account/accomplishments/certificate/G7YYQVAX823K",
-  },
-  {
-    title: "GDG Certificate",
-    image: gdg_certificate,
-  },
-]
+export const certs = []
