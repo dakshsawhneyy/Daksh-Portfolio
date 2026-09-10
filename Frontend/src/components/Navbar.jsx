@@ -1,15 +1,26 @@
 import { BookOpen, FileText, Github, Home, Mail, Terminal, UserRound, Waypoints } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 
-/* Aesthetic logo mark — geometric DS monogram */
+/* Clean logo mark — signal/wave motif, SRE aesthetic */
 const LogoMark = () => (
-  <svg width="30" height="30" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-    <rect width="32" height="32" rx="8" fill="#10110f" />
-    <path d="M7 9h4.5c3.5 0 5.5 2 5.5 7s-2 7-5.5 7H7V9z"
-      fill="none" stroke="#e8684a" strokeWidth="1.8" strokeLinejoin="round"/>
-    <path d="M19 9h6M19 16h5c1 0 2 .8 2 2s-.9 2-2 2h-5"
-      fill="none" stroke="#f0bc62" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-    <circle cx="25" cy="9" r="1.2" fill="#72dfac" />
+  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+    <rect width="32" height="32" rx="9" fill="#111210"/>
+    {/* Signal wave — left channel */}
+    <path
+      d="M4 16 h3 l2-5 l3 10 l2-10 l2 5 h3"
+      stroke="#e8674a" strokeWidth="1.6"
+      strokeLinecap="round" strokeLinejoin="round"
+      fill="none"
+    />
+    {/* Flat tail */}
+    <path
+      d="M19 16 h9"
+      stroke="#e8674a" strokeWidth="1.6"
+      strokeLinecap="round"
+      opacity="0.4"
+    />
+    {/* Live dot */}
+    <circle cx="27" cy="10" r="2.2" fill="#72dfac"/>
   </svg>
 )
 
@@ -44,8 +55,7 @@ const Navbar = ({ onOpenSreMode }) => {
             aria-label={label}
           >
             <Icon size={16} />
-            {/* <b> is used by CSS for the rotated text label on desktop
-                and the small label below icon on mobile */}
+            {/* b tag: rotated text on desktop, hidden on mobile */}
             <b>{short}</b>
           </Link>
         ))}

@@ -45,9 +45,11 @@ const About = () => (
             Cloud &amp; DevOps Engineer · Multi-Cloud Instructor · Builder
           </motion.p>
 
-          <motion.p className="ap3-bio" variants={fadeUp}>
+          <motion.p className="ap3-bio ap3-bio-line" variants={fadeUp}>
             I build <strong>multicloud systems</strong> that run in production —
             self-healing platforms, observability pipelines, and reliable infrastructure.
+          </motion.p>
+          <motion.p className="ap3-bio ap3-bio-line" variants={fadeUp}>
             I also <strong>teach multi-cloud engineering</strong> at SelfCode Academy,
             covering AWS, Azure, and GCP from networking through to production deployments.
           </motion.p>
@@ -238,17 +240,8 @@ const About = () => (
               hours: '100+ hours',
               track: 'Multi-Cloud Engineering (AWS · Azure · GCP)',
               bullets: [
-                'VPC/VNet networking · IAM & RBAC · Terraform multi-cloud IaC',
+                'Terraform multi-cloud IaC',
                 'Container orchestration: EKS, AKS, GKE · Serverless · FinOps',
-              ],
-            },
-            {
-              color: '#7c79ca',
-              hours: '2 Capstone tracks',
-              track: '9h and 5h end-to-end project builds',
-              bullets: [
-                'Full cycle: architecture design → infra provisioning → CI/CD → production deployment',
-                'Each learner left with a deployed system, a runbook, and an RCA they wrote themselves',
               ],
             },
           ].map(({ color, hours, track, bullets }) => (
@@ -340,10 +333,10 @@ const About = () => (
       </div>
     </motion.section>
 
-    {/* ═══════════ TOOLKIT — skill-tree style ═══════════ */}
+    {/* ═══════════ TOOLKIT ═══════════ */}
     <motion.section
       className="ap3-section"
-      style={{ background: '#0e1512', borderBottom: 'none', paddingBottom: 'clamp(72px,10vh,120px)' }}
+      style={{ background: '#f5f2ea', borderBottom: 'none', paddingBottom: 'clamp(72px,10vh,120px)' }}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: '-50px' }}
@@ -351,45 +344,24 @@ const About = () => (
     >
       <div className="ap3-section-inner">
         <motion.div className="ap3-section-label" variants={fadeUp}>
-          <span className="ap3-section-num" style={{ color: '#72dfac' }}>04</span>
-          <h2 className="ap3-section-title" style={{ color: '#fff' }}>Toolkit</h2>
-          <p className="ap3-section-sub" style={{ color: 'rgba(200,234,214,.45)' }}>Proficiency mapped like a skill tree.</p>
+          <span className="ap3-section-num">04</span>
+          <h2 className="ap3-section-title">Toolkit</h2>
+          <p className="ap3-section-sub">Technologies I use in production.</p>
         </motion.div>
 
-        <motion.div className="ap3-skill-tree" variants={stagger}>
+        <motion.div className="ap3-toolkit-grid" variants={stagger}>
           {skillGroups.map(({ label, color, items }) => (
-            <motion.div key={label} className="ap3-st-group" variants={fadeUp}>
-              <div className="ap3-st-header">
-                <span className="ap3-st-bar" style={{ background: color }} />
-                <span className="ap3-st-label" style={{ color }}>{label}</span>
+            <motion.div key={label} className="ap3-toolkit-group" variants={fadeUp}>
+              <div className="ap3-toolkit-header">
+                <span className="ap3-toolkit-dot" style={{ background: color }} />
+                <span className="ap3-toolkit-label" style={{ color }}>{label}</span>
               </div>
-              <div className="ap3-st-items">
-                {items.map((s, idx) => {
-                  // first item = max skill (5 bars), scale down slightly per position
-                  const bars = Math.max(3, 5 - Math.floor(idx / 2))
-                  return (
-                    <motion.div
-                      key={s}
-                      className="ap3-st-item"
-                      variants={fadeUp}
-                      whileHover={{ scale: 1.02, transition: { duration: 0.15 } }}
-                    >
-                      <span className="ap3-st-name">{s.length > 30 ? s.slice(0,28)+'…' : s}</span>
-                      <div className="ap3-st-meter">
-                        {[1,2,3,4,5].map(b => (
-                          <span
-                            key={b}
-                            className="ap3-st-pip"
-                            style={{
-                              background: b <= bars ? color : 'rgba(255,255,255,0.07)',
-                              boxShadow: b <= bars ? `0 0 6px ${color}80` : 'none',
-                            }}
-                          />
-                        ))}
-                      </div>
-                    </motion.div>
-                  )
-                })}
+              <div className="ap3-toolkit-tags">
+                {items.map(s => (
+                  <span key={s} className="ap3-toolkit-tag">
+                    {s.length > 32 ? s.slice(0, 30) + '…' : s}
+                  </span>
+                ))}
               </div>
             </motion.div>
           ))}

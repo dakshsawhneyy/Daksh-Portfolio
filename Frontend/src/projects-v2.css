@@ -279,3 +279,8 @@
   .pv2-page-header-inner { flex-direction: column; align-items: flex-start; }
   .pv2-header-right { align-items: flex-start; }
 }
+
+/* Mobile description — hidden on desktop, shown on mobile via mobile-premium.css */
+.pv2-mobile-desc {
+  display: none;
+}

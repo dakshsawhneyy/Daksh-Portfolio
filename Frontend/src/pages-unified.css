@@ -1366,7 +1366,7 @@ img { max-width: 100%; height: auto; }
 
 /* top badge — floats above-left of photo, hair-safe */
 .ap3-badge-tr {
-  top: -14px;        /* above the photo frame entirely */
+  top: 5px;
   left: -10px;       /* anchored left, card extends leftward from photo */
 }
 /* bottom badge — bottom-right corner */
@@ -1935,4 +1935,112 @@ img { max-width: 100%; height: auto; }
 /* Tighten float card gap slightly for logo layout */
 .ap3-float-card {
   gap: 11px !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   TOOLKIT — light warm theme, clean tag groups
+   ══════════════════════════════════════════════════════════════════ */
+.ap3-toolkit-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ap3-toolkit-group {
+  background: var(--pu-card);
+  border: 1px solid var(--pu-border);
+  border-radius: 12px;
+  padding: 20px 22px;
+  transition: box-shadow .2s;
+}
+.ap3-toolkit-group:hover {
+  box-shadow: 0 4px 20px rgba(17,18,16,.07);
+}
+
+.ap3-toolkit-header {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--pu-border);
+}
+.ap3-toolkit-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ap3-toolkit-label {
+  font: 700 11px ui-monospace, monospace;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.ap3-toolkit-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ap3-toolkit-tag {
+  display: inline-block;
+  padding: 6px 12px;
+  background: var(--pu-panel);
+  border: 1px solid var(--pu-border);
+  border-radius: 6px;
+  font: 500 12px 'DM Sans', sans-serif;
+  color: var(--pu-ink2);
+  transition: background .15s, border-color .15s;
+}
+.ap3-toolkit-group:hover .ap3-toolkit-tag {
+  background: #fff;
+  border-color: #c8c6be;
+}
+
+/* ── Bio two-line layout ────────────────────────────────────────── */
+.ap3-bio-line {
+  margin: 0 0 10px !important;
+}
+.ap3-bio-line:last-of-type {
+  margin-bottom: 24px !important;
+}
+
+/* ── Float card badges — polished ──────────────────────────────── */
+.ap3-float-card {
+  /* Override: cleaner shadow, tighter padding */
+  box-shadow:
+    0 4px 16px rgba(17,18,16,.12),
+    0 0 0 1px rgba(17,18,16,.06) !important;
+  padding: 10px 13px !important;
+  gap: 10px !important;
+  border-radius: 10px !important;
+  border: none !important;  /* shadow ring replaces border */
+  background: #fff !important;
+}
+.ap3-fc-val {
+  font: 700 12px 'Space Grotesk', sans-serif !important;
+  color: var(--pu-ink) !important;
+  letter-spacing: -.01em !important;
+}
+.ap3-fc-sub {
+  font: 400 10px 'DM Sans', sans-serif !important;
+  color: var(--pu-muted) !important;
+  margin-top: 2px !important;
+}
+.ap3-company-logo {
+  border-radius: 7px !important;
+  width: 32px !important;
+  height: 32px !important;
+  flex-shrink: 0 !important;
+}
+.ap3-company-logo svg {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+/* Mobile toolkit */
+@media (max-width: 680px) {
+  .ap3-toolkit-group { padding: 16px 16px !important; border-radius: 10px !important; }
+  .ap3-toolkit-tag { font-size: 11px !important; padding: 5px 10px !important; }
+  .ap3-bio-line { font-size: 13px !important; }
 }

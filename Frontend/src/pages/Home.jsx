@@ -414,7 +414,7 @@ const Home = () => {
       >
         {[
           { value: 40,  suffix: '%', label: 'P95 latency reduction',      icon: <Zap size={18} /> },
-          { value: 78,  suffix: '%', label: 'MTTR reduction (AIOps)',      icon: <Activity size={18} /> },
+          { value: 78,  suffix: '%', label: 'MTTR reduction',      icon: <Activity size={18} /> },
           { value: 70,  suffix: '%', label: 'Deploy time cut',             icon: <GitBranch size={18} /> },
           { value: 180, suffix: '+ h', label: 'DevOps hours taught',         icon: <Terminal size={18} /> },
           { value: 100, suffix: '+ h', label: 'Multicloud hours taught',     icon: <ShieldCheck size={18} /> },

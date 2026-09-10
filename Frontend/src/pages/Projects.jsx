@@ -1,20 +1,21 @@
-import { ArrowUpRight, ExternalLink, Github, Search } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { ArrowUpRight, ExternalLink, Github } from 'lucide-react'
+import { useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from 'react'
 import projects from '../data/projects'
 import '../projects-v2.css'
 
 const slugify = (v) => v.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 
 const fadeUp  = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.22,1,0.36,1] } } }
-const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.06 } } }
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.05 } } }
 
 const CATEGORY_COLOR = {
-  'Cloud':        '#2d8bbf',
-  'System Design':'#27ae78',
-  'DevOps':       '#d4940a',
-  'Python':       '#7c79ca',
-  'Reliability':  '#e8674a',
+  'Cloud':         '#2d8bbf',
+  'System Design': '#27ae78',
+  'DevOps':        '#d4940a',
+  'Python':        '#7c79ca',
+  'Reliability':   '#e8674a',
 }
 const catColor = (cats = []) => {
   for (const c of cats) {
@@ -24,7 +25,7 @@ const catColor = (cats = []) => {
   return '#71736d'
 }
 
-const ProjectCard = ({ project, idx, featured }) => {
+const ProjectCard = ({ project, featured }) => {
   const [hov, setHov] = useState(false)
   const color = catColor(project.category || [])
   const cats  = (project.category || []).flatMap(c => c.split(',').map(v => v.trim()))
@@ -80,8 +81,10 @@ const ProjectCard = ({ project, idx, featured }) => {
           <span className="pv2-year">{project.year || '2026'}</span>
         </div>
         <h2>{project.title}</h2>
+        {/* Mobile description — visible on mobile since hover overlay unreachable on touch */}
+        <p className="pv2-mobile-desc">{project.description}</p>
         <div className="pv2-tags">
-          {(project.tags || []).slice(0, featured ? 5 : 4).map(t => (
+          {(project.tags || []).slice(0, featured ? 5 : 3).map(t => (
             <span key={t}>{t.replace(/^#/, '')}</span>
           ))}
         </div>
@@ -103,27 +106,15 @@ const ProjectCard = ({ project, idx, featured }) => {
 }
 
 const Projects = () => {
-  const [query,  setQuery]      = useState('')
-  const [filter, setFilter]     = useState('All')
-  const [showSearch, setShowSearch] = useState(false)
-
   const list = useMemo(
     () => projects.map((p, i) => ({ ...p, _idx: i, slug: slugify(p.title) })),
     []
   )
 
-  const catNames = p => (p.category || []).flatMap(c => c.split(',').map(v => v.trim()))
-  const categories = ['All', ...new Set(list.flatMap(catNames))].slice(0, 8)
-
-  const visible = list.filter(p => {
-    const text = `${p.title} ${p.description} ${(p.tags||[]).join(' ')}`.toLowerCase()
-    return (filter === 'All' || catNames(p).includes(filter)) && text.includes(query.toLowerCase())
-  })
-
   return (
     <main className="pv2-root">
 
-      {/* ── Light page header — no dark hero ── */}
+      {/* Page header */}
       <motion.section
         className="pv2-page-header"
         initial="hidden"
@@ -147,70 +138,21 @@ const Projects = () => {
         </div>
       </motion.section>
 
-      {/* ── Toolbar ── */}
-      <div className="pv2-toolbar">
-        <div className="pv2-filters" role="group" aria-label="Filter projects">
-          {categories.map(cat => (
-            <button
-              key={cat}
-              className={`pv2-filter-btn ${filter === cat ? 'active' : ''}`}
-              onClick={() => setFilter(cat)}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-        <div className="pv2-toolbar-right">
-          <AnimatePresence>
-            {showSearch && (
-              <motion.div
-                className="pv2-search-wrap"
-                initial={{ opacity:0, width:0 }} animate={{ opacity:1, width:180 }}
-                exit={{ opacity:0, width:0 }} transition={{ duration:0.18 }}
-              >
-                <Search size={13} />
-                <input
-                  autoFocus value={query}
-                  onChange={e => setQuery(e.target.value)}
-                  placeholder="Search…"
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
-          <button
-            className={`pv2-icon-btn ${showSearch ? 'active' : ''}`}
-            onClick={() => { setShowSearch(s => !s); if (showSearch) setQuery('') }}
-            aria-label="Search"
-          >
-            <Search size={15} />
-          </button>
-        </div>
-      </div>
-
-      {/* ── Cards ── */}
-      {visible.length > 0 ? (
-        <motion.div
-          className="pv2-grid"
-          initial="hidden"
-          animate="visible"
-          variants={stagger}
-          key={filter + query}
-        >
-          {visible.map((p, i) => (
-            <ProjectCard
-              key={p.slug}
-              project={p}
-              idx={p._idx}
-              featured={i === 0 && filter === 'All' && !query}
-            />
-          ))}
-        </motion.div>
-      ) : (
-        <div className="pv2-empty">
-          <p>No projects match.</p>
-          <button onClick={() => { setFilter('All'); setQuery('') }}>Clear filters</button>
-        </div>
-      )}
+      {/* Cards — no filter toolbar */}
+      <motion.div
+        className="pv2-grid"
+        initial="hidden"
+        animate="visible"
+        variants={stagger}
+      >
+        {list.map((p, i) => (
+          <ProjectCard
+            key={p.slug}
+            project={p}
+            featured={i === 0}
+          />
+        ))}
+      </motion.div>
 
     </main>
   )

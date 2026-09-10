@@ -1,22 +1,32 @@
 import { Navigate, Route, Routes, useNavigate, useLocation } from "react-router-dom"
 import { AnimatePresence, motion } from "framer-motion"
+import { useEffect, useState } from "react"
 import './App.css'
 import './portfolio-polish.css'
 import './pages-unified.css'
 import './responsive.css'
+import './mobile-premium.css'
 import Home from "./pages/Home"
 import About from "./pages/About"
 import Navbar from "./components/Navbar"
 import Projects from "./pages/Projects"
 import Blog from "./pages/Blog"
 import Contact from "./pages/Contact"
-import { useEffect, useState } from "react"
 import Footer from "./components/Footer"
 import TrackVisitor from "./components/TrackVisitor"
 import SideRail from "./components/SideRail"
 import SystemWorkspace from "./components/SystemWorkspace"
 import CommandPalette from "./components/CommandPalette"
 import SreTerminal from "./components/SreTerminal"
+
+/* Scroll to top on every route change */
+const ScrollToTop = () => {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+  }, [pathname])
+  return null
+}
 
 // Instant on first load, smooth fade on route changes
 const PageTransition = ({ children }) => (
@@ -87,6 +97,7 @@ const App = () => {
   return (
     <div className="portfolio-app">
       <TrackVisitor />
+      <ScrollToTop />
 
       {!isSystem && <Navbar onOpenSreMode={() => setSreModeOpen(true)} />}
       <SreTerminal open={sreModeOpen} onClose={() => setSreModeOpen(false)} />

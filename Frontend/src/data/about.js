@@ -3,7 +3,7 @@ export const timeline = [
     year: "Feb 2026 – Present",
     title: "Multi-Cloud Computing Instructor · SelfCode Academy",
     role: "Promoted from DevOps Instructor",
-    description: "Design and teach a multi-tier curriculum across AWS, Azure, and GCP — covering VPC/VNet networking, IAM & RBAC, Terraform multi-cloud IaC, container orchestration (EKS, AKS, GKE), serverless functions, multi-cloud CI/CD, and FinOps cost optimisation. Directed two end-to-end capstone tracks (9 hr and 5 hr) from architecture through deployment.",
+    description: "Design and teach a multi-tier curriculum across AWS, Azure, and GCP — covering Terraform multi-cloud IaC, container orchestration (EKS, AKS, GKE), serverless functions, multi-cloud CI/CD, and FinOps cost optimisation. Directed two end-to-end capstone tracks (9 hr and 5 hr) from architecture through deployment.",
     type: "teaching",
     extra: "180+ hrs DevOps · Promoted to multi-cloud track",
   },
