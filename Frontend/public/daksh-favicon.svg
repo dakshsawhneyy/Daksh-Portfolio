@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#111827"/>
+      <stop offset="1" stop-color="#030712"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#ff3d00"/>
+      <stop offset="1" stop-color="#ff9d00"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Compact browser-tab mark -->
+  <rect x="3" y="3" width="58" height="58" rx="14" fill="url(#bg)"/>
+
+  <!-- D monogram -->
+  <path
+    d="M18 14h13c11 0 18 7.2 18 18s-7 18-18 18H18V14Zm9 8v20h4c5.8 0 9-3.5 9-10s-3.2-10-9-10h-4Z"
+    fill="#f4f4f5"
+  />
+
+  <!-- Reliability / forward-motion accent -->
+  <path
+    d="M17 46 29 34h8l-13 13-7 3 0-4Z"
+    fill="url(#accent)"
+  />
+  <path
+    d="m27 46 13-13h7L34 46h-7Z"
+    fill="url(#accent)"
+  />
+</svg>

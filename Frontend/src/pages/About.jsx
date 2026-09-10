@@ -46,11 +46,11 @@ const About = () => (
           </motion.p>
 
           <motion.p className="ap3-bio ap3-bio-line" variants={fadeUp}>
-            I build <strong>multicloud systems</strong> that run in production —
+            I build <strong>multicloud systems</strong> that run in production......     
             self-healing platforms, observability pipelines, and reliable infrastructure.
           </motion.p>
           <motion.p className="ap3-bio ap3-bio-line" variants={fadeUp}>
-            I also <strong>teach multi-cloud engineering</strong> at SelfCode Academy,
+            I also <strong>teach Multi-Cloud Computing</strong>, 
             covering AWS, Azure, and GCP from networking through to production deployments.
           </motion.p>
 
@@ -92,21 +92,18 @@ const About = () => (
               loading="eager"
             />
 
-            {/* Multi-Cloud Instructor — top, shifted left to clear hair */}
+            {/* Multi-Cloud Instructor badge — dark glass pill */}
             <motion.div
               className="ap3-float-card ap3-badge-tr"
-              initial={{ opacity: 0, y: -12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7, duration: 0.5 }}
+              initial={{ opacity: 0, y: -12, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: 0.7, duration: 0.5, ease: [0.22,1,0.36,1] }}
             >
-              {/* SelfCode Academy logo mark */}
               <div className="ap3-company-logo ap3-logo-selfcode">
-                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-label="SelfCode Academy">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
                   <rect width="28" height="28" rx="7" fill="#0f172a"/>
-                  {/* brackets */}
                   <path d="M8 9L5 14l3 5" stroke="#38bdf8" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                   <path d="M20 9l3 5-3 5" stroke="#38bdf8" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                  {/* slash */}
                   <path d="M16 8l-4 12" stroke="#e8674a" strokeWidth="1.8" strokeLinecap="round"/>
                 </svg>
               </div>
@@ -116,22 +113,18 @@ const About = () => (
               </div>
             </motion.div>
 
-            {/* AWS Intern — bottom-right */}
+            {/* AWS Intern badge */}
             <motion.div
               className="ap3-float-card ap3-badge-bl"
-              initial={{ opacity: 0, x: 16 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.85, duration: 0.5 }}
+              initial={{ opacity: 0, y: 12, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ delay: 0.85, duration: 0.5, ease: [0.22,1,0.36,1] }}
             >
-              {/* AWS logo */}
               <div className="ap3-company-logo ap3-logo-aws">
-                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-label="Amazon Web Services">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
                   <rect width="28" height="28" rx="7" fill="#232f3e"/>
-                  {/* AWS smile arc */}
                   <path d="M7.5 17.5c1.8 1.6 4.2 2.5 6.5 2.5s4.7-.9 6.5-2.5" stroke="#ff9900" strokeWidth="1.8" strokeLinecap="round"/>
-                  {/* Arrow tip on smile */}
                   <path d="M19.5 16l1.5 1.5-1.5 1" stroke="#ff9900" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                  {/* "aws" text-like mark */}
                   <text x="5.5" y="15" fontFamily="Arial, sans-serif" fontSize="7.5" fontWeight="800" fill="white" letterSpacing="0.5">aws</text>
                 </svg>
               </div>
@@ -147,8 +140,8 @@ const About = () => (
       {/* stats bar */}
       <motion.div className="ap3-stats-bar" initial="hidden" animate="visible" variants={stagger}>
         {[
-          { val: '180h+', label: 'DevOps content taught'      },
-          { val: '100h+', label: 'Multi-cloud content taught'  },
+          { val: '180h+', label: 'DevOps content delivered'      },
+          { val: '100h+', label: 'Multi-cloud content delivered'  },
           { val: '40%',   label: 'P95 latency cut (AWS intern)' },
           { val: '8.2',   label: 'CGPA — B.Tech CSE'          },
         ].map(({ val, label }) => (
@@ -336,7 +329,7 @@ const About = () => (
     {/* ═══════════ TOOLKIT ═══════════ */}
     <motion.section
       className="ap3-section"
-      style={{ background: '#f5f2ea', borderBottom: 'none', paddingBottom: 'clamp(72px,10vh,120px)' }}
+      style={{ background: '#f5f2ea', borderBottom: 'none', paddingBottom: 'clamp(60px,8vh,100px)' }}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: '-50px' }}
@@ -346,20 +339,17 @@ const About = () => (
         <motion.div className="ap3-section-label" variants={fadeUp}>
           <span className="ap3-section-num">04</span>
           <h2 className="ap3-section-title">Toolkit</h2>
-          <p className="ap3-section-sub">Technologies I use in production.</p>
+          <p className="ap3-section-sub">What I actually use.</p>
         </motion.div>
 
-        <motion.div className="ap3-toolkit-grid" variants={stagger}>
+        <motion.div className="ap3-toolkit-compact" variants={stagger}>
           {skillGroups.map(({ label, color, items }) => (
-            <motion.div key={label} className="ap3-toolkit-group" variants={fadeUp}>
-              <div className="ap3-toolkit-header">
-                <span className="ap3-toolkit-dot" style={{ background: color }} />
-                <span className="ap3-toolkit-label" style={{ color }}>{label}</span>
-              </div>
-              <div className="ap3-toolkit-tags">
+            <motion.div key={label} className="ap3-tc-row" variants={fadeUp}>
+              <span className="ap3-tc-label" style={{ color }}>{label}</span>
+              <div className="ap3-tc-pills">
                 {items.map(s => (
-                  <span key={s} className="ap3-toolkit-tag">
-                    {s.length > 32 ? s.slice(0, 30) + '…' : s}
+                  <span key={s} className="ap3-tc-pill">
+                    {s.includes('(') ? s.slice(0, s.indexOf('(')).trim() : s}
                   </span>
                 ))}
               </div>

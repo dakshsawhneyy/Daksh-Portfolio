@@ -1,14 +1,10 @@
 import { ArrowUpRight, ExternalLink, Github } from 'lucide-react'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useState } from 'react'
 import projects from '../data/projects'
 import '../projects-v2.css'
 
 const slugify = (v) => v.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
-
-const fadeUp  = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.22,1,0.36,1] } } }
-const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.05 } } }
 
 const CATEGORY_COLOR = {
   'Cloud':         '#2d8bbf',
@@ -25,81 +21,101 @@ const catColor = (cats = []) => {
   return '#71736d'
 }
 
-const ProjectCard = ({ project, featured }) => {
+/* ─── single project row ─── */
+const ProjectRow = ({ project, index }) => {
   const [hov, setHov] = useState(false)
   const color = catColor(project.category || [])
   const cats  = (project.category || []).flatMap(c => c.split(',').map(v => v.trim()))
-  const initials = project.title.split(' ').slice(0,2).map(w => w[0]).join('').toUpperCase()
+  const num   = String(index + 1).padStart(2, '0')
 
   return (
     <motion.article
-      className={`pv2-card${featured ? ' pv2-card-featured' : ''}`}
-      variants={fadeUp}
+      className="prj-row"
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ duration: 0.45, ease: [0.22,1,0.36,1], delay: index * 0.03 }}
     >
-      <div className="pv2-card-img">
-        {project.image
-          ? <img src={project.image} alt={project.title} loading="lazy" />
-          : <div className="pv2-card-img-placeholder">{initials}</div>
-        }
-        <div className="pv2-card-accent" style={{ background: color }} />
+      {/* left accent line that fills on hover */}
+      <motion.div
+        className="prj-row-accent"
+        animate={{ scaleY: hov ? 1 : 0 }}
+        style={{ background: color, originY: 0 }}
+        transition={{ duration: 0.25 }}
+      />
+
+      {/* index */}
+      <span className="prj-row-num" style={{ color: hov ? color : undefined }}>{num}</span>
+
+      {/* main content */}
+      <div className="prj-row-body">
+        <div className="prj-row-top">
+          <h2 className="prj-row-title">{project.title}</h2>
+          <div className="prj-row-cats">
+            {cats.slice(0,2).map(c => (
+              <span key={c} className="prj-row-cat"
+                style={{ color, borderColor: color + '40', background: color + '0d' }}>
+                {c}
+              </span>
+            ))}
+            <span className="prj-row-year">{project.year || '2026'}</span>
+          </div>
+        </div>
 
         <AnimatePresence>
           {hov && (
-            <motion.div
-              className="pv2-card-overlay"
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              transition={{ duration: 0.16 }}
+            <motion.p
+              className="prj-row-desc"
+              initial={{ opacity: 0, height: 0, marginTop: 0 }}
+              animate={{ opacity: 1, height: 'auto', marginTop: 10 }}
+              exit={{ opacity: 0, height: 0, marginTop: 0 }}
+              transition={{ duration: 0.22 }}
             >
-              <p className="pv2-overlay-desc">{project.description}</p>
-              <div className="pv2-overlay-actions">
-                {project.github && project.github !== '#' && (
-                  <a href={project.github} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}>
-                    <Github size={13} /> Source
-                  </a>
-                )}
-                {project.live && project.live !== '#' && (
-                  <a href={project.live} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()}>
-                    <ExternalLink size={13} /> Live
-                  </a>
-                )}
-              </div>
-            </motion.div>
+              {project.description}
+            </motion.p>
           )}
         </AnimatePresence>
-      </div>
 
-      <div className="pv2-card-body">
-        <div className="pv2-card-meta">
-          {cats.slice(0,2).map(c => (
-            <span key={c} className="pv2-cat"
-              style={{ color, borderColor: color + '50', background: color + '10' }}>
-              {c}
-            </span>
-          ))}
-          <span className="pv2-year">{project.year || '2026'}</span>
-        </div>
-        <h2>{project.title}</h2>
-        {/* Mobile description — visible on mobile since hover overlay unreachable on touch */}
-        <p className="pv2-mobile-desc">{project.description}</p>
-        <div className="pv2-tags">
-          {(project.tags || []).slice(0, featured ? 5 : 3).map(t => (
+        <div className="prj-row-tags">
+          {(project.tags || []).slice(0, 5).map(t => (
             <span key={t}>{t.replace(/^#/, '')}</span>
           ))}
         </div>
-        <div className="pv2-card-footer">
-          {project.github && project.github !== '#' && (
-            <a href={project.github} target="_blank" rel="noreferrer" className="pv2-link">
-              <Github size={12} /> Source <ArrowUpRight size={11} />
-            </a>
-          )}
-          {project.live && project.live !== '#' && (
-            <a href={project.live} target="_blank" rel="noreferrer" className="pv2-link pv2-link-live">
-              <ExternalLink size={12} /> Live <ArrowUpRight size={11} />
-            </a>
-          )}
-        </div>
+      </div>
+
+      {/* image reveal on hover */}
+      <AnimatePresence>
+        {hov && project.image && (
+          <motion.div
+            className="prj-row-thumb"
+            initial={{ opacity: 0, scale: 0.94, x: 12 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            exit={{ opacity: 0, scale: 0.94, x: 12 }}
+            transition={{ duration: 0.22 }}
+          >
+            <img src={project.image} alt={project.title} />
+            <div className="prj-thumb-accent" style={{ background: color }} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* links */}
+      <div className="prj-row-links">
+        {project.github && project.github !== '#' && (
+          <a href={project.github} target="_blank" rel="noreferrer" className="prj-row-link" title="Source">
+            <Github size={14} />
+          </a>
+        )}
+        {project.live && project.live !== '#' && (
+          <a href={project.live} target="_blank" rel="noreferrer" className="prj-row-link prj-row-link-live" title="Live">
+            <ExternalLink size={14} />
+          </a>
+        )}
+        {(!project.github || project.github === '#') && (!project.live || project.live === '#') && (
+          <span className="prj-row-arrow"><ArrowUpRight size={16} /></span>
+        )}
       </div>
     </motion.article>
   )
@@ -112,47 +128,39 @@ const Projects = () => {
   )
 
   return (
-    <main className="pv2-root">
+    <main className="prj-root">
 
-      {/* Page header */}
-      <motion.section
-        className="pv2-page-header"
-        initial="hidden"
-        animate="visible"
-        variants={stagger}
-      >
-        <div className="pv2-page-header-inner">
-          <div>
-            <motion.span className="pv2-eyebrow" variants={fadeUp}>
-              Systems archive · {list.length} projects
-            </motion.span>
-            <motion.h1 className="pv2-h1" variants={fadeUp}>
-              Built for the<br /><em>real world.</em>
-            </motion.h1>
-          </div>
-          <motion.div className="pv2-header-right" variants={fadeUp}>
-            <span className="pv2-total">
-              Multicloud · SRE · Observability · Chaos
-            </span>
-          </motion.div>
-        </div>
-      </motion.section>
-
-      {/* Cards — no filter toolbar */}
+      {/* Header */}
       <motion.div
-        className="pv2-grid"
-        initial="hidden"
-        animate="visible"
-        variants={stagger}
+        className="prj-header"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
       >
-        {list.map((p, i) => (
-          <ProjectCard
-            key={p.slug}
-            project={p}
-            featured={i === 0}
-          />
-        ))}
+        <div className="prj-header-inner">
+          <p className="prj-eyebrow">Systems archive · {list.length} projects</p>
+          <h1 className="prj-h1">
+            Built for the<br /><em>real world.</em>
+          </h1>
+          <p className="prj-header-sub">
+            Multicloud infrastructure · SRE platforms · Observability pipelines · Chaos engineering
+          </p>
+        </div>
       </motion.div>
+
+      {/* Column headers */}
+      <div className="prj-list-header">
+        <span className="prj-lh-num">#</span>
+        <span className="prj-lh-title">Project</span>
+        <span className="prj-lh-links">Links</span>
+      </div>
+
+      {/* Project list */}
+      <div className="prj-list">
+        {list.map((p, i) => (
+          <ProjectRow key={p.slug} project={p} index={i} />
+        ))}
+      </div>
 
     </main>
   )

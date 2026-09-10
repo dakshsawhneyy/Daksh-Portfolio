@@ -1281,6 +1281,7 @@ img { max-width: 100%; height: auto; }
    ABOUT PHOTO FRAME — spectacular version
    ══════════════════════════════════════════════════════════════════ */
 
+/* ── Photo frame: dramatic dark treatment ────────────────────────── */
 .ap3-photo-frame {
   position: relative;
   width: 300px;
@@ -1289,62 +1290,88 @@ img { max-width: 100%; height: auto; }
   flex-shrink: 0;
   overflow: visible;
   box-sizing: content-box;
-  padding-top: 20px; /* room for top badge that sits above frame */
+  padding-top: 20px;
 }
 
-/* decorative corner brackets */
+/* Dark radial glow background — dramatic, premium */
+.ap3-photo-bg {
+  position: absolute;
+  bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 270px; height: 340px;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(232,103,74,.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 100%, rgba(17,18,16,.92) 0%, rgba(30,32,28,.85) 60%, rgba(17,18,16,.7) 100%);
+  border-radius: 135px 135px 20px 20px;
+  z-index: 0;
+  box-shadow:
+    0 0 0 1px rgba(232,103,74,.15),
+    0 0 80px rgba(232,103,74,.08),
+    0 40px 80px rgba(17,18,16,.4);
+}
+
+/* Animated ring around photo */
+.ap3-photo-bg::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(
+    160deg,
+    rgba(232,103,74,.5) 0%,
+    transparent 30%,
+    transparent 60%,
+    rgba(114,223,172,.3) 100%
+  );
+  animation: photo-ring-spin 8s linear infinite;
+  z-index: -1;
+}
+@keyframes photo-ring-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Subtle grid dots on bg */
+.ap3-photo-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.06) 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0.6;
+}
+
+/* Corner brackets — coral, thinner and sharper */
 .ap3-corner {
   position: absolute;
-  width: 22px; height: 22px;
+  width: 20px; height: 20px;
   z-index: 3;
 }
 .ap3-corner::before, .ap3-corner::after {
   content: '';
   position: absolute;
   background: var(--pu-coral);
-  border-radius: 2px;
+  border-radius: 1px;
+  opacity: 0.9;
 }
-.ap3-corner::before { width: 100%; height: 3px; }
-.ap3-corner::after  { width: 3px;  height: 100%; }
-
-.ap3-corner-tl { top: -6px;  left: -6px;  }
-.ap3-corner-tr { top: -6px;  right: -6px; transform: scaleX(-1); }
-.ap3-corner-bl { bottom: -6px; left: -6px;  transform: scaleY(-1); }
-.ap3-corner-br { bottom: -6px; right: -6px; transform: scale(-1); }
-
-/* warm gradient background behind photo */
-.ap3-photo-bg {
-  position: absolute;
-  bottom: 0; left: 50%;
-  transform: translateX(-50%);
-  width: 260px; height: 330px;
-  background: linear-gradient(160deg, #f0ede5 30%, #e6e2d8 100%);
-  border-radius: 130px 130px 16px 16px;
-  z-index: 0;
-  box-shadow: 0 20px 60px rgba(17,18,16,.1);
-}
-
-/* subtle grid overlay on bg */
-.ap3-photo-bg::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background-image:
-    linear-gradient(rgba(232,103,74,.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(232,103,74,.07) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
+.ap3-corner::before { width: 100%; height: 2px; }
+.ap3-corner::after  { width: 2px;  height: 100%; }
+.ap3-corner-tl { top: -4px;  left: -4px;  }
+.ap3-corner-tr { top: -4px;  right: -4px; transform: scaleX(-1); }
+.ap3-corner-bl { bottom: -4px; left: -4px;  transform: scaleY(-1); }
+.ap3-corner-br { bottom: -4px; right: -4px; transform: scale(-1); }
 
 .ap3-photo {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   width: 100%;
   height: 100%;
   object-fit: contain;
   object-position: bottom center;
   display: block;
-  filter: drop-shadow(0 12px 40px rgba(17,18,16,.15));
+  filter: drop-shadow(0 0 0 transparent);
 }
 
 /* floating info cards — sit BELOW the photo in a row */
@@ -2043,4 +2070,105 @@ img { max-width: 100%; height: auto; }
   .ap3-toolkit-group { padding: 16px 16px !important; border-radius: 10px !important; }
   .ap3-toolkit-tag { font-size: 11px !important; padding: 5px 10px !important; }
   .ap3-bio-line { font-size: 13px !important; }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   TOOLKIT COMPACT — inline rows, no bloat
+   ══════════════════════════════════════════════════════════════════ */
+.ap3-toolkit-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--pu-border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--pu-card);
+}
+
+.ap3-tc-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 0;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--pu-border);
+  transition: background .15s;
+}
+.ap3-tc-row:last-child { border-bottom: none; }
+.ap3-tc-row:hover { background: var(--pu-panel); }
+
+.ap3-tc-label {
+  font: 700 10px ui-monospace, monospace;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.ap3-tc-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ap3-tc-pill {
+  display: inline-block;
+  padding: 4px 10px;
+  background: var(--pu-panel);
+  border: 1px solid var(--pu-border);
+  border-radius: 5px;
+  font: 500 11px 'DM Sans', sans-serif;
+  color: var(--pu-ink2);
+  white-space: nowrap;
+  transition: background .13s, border-color .13s;
+}
+.ap3-tc-row:hover .ap3-tc-pill {
+  background: #fff;
+  border-color: #c8c6be;
+}
+
+@media (max-width: 680px) {
+  .ap3-tc-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 12px 16px;
+  }
+  .ap3-tc-pill { font-size: 10px; padding: 3px 8px; }
+}
+
+/* ── Float card badges — premium dark glass style ───────────────── */
+.ap3-float-card {
+  background: rgba(17, 18, 16, 0.82) !important;
+  border: 1px solid rgba(255,255,255,.1) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  box-shadow:
+    0 8px 32px rgba(0,0,0,.35),
+    0 0 0 1px rgba(255,255,255,.06) !important;
+  border-radius: 12px !important;
+  padding: 10px 14px !important;
+  gap: 10px !important;
+}
+.ap3-fc-val {
+  font: 700 12px 'Space Grotesk', sans-serif !important;
+  color: #fff !important;
+  letter-spacing: -.01em !important;
+  line-height: 1.2 !important;
+}
+.ap3-fc-sub {
+  font: 400 10px 'DM Sans', sans-serif !important;
+  color: rgba(255,255,255,.5) !important;
+  margin-top: 2px !important;
+}
+.ap3-company-logo {
+  border-radius: 8px !important;
+  width: 32px !important;
+  height: 32px !important;
+  flex-shrink: 0 !important;
+  overflow: hidden !important;
+  display: grid !important;
+  place-items: center !important;
+}
+.ap3-company-logo svg {
+  width: 24px !important;
+  height: 24px !important;
 }
