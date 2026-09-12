@@ -1,5 +1,5 @@
 import { ArrowUpRight, ExternalLink, Github } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import projects from '../data/projects'
 import '../projects-v2.css'
@@ -21,35 +21,49 @@ const catColor = (cats = []) => {
   return '#71736d'
 }
 
-/* ─── single project row ─── */
+/* ─── single project row — hover on desktop, tap-to-expand on touch ─── */
 const ProjectRow = ({ project, index }) => {
-  const [hov, setHov] = useState(false)
+  const [expanded, setExpanded] = useState(false) // touch tap state
+  const [hov,      setHov]      = useState(false)  // mouse hover state
+
+  // merge: show expanded content if either hovered (desktop) or tapped (mobile)
+  const isOpen = hov || expanded
+
   const color = catColor(project.category || [])
   const cats  = (project.category || []).flatMap(c => c.split(',').map(v => v.trim()))
   const num   = String(index + 1).padStart(2, '0')
 
+  // On touch: toggle. On mouse: let hover handle it.
+  const handleClick = useCallback((e) => {
+    // Only toggle on touch — detect by checking pointerType via a ref trick
+    if (window.matchMedia('(hover: none)').matches) {
+      setExpanded(prev => !prev)
+    }
+  }, [])
+
   return (
     <motion.article
-      className="prj-row"
+      className={`prj-row ${isOpen ? 'prj-row-open' : ''}`}
       onMouseEnter={() => setHov(true)}
       onMouseLeave={() => setHov(false)}
+      onClick={handleClick}
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.45, ease: [0.22,1,0.36,1], delay: index * 0.03 }}
     >
-      {/* left accent line that fills on hover */}
+      {/* accent bar */}
       <motion.div
         className="prj-row-accent"
-        animate={{ scaleY: hov ? 1 : 0 }}
+        animate={{ scaleY: isOpen ? 1 : 0 }}
         style={{ background: color, originY: 0 }}
         transition={{ duration: 0.25 }}
       />
 
       {/* index */}
-      <span className="prj-row-num" style={{ color: hov ? color : undefined }}>{num}</span>
+      <span className="prj-row-num" style={{ color: isOpen ? color : undefined }}>{num}</span>
 
-      {/* main content */}
+      {/* body */}
       <div className="prj-row-body">
         <div className="prj-row-top">
           <h2 className="prj-row-title">{project.title}</h2>
@@ -64,8 +78,9 @@ const ProjectRow = ({ project, index }) => {
           </div>
         </div>
 
+        {/* description — animated in/out */}
         <AnimatePresence>
-          {hov && (
+          {isOpen && (
             <motion.p
               className="prj-row-desc"
               initial={{ opacity: 0, height: 0, marginTop: 0 }}
@@ -85,7 +100,7 @@ const ProjectRow = ({ project, index }) => {
         </div>
       </div>
 
-      {/* image reveal on hover */}
+      {/* thumbnail — desktop hover only */}
       <AnimatePresence>
         {hov && project.image && (
           <motion.div
@@ -104,18 +119,26 @@ const ProjectRow = ({ project, index }) => {
       {/* links */}
       <div className="prj-row-links">
         {project.github && project.github !== '#' && (
-          <a href={project.github} target="_blank" rel="noreferrer" className="prj-row-link" title="Source">
+          <a href={project.github} target="_blank" rel="noreferrer"
+            className="prj-row-link" title="Source"
+            onClick={e => e.stopPropagation()}>
             <Github size={14} />
           </a>
         )}
         {project.live && project.live !== '#' && (
-          <a href={project.live} target="_blank" rel="noreferrer" className="prj-row-link prj-row-link-live" title="Live">
+          <a href={project.live} target="_blank" rel="noreferrer"
+            className="prj-row-link prj-row-link-live" title="Live"
+            onClick={e => e.stopPropagation()}>
             <ExternalLink size={14} />
           </a>
         )}
         {(!project.github || project.github === '#') && (!project.live || project.live === '#') && (
           <span className="prj-row-arrow"><ArrowUpRight size={16} /></span>
         )}
+        {/* mobile expand indicator */}
+        <span className="prj-row-expand-icon" style={{ color }}>
+          {expanded ? '−' : '+'}
+        </span>
       </div>
     </motion.article>
   )
@@ -129,8 +152,6 @@ const Projects = () => {
 
   return (
     <main className="prj-root">
-
-      {/* Header */}
       <motion.div
         className="prj-header"
         initial={{ opacity: 0, y: 20 }}
@@ -148,20 +169,17 @@ const Projects = () => {
         </div>
       </motion.div>
 
-      {/* Column headers */}
       <div className="prj-list-header">
         <span className="prj-lh-num">#</span>
         <span className="prj-lh-title">Project</span>
         <span className="prj-lh-links">Links</span>
       </div>
 
-      {/* Project list */}
       <div className="prj-list">
         {list.map((p, i) => (
           <ProjectRow key={p.slug} project={p} index={i} />
         ))}
       </div>
-
     </main>
   )
 }

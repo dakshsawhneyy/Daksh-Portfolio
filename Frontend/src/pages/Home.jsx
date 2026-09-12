@@ -509,19 +509,87 @@ const Home = () => (
       </motion.div>
     </motion.section>
 
-    {/* ══ ON-CALL TICKER ══ */}
-    <motion.section className="hv2-oncall"
+    {/* ══ SKILL MARQUEE — colored pills, two-row scroll ══ */}
+    <motion.div className="hv2-marquee-wrap"
       initial="hidden" whileInView="visible" viewport={{once:true}} variants={fadeIn}>
-      <div className="hv2-oncall-track">
-        {[1,2].map(n => (
-          <div key={n} className="hv2-oncall-inner" aria-hidden={n===2}>
-            {['ALERT','VERIFY','SCOPE','CORRELATE','ROOT CAUSE','MITIGATE','DOCUMENT','PREVENT'].map(s => (
-              <span key={s}>{s} <b>→</b></span>
-            ))}
-          </div>
-        ))}
+
+      {/* Row 1 — scrolls left */}
+      <div className="hv2-marquee-row">
+        <div className="hv2-marquee-track hv2-marquee-left">
+          {[
+            { text:'AWS',          color:'#FF9900', bg:'rgba(255,153,0,.1)',   border:'rgba(255,153,0,.25)' },
+            { text:'Kubernetes',   color:'#326CE5', bg:'rgba(50,108,229,.1)',  border:'rgba(50,108,229,.25)' },
+            { text:'Terraform',    color:'#7B42BC', bg:'rgba(123,66,188,.1)',  border:'rgba(123,66,188,.25)' },
+            { text:'Azure',        color:'#0078D4', bg:'rgba(0,120,212,.1)',   border:'rgba(0,120,212,.25)' },
+            { text:'Prometheus',   color:'#e8674a', bg:'rgba(232,103,74,.1)',  border:'rgba(232,103,74,.25)' },
+            { text:'Grafana',      color:'#f0b429', bg:'rgba(240,180,41,.1)',  border:'rgba(240,180,41,.25)' },
+            { text:'GitHub Actions',color:'#2ea44f',bg:'rgba(46,164,79,.1)',  border:'rgba(46,164,79,.25)' },
+            { text:'EKS',          color:'#FF9900', bg:'rgba(255,153,0,.1)',   border:'rgba(255,153,0,.2)' },
+            { text:'Helm',         color:'#0f1689', bg:'rgba(15,22,137,.12)',  border:'rgba(15,22,137,.3)' },
+            { text:'ArgoCD',       color:'#ef7b4d', bg:'rgba(239,123,77,.1)',  border:'rgba(239,123,77,.25)' },
+            { text:'Python',       color:'#3776ab', bg:'rgba(55,118,171,.1)',  border:'rgba(55,118,171,.25)' },
+            { text:'Bash',         color:'#72dfac', bg:'rgba(114,223,172,.1)', border:'rgba(114,223,172,.25)' },
+          ].concat([
+            { text:'AWS',          color:'#FF9900', bg:'rgba(255,153,0,.1)',   border:'rgba(255,153,0,.25)' },
+            { text:'Kubernetes',   color:'#326CE5', bg:'rgba(50,108,229,.1)',  border:'rgba(50,108,229,.25)' },
+            { text:'Terraform',    color:'#7B42BC', bg:'rgba(123,66,188,.1)',  border:'rgba(123,66,188,.25)' },
+            { text:'Azure',        color:'#0078D4', bg:'rgba(0,120,212,.1)',   border:'rgba(0,120,212,.25)' },
+            { text:'Prometheus',   color:'#e8674a', bg:'rgba(232,103,74,.1)',  border:'rgba(232,103,74,.25)' },
+            { text:'Grafana',      color:'#f0b429', bg:'rgba(240,180,41,.1)',  border:'rgba(240,180,41,.25)' },
+            { text:'GitHub Actions',color:'#2ea44f',bg:'rgba(46,164,79,.1)',  border:'rgba(46,164,79,.25)' },
+            { text:'EKS',          color:'#FF9900', bg:'rgba(255,153,0,.1)',   border:'rgba(255,153,0,.2)' },
+            { text:'Helm',         color:'#0f1689', bg:'rgba(15,22,137,.12)',  border:'rgba(15,22,137,.3)' },
+            { text:'ArgoCD',       color:'#ef7b4d', bg:'rgba(239,123,77,.1)',  border:'rgba(239,123,77,.25)' },
+            { text:'Python',       color:'#3776ab', bg:'rgba(55,118,171,.1)',  border:'rgba(55,118,171,.25)' },
+            { text:'Bash',         color:'#72dfac', bg:'rgba(114,223,172,.1)', border:'rgba(114,223,172,.25)' },
+          ]).map((pill, i) => (
+            <span key={i} className="hv2-pill"
+              style={{ color: pill.color, background: pill.bg, borderColor: pill.border }}>
+              {pill.text}
+            </span>
+          ))}
+        </div>
       </div>
-    </motion.section>
+
+      {/* Row 2 — scrolls right */}
+      <div className="hv2-marquee-row">
+        <div className="hv2-marquee-track hv2-marquee-right">
+          {[
+            { text:'Incident Response', color:'#e8674a', bg:'rgba(232,103,74,.1)',  border:'rgba(232,103,74,.25)' },
+            { text:'SLO / SLI',         color:'#72dfac', bg:'rgba(114,223,172,.1)', border:'rgba(114,223,172,.25)' },
+            { text:'GCP',               color:'#4285F4', bg:'rgba(66,133,244,.1)',  border:'rgba(66,133,244,.25)' },
+            { text:'Docker',            color:'#2496ed', bg:'rgba(36,150,237,.1)',  border:'rgba(36,150,237,.25)' },
+            { text:'OpenTelemetry',     color:'#f5a800', bg:'rgba(245,168,0,.1)',   border:'rgba(245,168,0,.25)' },
+            { text:'Ansible',           color:'#e00',    bg:'rgba(238,0,0,.08)',    border:'rgba(238,0,0,.2)' },
+            { text:'Linux',             color:'#fcc624', bg:'rgba(252,198,36,.1)',  border:'rgba(252,198,36,.25)' },
+            { text:'RCA',               color:'#8784d2', bg:'rgba(135,132,210,.1)', border:'rgba(135,132,210,.25)' },
+            { text:'FinOps',            color:'#72dfac', bg:'rgba(114,223,172,.1)', border:'rgba(114,223,172,.25)' },
+            { text:'AKS',               color:'#0078D4', bg:'rgba(0,120,212,.1)',   border:'rgba(0,120,212,.25)' },
+            { text:'Chaos Engineering', color:'#f0bc62', bg:'rgba(240,188,98,.1)',  border:'rgba(240,188,98,.25)' },
+            { text:'CloudWatch',        color:'#FF9900', bg:'rgba(255,153,0,.08)',  border:'rgba(255,153,0,.2)' },
+          ].concat([
+            { text:'Incident Response', color:'#e8674a', bg:'rgba(232,103,74,.1)',  border:'rgba(232,103,74,.25)' },
+            { text:'SLO / SLI',         color:'#72dfac', bg:'rgba(114,223,172,.1)', border:'rgba(114,223,172,.25)' },
+            { text:'GCP',               color:'#4285F4', bg:'rgba(66,133,244,.1)',  border:'rgba(66,133,244,.25)' },
+            { text:'Docker',            color:'#2496ed', bg:'rgba(36,150,237,.1)',  border:'rgba(36,150,237,.25)' },
+            { text:'OpenTelemetry',     color:'#f5a800', bg:'rgba(245,168,0,.1)',   border:'rgba(245,168,0,.25)' },
+            { text:'Ansible',           color:'#e00',    bg:'rgba(238,0,0,.08)',    border:'rgba(238,0,0,.2)' },
+            { text:'Linux',             color:'#fcc624', bg:'rgba(252,198,36,.1)',  border:'rgba(252,198,36,.25)' },
+            { text:'RCA',               color:'#8784d2', bg:'rgba(135,132,210,.1)', border:'rgba(135,132,210,.25)' },
+            { text:'FinOps',            color:'#72dfac', bg:'rgba(114,223,172,.1)', border:'rgba(114,223,172,.25)' },
+            { text:'AKS',               color:'#0078D4', bg:'rgba(0,120,212,.1)',   border:'rgba(0,120,212,.25)' },
+            { text:'Chaos Engineering', color:'#f0bc62', bg:'rgba(240,188,98,.1)',  border:'rgba(240,188,98,.25)' },
+            { text:'CloudWatch',        color:'#FF9900', bg:'rgba(255,153,0,.08)',  border:'rgba(255,153,0,.2)' },
+          ]).map((pill, i) => (
+            <span key={i} className="hv2-pill"
+              style={{ color: pill.color, background: pill.bg, borderColor: pill.border }}>
+              {pill.text}
+            </span>
+          ))}
+        </div>
+      </div>
+
+    </motion.div>
 
     {/* ══ CTA ══ */}
     <motion.section className="hv2-cta"

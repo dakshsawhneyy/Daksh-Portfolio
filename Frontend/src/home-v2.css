@@ -1488,3 +1488,100 @@
   .arch-stat strong { font-size: 13px !important; }
   .arch-stat { padding: 10px 10px !important; }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   SKILL MARQUEE — two-row colored pill scroller
+   Replaces the broken text ticker
+   ══════════════════════════════════════════════════════════════════ */
+.hv2-marquee-wrap {
+  background: var(--h-paper);
+  border-top: 1px solid var(--h-line);
+  border-bottom: 1px solid var(--h-line);
+  padding: 20px 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  /* GPU layer — prevents any overflow bleed */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+.hv2-marquee-row {
+  overflow: hidden;
+  /* fade edges */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 5%,
+    black 95%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 5%,
+    black 95%,
+    transparent 100%
+  );
+}
+
+.hv2-marquee-track {
+  display: flex;
+  gap: 10px;
+  width: max-content;
+  will-change: transform;
+}
+
+.hv2-marquee-left {
+  animation: marquee-left 38s linear infinite;
+}
+.hv2-marquee-right {
+  animation: marquee-right 42s linear infinite;
+}
+
+/* Pause on hover — feels premium */
+.hv2-marquee-row:hover .hv2-marquee-left,
+.hv2-marquee-row:hover .hv2-marquee-right {
+  animation-play-state: paused;
+}
+
+@keyframes marquee-left {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes marquee-right {
+  0%   { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+.hv2-pill {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid;
+  font: 600 11px 'DM Sans', sans-serif;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  cursor: default;
+  transition: filter .2s;
+}
+.hv2-marquee-row:hover .hv2-pill {
+  filter: brightness(1.15);
+}
+
+/* Mobile — slightly faster, smaller pills */
+@media (max-width: 680px) {
+  .hv2-marquee-wrap {
+    padding: 14px 0 !important;
+    gap: 8px !important;
+  }
+  .hv2-marquee-left  { animation-duration: 26s !important; }
+  .hv2-marquee-right { animation-duration: 30s !important; }
+  .hv2-pill {
+    padding: 5px 10px !important;
+    font-size: 10px !important;
+  }
+}

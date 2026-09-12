@@ -270,3 +270,22 @@
   .prj-row-link { width: 28px; height: 28px; border-radius: 6px; }
   .prj-row-tags { display: none; }
 }
+
+/* Mobile tap-to-expand indicator */
+.prj-row-expand-icon {
+  display: none; /* hidden on desktop */
+  font: 700 18px 'Space Grotesk', sans-serif;
+  line-height: 1;
+  transition: color .2s;
+  flex-shrink: 0;
+}
+@media (hover: none) {
+  /* Touch devices: show expand icon, make row feel tappable */
+  .prj-row-expand-icon { display: block !important; }
+  .prj-row { cursor: pointer !important; }
+  .prj-row-open { background: #fff !important; }
+  /* On mobile, show mobile-desc inside expanded row */
+  .prj-row-open .prj-row-desc {
+    display: block !important;
+  }
+}
