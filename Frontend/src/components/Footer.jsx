@@ -8,7 +8,7 @@ const Footer = () => (
     <div className="sf-rule">
       <span className="sf-rule-label">
         <Activity size={11} />
-        END OF SESSION · RELIABILITY LAB
+        END OF SESSION
       </span>
     </div>
 
@@ -16,7 +16,7 @@ const Footer = () => (
 
       {/* LEFT — statement + CTA */}
       <div className="sf-statement">
-        <p className="sf-kicker">Open to full-time roles · Aug 2027</p>
+        <p className="sf-kicker">Open to full-time roles</p>
         <h2 className="sf-heading">
           Have a reliability<br />
           problem to solve?

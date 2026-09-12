@@ -47,118 +47,194 @@ const TypedText = ({ words }) => {
   return <span className="typed-word">{displayed}<span className="typed-cursor">|</span></span>
 }
 
-/* ─── live monitoring dashboard ─── */
-const SPARK_BASE = [28,35,32,45,38,52,48,61,44,57,53,68,62,71,65,80,74,88,76,92,85,79,95,88,82,97,91,86,99,94]
+/* ─── multicloud architecture map ─── */
 
-const LiveDashboard = () => {
-  const [spark, setSpark]     = useState(SPARK_BASE)
-  const [latency, setLatency] = useState(12)
-  const [errRate, setErrRate] = useState(0.01)
-  const [reqRate, setReqRate] = useState(2847)
-  const [alert,   setAlert]   = useState(false)
-  const [scan,    setScan]     = useState(0)
+const NODES = [
+  { id:'aws',  label:'AWS',        sub:'EKS · Lambda · CloudWatch', x:20, y:22, color:'#f0bc62', dot:'#FF9900' },
+  { id:'az',   label:'Azure',      sub:'AKS · VMSS · Load Balancer', x:60, y:10, color:'#65cfe5', dot:'#0078D4' },
+  { id:'gcp',  label:'GCP',        sub:'GKE · Cloud Functions',     x:82, y:30, color:'#72dfac', dot:'#4285F4' },
+  { id:'prom', label:'Prometheus', sub:'Metrics · Alerts',          x:18, y:64, color:'#e8674a', dot:'#e8674a' },
+  { id:'graf', label:'Grafana',    sub:'Dashboards · SLOs',         x:50, y:78, color:'#f0bc62', dot:'#f0b429' },
+  { id:'tf',   label:'Terraform',  sub:'IaC · Multi-cloud',         x:80, y:66, color:'#8784d2', dot:'#7B42BC' },
+]
+const EDGES = [
+  ['aws','prom'],['az','prom'],['gcp','prom'],
+  ['prom','graf'],['aws','tf'],['az','tf'],['gcp','tf'],
+  ['aws','az'],['az','gcp'],
+]
 
+const ArchMap = () => {
+  const [active, setActive] = useState(null)
+  const [pulse,  setPulse]  = useState(0)
+  const [pingNode, setPingNode] = useState(null)
+
+  // edge pulse
+  useEffect(() => {
+    const t = setInterval(() => setPulse(p => (p+1) % EDGES.length), 850)
+    return () => clearInterval(t)
+  }, [])
+
+  // random node "ping" to show it's live
   useEffect(() => {
     const t = setInterval(() => {
-      setLatency(v => +(Math.max(8,  Math.min(24,  v + (Math.random()-0.48)*2.5)).toFixed(0)))
-      setErrRate(v => +(Math.max(0,  Math.min(0.06,v + (Math.random()-0.5)*0.008)).toFixed(2)))
-      setReqRate(v => +(Math.max(2400,Math.min(3400,v + (Math.random()-0.5)*120)).toFixed(0)))
-      setSpark(p => [...p.slice(1), Math.max(20, Math.min(100, p[p.length-1] + (Math.random()-0.45)*12))])
-    }, 1600)
+      const n = NODES[Math.floor(Math.random() * NODES.length)]
+      setPingNode(n.id)
+      setTimeout(() => setPingNode(null), 700)
+    }, 2200)
     return () => clearInterval(t)
   }, [])
 
-  useEffect(() => {
-    const t = setInterval(() => setScan(v => (v+1)%100), 40)
-    return () => clearInterval(t)
-  }, [])
-
-  useEffect(() => {
-    const t = setInterval(() => {
-      setAlert(true); setLatency(68); setErrRate(0.22)
-      setTimeout(() => { setAlert(false); setLatency(13); setErrRate(0.01) }, 3800)
-    }, 28000)
-    return () => clearInterval(t)
-  }, [])
-
-  const pts = spark.map((v,i) => `${(i/(spark.length-1))*280},${58-(v/100)*50}`).join(' ')
+  const nodeById = id => NODES.find(n => n.id === id)
 
   return (
-    <div className={`hv2-dash ${alert ? 'hv2-dash-alert' : ''}`}>
-      <div className="hv2-dash-scanline" style={{ top:`${scan}%` }} aria-hidden />
-
-      <div className="hv2-dash-bar">
-        <div className="hv2-dash-dots">
-          <span className="hv2-dd-red"/><span className="hv2-dd-yellow"/><span className="hv2-dd-green"/>
+    <div className="arch-root">
+      <div className="arch-bar">
+        <div className="arch-bar-dots">
+          <span className="arch-bd-r"/><span className="arch-bd-y"/><span className="arch-bd-g"/>
         </div>
-        <span className="hv2-dash-title">reliability-lab — monitoring</span>
-        <span className="hv2-dash-live" style={{ color: alert ? '#f08a69' : '#72dfac' }}>
-          <span className="hv2-dash-live-dot" style={{ background: alert ? '#f08a69' : '#72dfac', boxShadow:`0 0 7px ${alert?'#f08a69':'#72dfac'}` }} />
-          {alert ? 'ALERT FIRING' : 'LIVE'}
-        </span>
+        <span className="arch-bar-title">multicloud-topology / live</span>
+        <span className="arch-bar-status"><span className="arch-status-dot"/>CONNECTED</span>
       </div>
 
-      <div className="hv2-dash-kpis">
-        {[
-          { label:'P95 LATENCY', val: `${latency}ms`,              cls: alert ? 'hv2-kpi-alert' : '' },
-          { label:'ERROR RATE',  val: `${errRate}%`,               cls: alert ? 'hv2-kpi-alert' : '' },
-          { label:'REQ / MIN',   val: reqRate.toLocaleString()+' rps', cls:'hv2-kpi-blue' },
-          { label:'UPTIME',      val: '99.97%',                    cls:'hv2-kpi-green' },
-        ].map(({label, val, cls}) => (
-          <div key={label} className={`hv2-kpi ${cls}`}>
-            <span className="hv2-kpi-label">{label}</span>
-            <motion.span className="hv2-kpi-val" key={val}
-              initial={{opacity:0.5,y:-4}} animate={{opacity:1,y:0}} transition={{duration:0.22}}>
-              {val}
-            </motion.span>
-          </div>
-        ))}
-      </div>
-
-      <div className="hv2-dash-chart">
-        <div className="hv2-chart-head">
-          <span className="hv2-chart-label">THROUGHPUT</span>
-          <span className="hv2-chart-range">30s window</span>
-        </div>
-        <svg viewBox="0 0 280 62" preserveAspectRatio="none" className="hv2-sparkline-svg">
+      <div className="arch-canvas">
+        <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" className="arch-svg">
           <defs>
-            <linearGradient id="sg1" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%"   stopColor={alert?'#f08a69':'#72dfac'} stopOpacity="0.3"/>
-              <stop offset="100%" stopColor={alert?'#f08a69':'#72dfac'} stopOpacity="0.02"/>
-            </linearGradient>
+            {/* dot grid */}
+            <pattern id="ag" width="6" height="6" patternUnits="userSpaceOnUse">
+              <circle cx="3" cy="3" r="0.4" fill="rgba(255,255,255,0.07)"/>
+            </pattern>
+            {/* per-edge gradient */}
+            {EDGES.map(([a,b],i) => {
+              const na=nodeById(a), nb=nodeById(b)
+              return (
+                <linearGradient key={i} id={`eg-${i}`}
+                  x1={na.x} y1={na.y} x2={nb.x} y2={nb.y} gradientUnits="userSpaceOnUse">
+                  <stop offset="0%"   stopColor={na.color} stopOpacity="0.8"/>
+                  <stop offset="100%" stopColor={nb.color} stopOpacity="0.8"/>
+                </linearGradient>
+              )
+            })}
+            {/* glow filter */}
+            <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="1.5" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
           </defs>
-          {[20,40,60].map(y => <line key={y} x1="0" y1={58-(y/100)*50} x2="280" y2={58-(y/100)*50} stroke="rgba(255,255,255,0.04)" strokeWidth="1"/>)}
-          <polygon points={`0,58 ${pts} 280,58`} fill="url(#sg1)" />
-          <polyline points={pts} fill="none" stroke={alert?'#f08a69':'#72dfac'} strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round"/>
-          {(() => { const last=spark[spark.length-1]; const cy=58-(last/100)*50; return <><circle cx="280" cy={cy} r="5" fill={alert?'#f08a69':'#72dfac'} opacity="0.2"/><circle cx="280" cy={cy} r="2.5" fill={alert?'#f08a69':'#72dfac'}/></> })()}
+
+          {/* background */}
+          <rect width="100" height="100" fill="url(#ag)"/>
+          {/* subtle vignette */}
+          <radialGradient id="vig" cx="50%" cy="50%" r="50%">
+            <stop offset="60%" stopColor="transparent"/>
+            <stop offset="100%" stopColor="rgba(7,15,12,0.6)"/>
+          </radialGradient>
+          <rect width="100" height="100" fill="url(#vig)"/>
+
+          {/* edges */}
+          {EDGES.map(([a,b],i) => {
+            const na=nodeById(a), nb=nodeById(b), isP = i===pulse
+            return (
+              <line key={i} x1={na.x} y1={na.y} x2={nb.x} y2={nb.y}
+                stroke={`url(#eg-${i})`}
+                strokeWidth={isP ? 1.0 : 0.4}
+                strokeDasharray={isP ? 'none' : '1 2'}
+                opacity={isP ? 0.9 : 0.25}
+                style={{transition:'opacity .6s, stroke-width .5s'}}
+              />
+            )
+          })}
+
+          {/* travelling pulse dot on active edge */}
+          {(() => {
+            const [a,b] = EDGES[pulse]
+            const na=nodeById(a), nb=nodeById(b)
+            return (
+              <motion.circle r="1.5" fill={na.color}
+                filter="url(#glow)"
+                animate={{cx:[na.x,nb.x], cy:[na.y,nb.y]}}
+                transition={{duration:0.82,ease:'linear'}}
+              />
+            )
+          })()}
+
+          {/* nodes */}
+          {NODES.map(n => {
+            const isActive = active === n.id
+            const isPing   = pingNode === n.id
+            return (
+              <g key={n.id} style={{cursor:'pointer'}}
+                onMouseEnter={()=>setActive(n.id)}
+                onMouseLeave={()=>setActive(null)}>
+                {/* ping ring */}
+                {isPing && (
+                  <motion.circle cx={n.x} cy={n.y}
+                    initial={{r:4, opacity:0.7}}
+                    animate={{r:8, opacity:0}}
+                    transition={{duration:0.7, ease:'easeOut'}}
+                    fill={n.color}
+                  />
+                )}
+                {/* hover glow ring */}
+                {isActive && (
+                  <motion.circle cx={n.x} cy={n.y} r="7"
+                    fill={n.color} opacity="0.1"
+                    initial={{scale:0.6}} animate={{scale:1}}
+                    transition={{duration:0.18}}
+                  />
+                )}
+                {/* outer ring */}
+                <circle cx={n.x} cy={n.y} r="4.2"
+                  fill="#091410"
+                  stroke={n.color}
+                  strokeWidth={isActive ? 1.4 : 0.7}
+                  filter={isActive ? 'url(#glow)' : undefined}
+                  style={{transition:'stroke-width .2s'}}
+                />
+                {/* inner dot */}
+                <circle cx={n.x} cy={n.y} r="1.8" fill={n.dot} opacity="0.95"/>
+                {/* label — positioned to not overlap edges */}
+                <text x={n.x} y={n.y + 7.8}
+                  textAnchor="middle"
+                  fontSize="2.8"
+                  fontFamily="ui-monospace,monospace"
+                  fontWeight="700"
+                  fill={isActive ? n.color : 'rgba(200,234,214,.6)'}
+                  style={{transition:'fill .2s', userSelect:'none'}}
+                >{n.label}</text>
+              </g>
+            )
+          })}
         </svg>
       </div>
 
-      <div className="hv2-dash-services">
-        {[
-          {name:'payment-api', lat:'9ms', ok:!alert},
-          {name:'auth-service', lat:'4ms', ok:true},
-          {name:'k8s / EKS',   lat:'—',   ok:true},
-          {name:'prometheus',  lat:'—',   ok:true},
-        ].map(s => (
-          <div key={s.name} className={`hv2-dash-svc ${!s.ok?'hv2-svc-bad':''}`}>
-            <span className="hv2-dash-svc-dot" style={{background:s.ok?'#72dfac':'#f08a69',boxShadow:`0 0 5px ${s.ok?'#72dfac':'#f08a69'}`}}/>
-            <span className="hv2-dash-svc-name">{s.name}</span>
-            {s.lat!=='—' && <span className="hv2-dash-svc-lat">{s.lat}</span>}
-            <span className="hv2-dash-svc-status" style={{color:s.ok?'#72dfac':'#f08a69'}}>{s.ok?'OK':'DEGRADED'}</span>
-          </div>
-        ))}
+      {/* hover detail */}
+      <div className="arch-detail">
+        <AnimatePresence mode="wait">
+          {active ? (
+            <motion.div key={active} className="arch-detail-inner"
+              initial={{opacity:0,y:4}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-4}}
+              transition={{duration:0.14}}>
+              <span className="arch-detail-dot" style={{background:nodeById(active)?.dot}}/>
+              <span className="arch-detail-name" style={{color:nodeById(active)?.color}}>{nodeById(active)?.label}</span>
+              <span className="arch-detail-sep">·</span>
+              <span className="arch-detail-sub">{nodeById(active)?.sub}</span>
+            </motion.div>
+          ) : (
+            <motion.div key="idle" className="arch-detail-inner arch-detail-muted"
+              initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}>
+              hover a node to inspect
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      {alert && (
-        <motion.div className="hv2-alert-banner" initial={{opacity:0,y:4}} animate={{opacity:1,y:0}}>
-          ▲ SLO BREACH — payment-api P99 at 68ms · auto-remediation firing
-        </motion.div>
-      )}
-
-      <div className="hv2-dash-footer">
-        <span>prometheus · grafana · cloudwatch</span>
-        <span className="hv2-dash-blink">● {alert ? 'INCIDENT ACTIVE' : 'ALL SYSTEMS GO'}</span>
+      {/* stats */}
+      <div className="arch-stats">
+        {[{l:'NODES',v:'6'},{l:'CLOUDS',v:'3'},{l:'SERVICES',v:'9'},{l:'UPTIME',v:'99.97%',c:'#72dfac'}].map(({l,v,c})=>(
+          <div key={l} className="arch-stat">
+            <span>{l}</span><strong style={{color:c||'#fff'}}>{v}</strong>
+          </div>
+        ))}
       </div>
     </div>
   )
@@ -309,7 +385,7 @@ const Home = () => (
           {/* status strip — live feel */}
           <motion.div className="hv2-status-strip" variants={fadeUp}>
             <span className="hv2-status-dot"/>
-            <span>AWS · Azure · K8s · Terraform</span>
+            <span>Cloud / DevOps/ SRE roles</span>
             <span className="hv2-status-sep">·</span>
             <span className="hv2-status-open">Open to work</span>
           </motion.div>
@@ -332,7 +408,7 @@ const Home = () => (
         <motion.div className="hv2-dashboard"
           initial={{opacity:0,x:40}} animate={{opacity:1,x:0}}
           transition={{duration:0.7,delay:0.3,ease:[0.22,1,0.36,1]}}>
-          <LiveDashboard/>
+          <ArchMap/>
         </motion.div>
       </div>
     </section>
@@ -344,8 +420,8 @@ const Home = () => (
         {value:40,  suffix:'%',   label:'P95 latency cut',         icon:<Zap size={16}/>,         accent:'#e8674a'},
         {value:78,  suffix:'%',   label:'MTTR reduction',           icon:<Activity size={16}/>,    accent:'#72dfac'},
         {value:70,  suffix:'%',   label:'Deploy time saved',        icon:<GitBranch size={16}/>,   accent:'#65cfe5'},
-        {value:180, suffix:'h+',  label:'DevOps hours taught',      icon:<Terminal size={16}/>,    accent:'#f0bc62'},
-        {value:100, suffix:'h+',  label:'Multicloud hours taught',  icon:<ShieldCheck size={16}/>, accent:'#8784d2'},
+        {value:180, suffix:'h+',  label:'DevOps hours delivered',      icon:<Terminal size={16}/>,    accent:'#f0bc62'},
+        {value:100, suffix:'h+',  label:'Multicloud hours delivered',  icon:<ShieldCheck size={16}/>, accent:'#8784d2'},
       ].map(({value,suffix,label,icon,accent}) => (
         <motion.div className="hv2-metric-card" key={label} variants={fadeUp}
           whileHover={{y:-4,transition:{duration:0.18}}}>
@@ -421,8 +497,7 @@ const Home = () => (
           {label:'INFRASTRUCTURE',detail:'Terraform · AWS · Azure · GCP · Ansible',                 color:'#72dfac'},
           {label:'AUTOMATION',    detail:'Python · Bash · GitHub Actions · Jenkins · CI/CD',        color:'#8784d2'},
         ].map(({label,detail,color},i) => (
-          <motion.div key={label} className="hv2-stack-row" variants={fadeUp}
-            whileHover={{x:8,transition:{duration:0.18}}}>
+          <motion.div key={label} className="hv2-stack-row" variants={fadeUp}>
             <div className="hv2-stack-bar" style={{background:color}}/>
             <div className="hv2-stack-content">
               <span className="hv2-stack-label">{label}</span>

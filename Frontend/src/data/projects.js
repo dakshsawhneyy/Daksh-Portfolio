@@ -10,6 +10,8 @@ const projects = [
         year: 2026,
         tags: ["Incident Response", "SRE", "Observability", "RCA", "Reliability"],
         image: incidentzero,
+        live: "https://incidentzero.monster",
+        github: "https://github.com/dakshsawhneyy/AIOps-Driven-Auto-Healing-SRE-System.git",
     },
     {
         title: "Scaling Infra from 1 to 1 Million+ Users",

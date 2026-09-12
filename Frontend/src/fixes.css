@@ -1,0 +1,703 @@
+/* ══════════════════════════════════════════════════════════════════
+   FIXES — all mobile bugs, UX improvements, final polish
+   Loaded last after mobile-premium.css
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────
+   DISABLE TEXT SELECTION on static content
+   Prevents accidental selection while scrolling on mobile
+   ───────────────────────────────────────────────────────────────── */
+.home-v2,
+.pv2-root,
+.about-page-v3,
+.blog-page-v3,
+.contact-page-v3,
+.site-footer {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+/* Re-enable selection on inputs, textareas, and links */
+input, textarea, a, button,
+.cp3-field input,
+.cp3-field textarea,
+.sre-terminal-prompt input {
+  -webkit-user-select: auto !important;
+  -moz-user-select: auto !important;
+  user-select: auto !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   GLOBAL — prevent any element causing horizontal scroll
+   ───────────────────────────────────────────────────────────────── */
+html, body { overflow-x: hidden !important; max-width: 100vw; }
+* { box-sizing: border-box; }
+
+/* ─────────────────────────────────────────────────────────────────
+   ABOUT PHOTO BACKGROUND — replace spinning ring with beautiful
+   layered spotlight treatment
+   ───────────────────────────────────────────────────────────────── */
+.ap3-photo-bg {
+  background:
+    radial-gradient(ellipse at 50% 15%, rgba(232,103,74,.22) 0%, transparent 50%),
+    radial-gradient(ellipse at 30% 80%, rgba(114,223,172,.12) 0%, transparent 55%),
+    radial-gradient(ellipse at 70% 60%, rgba(135,132,210,.1) 0%, transparent 50%),
+    linear-gradient(175deg, #1a1c18 0%, #111210 100%) !important;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.06),
+    0 0 60px rgba(232,103,74,.1),
+    0 40px 80px rgba(0,0,0,.5) !important;
+}
+
+/* Remove the spinning ring — replace with a static elegant glow */
+.ap3-photo-bg::before {
+  content: '' !important;
+  position: absolute !important;
+  inset: -1px !important;
+  border-radius: inherit !important;
+  background: linear-gradient(
+    135deg,
+    rgba(232,103,74,.35) 0%,
+    transparent 25%,
+    transparent 75%,
+    rgba(114,223,172,.2) 100%
+  ) !important;
+  animation: none !important;
+  z-index: -1 !important;
+}
+
+/* Dot grid stays but slightly brighter */
+.ap3-photo-bg::after {
+  opacity: 0.5 !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   HERO — mobile text overflow fixes
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .hv2-hero {
+    padding: 36px 18px 28px !important;
+    overflow: hidden !important;
+  }
+  .hv2-h1 {
+    font-size: clamp(2rem, 9.5vw, 2.8rem) !important;
+    line-height: 0.92 !important;
+    word-break: break-word !important;
+  }
+  .hv2-hero-kicker {
+    font-size: 8px !important;
+    letter-spacing: .12em !important;
+    margin-bottom: 14px !important;
+    flex-wrap: wrap !important;
+  }
+  .hv2-status-strip {
+    font-size: 10px !important;
+    padding: 6px 11px !important;
+    margin-bottom: 16px !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+  .hv2-sub {
+    font-size: 13px !important;
+    line-height: 1.6 !important;
+    margin-bottom: 18px !important;
+  }
+
+  /* Stop dashboard overflowing on small screens */
+  .hv2-dashboard {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+  .hv2-dash {
+    border-radius: 10px !important;
+    overflow: hidden !important;
+  }
+  .hv2-kpi-val {
+    font-size: 14px !important;
+  }
+  .hv2-dash-svc-name { font-size: 10px !important; }
+  .hv2-dash-footer { font-size: 7px !important; padding: 6px 12px !important; }
+  .hv2-alert-banner { font-size: 8px !important; padding: 7px 12px !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   METRICS STRIP — mobile overflow fix
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .hv2-metrics {
+    grid-template-columns: 1fr 1fr !important;
+    overflow: hidden !important;
+  }
+  .hv2-metric-card {
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+  .hv2-mc-value {
+    font-size: 1.5rem !important;
+    word-break: break-all !important;
+  }
+  .hv2-mc-label {
+    font-size: 10px !important;
+    line-height: 1.3 !important;
+  }
+  .hv2-mc-icon { margin-bottom: 6px !important; }
+  /* last card spans full width */
+  .hv2-metric-card:last-child { grid-column: span 2 !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   INCIDENT ZERO SECTION — mobile layout
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .isim-screenshot { height: 130px !important; }
+  .isim-screenshot img { object-position: top center !important; }
+  .isim-status-row {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    padding: 8px 12px !important;
+  }
+  .isim-health-compact { margin-left: 0 !important; }
+  .isim-tabs {
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+    padding: 8px 12px 0 !important;
+  }
+  .isim-tab {
+    font-size: 9px !important;
+    padding: 5px 9px !important;
+    min-height: 30px !important;
+  }
+  .isim-log {
+    padding: 8px 12px !important;
+    min-height: 56px !important;
+    margin-bottom: 0 !important;
+  }
+  .isim-log-line { font-size: 10px !important; }
+  .isim-actions { padding: 8px 12px 12px !important; }
+  .isim-btn { padding: 9px 14px !important; min-height: 38px !important; }
+  .hv2-iz-badges { display: none !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   PROJECTS LIST — mobile text size & overflow
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .prj-header {
+    padding: 40px 18px 24px !important;
+    background: #111210 !important;
+  }
+  .prj-h1 {
+    font-size: clamp(2rem, 10vw, 2.8rem) !important;
+    word-break: break-word !important;
+  }
+  .prj-header-sub {
+    font-size: 12px !important;
+    line-height: 1.55 !important;
+  }
+  .prj-list-header {
+    padding: 0 18px !important;
+    grid-template-columns: 36px 1fr 44px !important;
+    height: 36px !important;
+  }
+  .prj-lh-num, .prj-lh-title, .prj-lh-links {
+    font-size: 8px !important;
+  }
+  .prj-row {
+    padding: 0 18px !important;
+    grid-template-columns: 36px 1fr 44px !important;
+    min-height: 64px !important;
+  }
+  /* First featured row */
+  .prj-row:first-child { min-height: 84px !important; }
+  .prj-row:first-child .prj-row-num { font-size: 1.3rem !important; }
+  .prj-row:first-child .prj-row-title { font-size: 0.9rem !important; }
+
+  .prj-row-num {
+    padding-top: 18px !important;
+    font-size: 1rem !important;
+    color: #d8d8ce !important;
+  }
+  .prj-row-body { padding: 14px 10px 14px 0 !important; }
+  .prj-row-title {
+    font-size: 0.88rem !important;
+    min-width: 0 !important;
+    line-height: 1.3 !important;
+    flex: 1 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+  .prj-row-top { gap: 8px !important; flex-wrap: nowrap !important; }
+  .prj-row-cats { display: none !important; }
+  .prj-row-year { display: none !important; }
+  .prj-row-desc { display: none !important; }
+  .prj-row-tags { display: none !important; }
+  .prj-row-thumb { display: none !important; }
+
+  .prj-row-links {
+    padding: 14px 0 14px 6px !important;
+    gap: 5px !important;
+  }
+  .prj-row-link {
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 6px !important;
+    flex-shrink: 0 !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   SRE TERMINAL — mobile complete fix
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .sre-terminal-overlay {
+    padding: 0 !important;
+    align-items: flex-end !important;
+    background: rgba(0,0,0,.65) !important;
+    backdrop-filter: blur(12px) !important;
+  }
+  .sre-terminal {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 20px 20px 0 0 !important;
+    max-height: 72vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .sre-terminal-header {
+    padding: 12px 16px !important;
+    flex-shrink: 0 !important;
+  }
+  /* Drag indicator */
+  .sre-terminal-header::before {
+    content: '' !important;
+    display: block !important;
+    position: absolute !important;
+    top: 8px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 36px !important;
+    height: 4px !important;
+    background: rgba(255,255,255,.2) !important;
+    border-radius: 2px !important;
+  }
+  .sre-quick-chips {
+    padding: 8px 14px 0 !important;
+    gap: 5px !important;
+    flex-shrink: 0 !important;
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+    flex-wrap: nowrap !important;
+  }
+  .sre-quick-chips::-webkit-scrollbar { display: none !important; }
+  .sre-chip {
+    font-size: 10px !important;
+    padding: 5px 10px !important;
+    min-height: 30px !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+  .sre-terminal-body {
+    min-height: 0 !important;
+    max-height: unset !important;
+    flex: 1 !important;
+    overflow: hidden !important;
+    padding: 12px 14px 8px !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+  .sre-terminal-history {
+    font-size: 11px !important;
+    flex: 1 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .sre-terminal-prompt {
+    padding: 8px 0 0 !important;
+    flex-shrink: 0 !important;
+  }
+  .sre-terminal-prompt input {
+    font-size: 14px !important; /* prevents iOS zoom */
+    padding: 8px 0 !important;
+  }
+  .sre-terminal-footer {
+    padding: 7px 14px !important;
+    font-size: 9px !important;
+    flex-shrink: 0 !important;
+    gap: 12px !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   FEEDBACK LOOP cards — mobile
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .hv2-loop-card {
+    padding: 18px 16px !important;
+    border-radius: 12px !important;
+  }
+  .hv2-loop-card h3 { font-size: 13px !important; margin-bottom: 8px !important; }
+  .hv2-loop-card p  { font-size: 13px !important; line-height: 1.55 !important; }
+  .hv2-lc-icon { margin-bottom: 14px !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   STACK LAYERS — mobile
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .hv2-stack-row {
+    border-radius: 10px !important;
+    min-height: 54px !important;
+  }
+  .hv2-stack-content {
+    padding: 12px 14px !important;
+    gap: 3px !important;
+  }
+  .hv2-stack-label  { font-size: 10px !important; }
+  .hv2-stack-detail {
+    font-size: 11px !important;
+    line-height: 1.4 !important;
+    color: #6b6e67 !important;
+    /* truncate long tech lists on tiny screens */
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+  .hv2-stack-index { display: none !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   ABOUT PAGE — mobile overflow
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .about-page-v3 { overflow-x: hidden !important; }
+  .ap3-hero { overflow: hidden !important; }
+  .ap3-hero-grid { overflow: visible !important; }
+
+  /* Photo column needs breathing room for badges */
+  .ap3-hero-photo-col {
+    padding: 0 32px !important;
+    overflow: visible !important;
+  }
+  .ap3-name {
+    word-break: break-word !important;
+    font-size: clamp(2.6rem, 12vw, 3.8rem) !important;
+  }
+
+  /* Timeline overflow */
+  .ap3-tl-top { flex-wrap: wrap !important; gap: 6px !important; }
+  .ap3-tl-card p {
+    font-size: 13px !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+  }
+
+  /* Teaching cards overflow */
+  .ap3-section [style*="padding"] {
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
+  }
+
+  /* Toolkit compact */
+  .ap3-tc-row { padding: 10px 14px !important; gap: 6px !important; }
+  .ap3-tc-pills { gap: 5px !important; }
+  .ap3-tc-pill { font-size: 10px !important; padding: 3px 8px !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   BLOG PAGE — mobile
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .bp3-art-title {
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    white-space: normal !important;
+  }
+  .bp3-feat-title {
+    word-break: break-word !important;
+    font-size: 1rem !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   ON-CALL TICKER — prevent overflow
+   ───────────────────────────────────────────────────────────────── */
+.hv2-oncall { overflow: hidden !important; }
+.hv2-oncall-track { overflow: hidden !important; }
+
+/* ─────────────────────────────────────────────────────────────────
+   SYSTEM WORKSPACE — mobile fixes
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .main-with-rail.system-root {
+    overflow-x: hidden !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   CTA SECTION — mobile
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .hv2-cta {
+    padding: 40px 18px !important;
+    text-align: left !important;
+  }
+  .hv2-cta h2 {
+    font-size: clamp(1.7rem, 7.5vw, 2.4rem) !important;
+    word-break: break-word !important;
+  }
+  .hv2-cta-actions {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  .hv2-cta-actions a {
+    justify-content: center !important;
+    min-height: 48px !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   NAV — overflow safety
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .portfolio-app .site-nav {
+    overflow: hidden !important;
+  }
+  .portfolio-app .site-nav .nav-links a svg {
+    flex-shrink: 0 !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   STACK ROWS — CSS hover (not JS, safe on mobile)
+   ───────────────────────────────────────────────────────────────── */
+@media (hover: hover) {
+  /* Only applies on devices that actually have hover (desktop/laptop) */
+  .hv2-stack-row {
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .hv2-stack-row:hover {
+    transform: translateX(6px);
+    box-shadow: 0 4px 20px rgba(0,0,0,.12);
+  }
+}
+/* Touch devices: absolutely no transform */
+@media (hover: none) {
+  .hv2-stack-row {
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   TICKER — mobile specific
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .hv2-oncall {
+    padding: 13px 0 !important;
+    /* Hard clip — nothing escapes */
+    overflow: hidden !important;
+    max-width: 100vw !important;
+  }
+  .hv2-oncall-track {
+    /* Slightly faster on mobile so the loop feels alive */
+    animation-duration: 20s !important;
+  }
+  .hv2-oncall-inner span {
+    padding: 0 14px !important;
+    font-size: 9px !important;
+    letter-spacing: .07em !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   HOME HERO — kill unnecessary gaps/spacing on mobile
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  /* Remove excessive bottom margins that create uneven spaces */
+  .hv2-hero-left > * { margin-bottom: 0 !important; }
+
+  .hv2-hero-kicker  { margin-bottom: 12px !important; }
+  .hv2-badge        { margin-bottom: 14px !important; }
+  .hv2-h1           { margin-bottom: 14px !important; }
+  .hv2-status-strip { margin-bottom: 14px !important; }
+  .hv2-sub          { margin-bottom: 18px !important; }
+  .hv2-actions      { margin-bottom: 18px !important; }
+  .hv2-tech-strip   { margin-bottom: 0 !important; }
+
+  /* Stack detail text: allow wrapping on mobile (not ellipsis) */
+  .hv2-stack-detail {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    font-size: 11px !important;
+    line-height: 1.5 !important;
+    color: var(--h-muted) !important;
+  }
+  /* Stack label stays on one line */
+  .hv2-stack-label {
+    min-width: unset !important;
+    font-size: 9px !important;
+    white-space: nowrap !important;
+  }
+  /* Stack content: column layout */
+  .hv2-stack-content {
+    flex-direction: column !important;
+    gap: 3px !important;
+    padding: 11px 14px !important;
+    align-items: flex-start !important;
+  }
+  /* Stack row: proper height */
+  .hv2-stack-row {
+    min-height: auto !important;
+    border-radius: 10px !important;
+  }
+  .hv2-stack-index { display: none !important; }
+  .hv2-stack-bar   { min-height: unset !important; align-self: stretch !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   SECTION HEADINGS — prevent overflow on narrow phones
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .hv2-section-lead h2 {
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    hyphens: auto !important;
+    max-width: 100% !important;
+  }
+  .hv2-section {
+    overflow: hidden !important;
+  }
+  /* Loop cards: prevent text overflow */
+  .hv2-loop-card h3,
+  .hv2-loop-card p {
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   ARCH MAP — mobile sizing
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .arch-root { border-radius: 12px !important; }
+  .arch-svg  { height: 170px !important; }
+  .arch-detail { padding: 8px 12px !important; min-height: 32px !important; }
+  .arch-detail-inner { font-size: 10px !important; }
+  .arch-stat { padding: 9px 10px !important; }
+  .arch-stat strong { font-size: 13px !important; }
+  .arch-bar { padding: 9px 12px !important; }
+  .arch-canvas { padding: 8px !important; }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   METRICS STRIP — spacing
+   ───────────────────────────────────────────────────────────────── */
+@media (max-width: 680px) {
+  .hv2-metric-card {
+    padding: 16px 12px !important;
+  }
+  .hv2-mc-icon { margin-bottom: 4px !important; }
+  .hv2-mc-value { font-size: 1.5rem !important; line-height: 1 !important; }
+  .hv2-mc-label {
+    font-size: 10px !important;
+    line-height: 1.3 !important;
+    word-break: break-word !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   STACK LAYERS — definitive mobile fix
+   Root cause: align-items:baseline on flex row + mixed wrapping
+   Fix: uniform column layout, consistent heights, no truncation
+   ══════════════════════════════════════════════════════════════════ */
+@media (max-width: 680px) {
+  /* Every row: column layout, consistent padding */
+  .hv2-stack-row {
+    border-radius: 10px !important;
+    min-height: unset !important;
+    height: auto !important;
+  }
+  .hv2-stack-bar {
+    width: 4px !important;
+    align-self: stretch !important;
+    min-height: unset !important;
+    flex-shrink: 0 !important;
+  }
+  .hv2-stack-content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+    padding: 12px 14px !important;
+    min-width: 0 !important;
+    flex: 1 !important;
+  }
+  .hv2-stack-label {
+    font: 700 9px ui-monospace, monospace !important;
+    letter-spacing: .12em !important;
+    color: var(--h-ink) !important;
+    white-space: nowrap !important;
+    min-width: unset !important;
+    flex-shrink: 0 !important;
+    line-height: 1 !important;
+  }
+  .hv2-stack-detail {
+    font-size: 11px !important;
+    line-height: 1.45 !important;
+    color: var(--h-muted) !important;
+    /* Allow wrapping — no truncation */
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    word-break: break-word !important;
+    max-width: 100% !important;
+    flex: none !important;
+  }
+  .hv2-stack-index { display: none !important; }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   TICKER — complete rewrite for mobile reliability
+   ══════════════════════════════════════════════════════════════════ */
+.hv2-oncall {
+  position: relative !important;
+  overflow: hidden !important;
+  /* GPU compositing layer — prevent paint overflow */
+  transform: translateZ(0) !important;
+  -webkit-transform: translateZ(0) !important;
+}
+/* On mobile, also clip via mask so text doesn't peek */
+@media (max-width: 680px) {
+  .hv2-oncall {
+    padding: 12px 0 !important;
+    /* Fade edges so text doesn't hard-cut at viewport edge */
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 8%,
+      black 92%,
+      transparent 100%
+    ) !important;
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 8%,
+      black 92%,
+      transparent 100%
+    ) !important;
+  }
+  .hv2-oncall-track {
+    /* Slightly slower on mobile = easier to read */
+    animation-duration: 32s !important;
+    will-change: transform !important;
+  }
+  .hv2-oncall-inner span {
+    padding: 0 16px !important;
+    font-size: 10px !important;
+    letter-spacing: .08em !important;
+    white-space: nowrap !important;
+  }
+}

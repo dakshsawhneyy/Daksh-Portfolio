@@ -95,9 +95,10 @@ const Blog = () => {
                 variants={fadeUp}
               >
                 <div className="bp3-feat-visual">
-                  <div className="bp3-feat-visual-inner">
-                    <span className="bp3-feat-num">01</span>
-                  </div>
+                  {featured.cover
+                    ? <img src={featured.cover} alt={featured.title} className="bp3-feat-cover" />
+                    : <div className="bp3-feat-visual-inner"><span className="bp3-feat-num">01</span></div>
+                  }
                   <span className="bp3-feat-badge">LATEST POST</span>
                 </div>
                 <div className="bp3-feat-body">
@@ -142,6 +143,11 @@ const Blog = () => {
                         <h2 className="bp3-art-title">{item.title}</h2>
                         <p className="bp3-art-brief">{item.brief}</p>
                       </div>
+                      {item.cover && (
+                        <div className="bp3-art-cover">
+                          <img src={item.cover} alt={item.title} />
+                        </div>
+                      )}
                       <div className="bp3-art-arrow"><ArrowUpRight size={16}/></div>
                     </motion.a>
                   )

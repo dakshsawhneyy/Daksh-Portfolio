@@ -39,12 +39,16 @@ const parseRSS = (xml) => {
 
   return items.slice(0, 10).map((item) => {
     const text = (tag) => item.querySelector(tag)?.textContent?.trim() ?? ''
+    const attr = (tag, a) => item.querySelector(tag)?.getAttribute(a) ?? null
     const link = text('link') || text('guid')
-    // derive slug from the URL path
     const slug = link.split('/').filter(Boolean).pop() ?? ''
-    // brief: strip HTML tags from description and cap at 160 chars
     const raw = text('description').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
     const brief = raw.length > 160 ? raw.slice(0, 157) + '…' : raw
+    // Try several cover image locations
+    const cover =
+      attr('enclosure', 'url') ||
+      item.querySelector('media\\:content, media:content')?.getAttribute('url') ||
+      null
 
     return {
       title: text('title'),
@@ -52,6 +56,7 @@ const parseRSS = (xml) => {
       slug,
       url: link,
       publishedAt: text('pubDate') || new Date().toISOString(),
+      cover,
     }
   })
 }
@@ -68,12 +73,15 @@ const tryRss2Json = async () => {
     const slug = link.split('/').filter(Boolean).pop() ?? ''
     const raw = (item.description || item.content || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
     const brief = raw.length > 160 ? raw.slice(0, 157) + '…' : raw
+    // extract cover image from thumbnail or enclosure
+    const cover = item.thumbnail || item.enclosure?.link || null
     return {
       title: item.title,
       brief,
       slug,
       url: link,
       publishedAt: item.pubDate || new Date().toISOString(),
+      cover,
     }
   })
 }

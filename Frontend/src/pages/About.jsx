@@ -34,7 +34,7 @@ const About = () => (
         <motion.div className="ap3-hero-copy" initial="hidden" animate="visible" variants={stagger}>
           <motion.div className="ap3-available" variants={fadeUp}>
             <span className="ap3-available-dot" />
-            Open to Cloud / SRE roles · Aug 2027
+            Open to Cloud / SRE roles
           </motion.div>
 
           <motion.h1 className="ap3-name" variants={fadeUp}>
