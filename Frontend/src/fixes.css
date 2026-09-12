@@ -701,3 +701,94 @@ html, body { overflow-x: hidden !important; max-width: 100vw; }
     white-space: nowrap !important;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   PROJECTS MOBILE — definitive fix
+   Header: warm cream (not black), text: continuous not truncated
+   ══════════════════════════════════════════════════════════════════ */
+@media (max-width: 680px) {
+  /* Header: match the cream page background */
+  .prj-header {
+    background: var(--pu-paper, #faf9f6) !important;
+    border-bottom: 1px solid #e0ded6 !important;
+    padding: 40px 18px 24px !important;
+  }
+  .prj-eyebrow { color: #e8674a !important; }
+  .prj-h1 {
+    color: #111210 !important;
+    font-size: clamp(2.2rem, 10vw, 3rem) !important;
+  }
+  .prj-h1 em { color: #e8674a !important; }
+  .prj-header-sub {
+    color: #6b6e67 !important;
+    font-size: 12px !important;
+    line-height: 1.55 !important;
+  }
+
+  /* List header: white bg */
+  .prj-list-header {
+    background: #fff !important;
+  }
+
+  /* Row title: allow wrapping, no truncation */
+  .prj-row-title {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    min-width: 0 !important;
+    font-size: 0.92rem !important;
+    line-height: 1.35 !important;
+  }
+
+  /* Row top: allow wrapping so year/cats can wrap under title */
+  .prj-row-top {
+    flex-wrap: wrap !important;
+    gap: 4px 8px !important;
+    align-items: flex-start !important;
+  }
+
+  /* Show categories on mobile (they were hidden) */
+  .prj-row-cats {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+  }
+  .prj-row-cat {
+    font-size: 8px !important;
+    padding: 2px 6px !important;
+  }
+  .prj-row-year {
+    font-size: 9px !important;
+    color: #aaa !important;
+  }
+
+  /* Body padding tighter */
+  .prj-row-body {
+    padding: 14px 10px 14px 0 !important;
+  }
+
+  /* Tags: show on mobile, wrap naturally */
+  .prj-row-tags {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+    margin-top: 8px !important;
+  }
+  .prj-row-tags span {
+    font-size: 9px !important;
+    padding: 2px 5px !important;
+  }
+
+  /* Description when expanded */
+  .prj-row-desc {
+    font-size: 12px !important;
+    line-height: 1.55 !important;
+    color: #6b6e67 !important;
+    word-break: break-word !important;
+  }
+
+  /* Page root: cream background */
+  .prj-root { background: var(--pu-paper, #faf9f6) !important; }
+}

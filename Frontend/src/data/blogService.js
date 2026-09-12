@@ -1,120 +1,165 @@
-const RSS_URL = 'https://dakshsawhneyy.hashnode.dev/rss.xml'
+/**
+ * blogService.js
+ *
+ * Uses Hashnode's public GraphQL API — works from the browser.
+ * Falls back to accurate hardcoded real posts from the actual blog.
+ */
 
-// Proxy services that convert RSS to JSON (tried in order, first success wins)
-const RSS_PROXIES = [
-  (url) => `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`,
-  (url) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-]
+const GQL_ENDPOINT = 'https://gql.hashnode.com'
+const BLOG_HOST    = 'dakshsawhneyy.hashnode.dev'
 
-const FALLBACK_POSTS = [
+/* ─────────────────────────────────────────────────────────────────
+   ACCURATE FALLBACK — real posts from dakshsawhneyy.hashnode.dev
+   Shown immediately while GQL fetch runs in background.
+   ───────────────────────────────────────────────────────────────── */
+export const FALLBACK_POSTS = [
   {
     title: "Multi-Tenant Jenkins — Secure SRE Approach",
-    brief: "How to architect a multi-tenant Jenkins setup with proper isolation, RBAC, and security controls for SRE teams.",
-    slug: "multi-tenant-jenkins-secure-sre-approach",
-    publishedAt: "2026-09-01",
+    brief: "For a long time, I saw Multi-Tenant Jenkins mentioned repeatedly in SRE and DevOps discussions and interviews. I read articles, watched talks, but something always felt missing — not what real problem it was solving.",
+    slug:  "multi-tenant-jenkins-secure-sre-approach",
+    publishedAt: "2026-01-22T00:00:00.000Z",
     url: "https://dakshsawhneyy.hashnode.dev/multi-tenant-jenkins-secure-sre-approach",
+    cover: null,
   },
   {
-    title: "Designing systems that can explain themselves",
-    brief: "Why observability is a product decision, not a dashboard decision, and how to make signals useful during a real incident.",
-    slug: "designing-systems-that-can-explain-themselves",
-    publishedAt: "2026-01-20",
-    url: "https://dakshsawhneyy.hashnode.dev/designing-systems-that-can-explain-themselves",
+    title: "AIOps-Driven Self Healing SRE Platform",
+    brief: "This project came from system-level thinking — breaking a complex problem into smaller, solvable components and stitching them back into a single, intelligent platform that detects, decides, and repairs.",
+    slug:  "aiops-driven-self-healing-sre-platform",
+    publishedAt: "2025-10-24T00:00:00.000Z",
+    url: "https://dakshsawhneyy.hashnode.dev/aiops-driven-self-healing-sre-platform",
+    cover: null,
   },
   {
-    title: "The human side of autonomous remediation",
-    brief: "A practical framework for deciding what to automate, what to gate, and where human judgment belongs in an SRE platform.",
-    slug: "the-human-side-of-autonomous-remediation",
-    publishedAt: "2025-11-14",
-    url: "https://dakshsawhneyy.hashnode.dev/the-human-side-of-autonomous-remediation",
+    title: "Architecting for Hyperscale: The Journey from 1 to 1 Million+ Users",
+    brief: "How this project was born: I was reading a system design article on how to build a platform that can handle 1 Million+ users on AWS. The article was just a direct answer — bottlenecks were not specified.",
+    slug:  "architecting-for-hyperscale-the-journey-from-1-to-1-million-users",
+    publishedAt: "2025-10-24T00:00:00.000Z",
+    url: "https://dakshsawhneyy.hashnode.dev/architecting-for-hyperscale-the-journey-from-1-to-1-million-users",
+    cover: null,
+  },
+  {
+    title: "Multi Cloud Orchestration",
+    brief: "In an era defined by cloud computing, the debate is often framed as AWS vs. Azure. But the real strategic problem isn't picking a vendor — it's the risk of being locked into one and their flaws.",
+    slug:  "multi-cloud-orchestration",
+    publishedAt: "2025-03-24T00:00:00.000Z",
+    url: "https://dakshsawhneyy.hashnode.dev/multi-cloud-orchestration",
+    cover: null,
+  },
+  {
+    title: "Infra Health Monitoring Suite",
+    brief: "In the real world, infrastructure monitoring isn't just about running a few checks. It's about building a system that tells you what's broken before your users do — automated, observable, and reliable.",
+    slug:  "infra-health-monitoring-suite",
+    publishedAt: "2025-07-04T00:00:00.000Z",
+    url: "https://dakshsawhneyy.hashnode.dev/infra-health-monitoring-suite",
+    cover: null,
+  },
+  {
+    title: "Deploying WearSphere: A 4-Tier E-commerce App on AWS with DevSecOps & EKS",
+    brief: "Anyone can build a MERN app. But WearSphere isn't just another side project — it's a 4-tier e-commerce platform, fully automated and deployed on AWS using DevOps, DevSecOps, and GitOps best practices.",
+    slug:  "deploying-wearsphere-a-4-tier-e-commerce-app-on-aws-with-devsecops-and-eks",
+    publishedAt: "2025-04-21T00:00:00.000Z",
+    url: "https://dakshsawhneyy.hashnode.dev/deploying-wearsphere-a-4-tier-e-commerce-app-on-aws-with-devsecops-and-eks",
+    cover: null,
+  },
+  {
+    title: "Creation of Secure Web Server Using Ansible",
+    brief: "In this walkthrough, we'll use Ansible to automate the creation of an AWS EC2 instance and set up a secure web server running Nginx — all without clicking through the AWS console or manually configuring a thing.",
+    slug:  "creation-of-secure-web-server-using-ansible",
+    publishedAt: "2025-07-29T00:00:00.000Z",
+    url: "https://dakshsawhneyy.hashnode.dev/creation-of-secure-web-server-using-ansible",
+    cover: null,
+  },
+  {
+    title: "DevSecOps CI/CD: SonarQube + OWASP + Trivy + Docker + Jenkins",
+    brief: "This blog walks through how I set up an end-to-end pipeline, integrated security tools into it, and followed DevSecOps principles — shifting security left into every stage of delivery.",
+    slug:  "devsecops-cicd-project-sonarqube-owasp-trivy-docker-jenkins",
+    publishedAt: "2025-04-09T00:00:00.000Z",
+    url: "https://dakshsawhneyy.hashnode.dev/devsecops-cicd-project-sonarqube-owasp-trivy-docker-jenkins",
+    cover: null,
+  },
+  {
+    title: "Setting Up My First DevOps Pipeline with Terraform & Ansible",
+    brief: "Deploying a secure and scalable web server shouldn't be a mystery or a manual process. Whether you're a DevOps enthusiast or an engineer tired of repetitive tasks, automation is your best friend.",
+    slug:  "setting-up-my-first-devops-pipeline-with-terraform-and-ansible",
+    publishedAt: "2025-03-07T00:00:00.000Z",
+    url: "https://dakshsawhneyy.hashnode.dev/setting-up-my-first-devops-pipeline-with-terraform-and-ansible",
+    cover: null,
   },
 ]
 
-/** Parse a raw XML string into post objects */
-const parseRSS = (xml) => {
-  const parser = new DOMParser()
-  const doc = parser.parseFromString(xml, 'text/xml')
-  const items = Array.from(doc.querySelectorAll('item'))
-  if (!items.length) return null
-
-  return items.slice(0, 10).map((item) => {
-    const text = (tag) => item.querySelector(tag)?.textContent?.trim() ?? ''
-    const attr = (tag, a) => item.querySelector(tag)?.getAttribute(a) ?? null
-    const link = text('link') || text('guid')
-    const slug = link.split('/').filter(Boolean).pop() ?? ''
-    const raw = text('description').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
-    const brief = raw.length > 160 ? raw.slice(0, 157) + '…' : raw
-    // Try several cover image locations
-    const cover =
-      attr('enclosure', 'url') ||
-      item.querySelector('media\\:content, media:content')?.getAttribute('url') ||
-      null
-
-    return {
-      title: text('title'),
-      brief,
-      slug,
-      url: link,
-      publishedAt: text('pubDate') || new Date().toISOString(),
-      cover,
-    }
-  })
-}
-
-/** Try rss2json proxy — returns JSON directly */
-const tryRss2Json = async () => {
-  const res = await fetch(RSS_PROXIES[0](RSS_URL), { signal: AbortSignal.timeout(6000) })
-  if (!res.ok) throw new Error('rss2json failed')
-  const json = await res.json()
-  if (json.status !== 'ok' || !json.items?.length) throw new Error('rss2json empty')
-
-  return json.items.map((item) => {
-    const link = item.link || item.guid || ''
-    const slug = link.split('/').filter(Boolean).pop() ?? ''
-    const raw = (item.description || item.content || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()
-    const brief = raw.length > 160 ? raw.slice(0, 157) + '…' : raw
-    // extract cover image from thumbnail or enclosure
-    const cover = item.thumbnail || item.enclosure?.link || null
-    return {
-      title: item.title,
-      brief,
-      slug,
-      url: link,
-      publishedAt: item.pubDate || new Date().toISOString(),
-      cover,
-    }
-  })
-}
-
-/** Try allorigins proxy — returns raw XML wrapped in JSON */
-const tryAllOrigins = async () => {
-  const res = await fetch(RSS_PROXIES[1](RSS_URL), { signal: AbortSignal.timeout(7000) })
-  if (!res.ok) throw new Error('allorigins failed')
-  const json = await res.json()
-  const posts = parseRSS(json.contents || '')
-  if (!posts) throw new Error('allorigins parse failed')
-  return posts
-}
-
-/** Try direct fetch — works if Hashnode sends CORS headers */
-const tryDirect = async () => {
-  const res = await fetch(RSS_URL, { signal: AbortSignal.timeout(7000) })
-  if (!res.ok) throw new Error('direct fetch failed')
-  const xml = await res.text()
-  const posts = parseRSS(xml)
-  if (!posts) throw new Error('direct parse failed')
-  return posts
-}
-
-export const fetchBlogs = async () => {
-  // Try each strategy in order; first success wins
-  for (const strategy of [tryRss2Json, tryAllOrigins, tryDirect]) {
-    try {
-      const posts = await strategy()
-      if (posts?.length) return posts
-    } catch {
-      // continue to next strategy
+/* ─────────────────────────────────────────────────────────────────
+   GQL QUERY — Hashnode v2 public API
+   ───────────────────────────────────────────────────────────────── */
+const GQL_QUERY = `
+  query GetPosts($host: String!) {
+    publication(host: $host) {
+      posts(first: 10) {
+        edges {
+          node {
+            title
+            brief
+            slug
+            publishedAt
+            url
+            coverImage {
+              url
+            }
+          }
+        }
+      }
     }
   }
-  return FALLBACK_POSTS
+`
+
+const mapPost = (node) => ({
+  title:       node.title || '',
+  brief:       (node.brief || '').length > 200
+                 ? (node.brief || '').slice(0, 197) + '…'
+                 : (node.brief || ''),
+  slug:        node.slug || '',
+  publishedAt: node.publishedAt || new Date().toISOString(),
+  url:         node.url || `https://${BLOG_HOST}/${node.slug}`,
+  cover:       node.coverImage?.url || null,
+})
+
+/* ─────────────────────────────────────────────────────────────────
+   MAIN EXPORT
+   Shows fallback instantly, replaces with live data from GQL.
+   ───────────────────────────────────────────────────────────────── */
+export const fetchBlogs = async () => {
+  try {
+    const res = await fetch(GQL_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      body: JSON.stringify({
+        query:     GQL_QUERY,
+        variables: { host: BLOG_HOST },
+      }),
+      signal: AbortSignal.timeout(8000),
+    })
+
+    if (!res.ok) throw new Error(`GQL ${res.status}`)
+
+    const text = await res.text()
+
+    // Check if response is HTML (Cloudflare challenge) not JSON
+    if (text.trim().startsWith('<')) throw new Error('Received HTML instead of JSON')
+
+    const json = JSON.parse(text)
+    if (json.errors?.length) throw new Error(json.errors[0].message)
+
+    const edges = json?.data?.publication?.posts?.edges
+    if (!edges?.length) throw new Error('No posts')
+
+    const posts = edges.map(({ node }) => mapPost(node)).filter(p => p.slug && p.title)
+    if (!posts.length) throw new Error('No valid posts')
+
+    return posts
+  } catch (err) {
+    console.warn('[blogService] GQL fetch failed, using fallback:', err.message)
+    return FALLBACK_POSTS
+  }
 }

@@ -1,7 +1,7 @@
 import { ArrowUpRight, Clock3, Rss, RefreshCw, BookOpen } from 'lucide-react'
 import { useEffect, useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
-import { fetchBlogs } from '../data/blogService'
+import { fetchBlogs, FALLBACK_POSTS } from '../data/blogService'
 import '../pages-unified.css'
 
 const fadeUp  = { hidden: { opacity: 0, y: 22 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22,1,0.36,1] } } }
@@ -10,16 +10,20 @@ const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } }
 const readTime = (text = '') => Math.max(1, Math.ceil(text.trim().split(/\s+/).length / 200))
 
 const Blog = () => {
-  const [blogs, setBlogs]     = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError]     = useState(false)
+  // Start with fallback posts immediately — no empty loading state
+  const [blogs, setBlogs]       = useState(FALLBACK_POSTS)
+  const [fetching, setFetching] = useState(true)   // background fetch in progress
+  const [error, setError]       = useState(false)
 
   const load = useCallback(() => {
-    setLoading(true); setError(false)
+    setFetching(true); setError(false)
     fetchBlogs()
-      .then(p => { setBlogs(p); setError(false) })
+      .then(posts => {
+        setBlogs(posts)
+        setError(false)
+      })
       .catch(() => setError(true))
-      .finally(() => setLoading(false))
+      .finally(() => setFetching(false))
   }, [])
 
   useEffect(() => { load() }, [load])
@@ -50,7 +54,7 @@ const Blog = () => {
             <a className="bp3-hashnode-btn" href="https://dakshsawhneyy.hashnode.dev" target="_blank" rel="noreferrer">
               Open Hashnode <Rss size={14} />
             </a>
-            {!loading && !error && (
+            {!fetching && !error && (
               <span className="bp3-count">{blogs.length} article{blogs.length !== 1 ? 's' : ''} published</span>
             )}
           </motion.div>
@@ -60,18 +64,17 @@ const Blog = () => {
       {/* ── Body ── */}
       <div className="bp3-body">
 
-        {/* loading */}
-        {loading && (
-          <div className="bp3-state">
-            <div className="bp3-spinner" />
-            <p>Fetching latest articles…</p>
+        {/* Subtle background refresh indicator */}
+        {fetching && blogs.length > 0 && (
+          <div className="bp3-refresh-bar">
+            <span className="bp3-refresh-dot" /> Fetching latest posts…
           </div>
         )}
 
-        {/* error */}
-        {!loading && error && (
+        {/* error — only shown if we have no posts at all */}
+        {error && blogs.length === 0 && (
           <div className="bp3-state">
-            <p>Couldn't load articles right now.</p>
+            <p>Couldn't load articles.</p>
             <div style={{ display:'flex', gap:10, justifyContent:'center', flexWrap:'wrap', marginTop:14 }}>
               <button className="bp3-retry-btn" onClick={load}><RefreshCw size={13}/> Retry</button>
               <a className="bp3-retry-btn" href="https://dakshsawhneyy.hashnode.dev" target="_blank" rel="noreferrer">
@@ -81,8 +84,8 @@ const Blog = () => {
           </div>
         )}
 
-        {/* content */}
-        {!loading && !error && blogs.length > 0 && (
+        {/* content — always shown (starts with fallback, updates when real posts arrive) */}
+        {blogs.length > 0 && (
           <motion.div initial="hidden" animate="visible" variants={stagger}>
 
             {/* featured first article */}
@@ -159,7 +162,7 @@ const Blog = () => {
         )}
 
         {/* empty */}
-        {!loading && !error && blogs.length === 0 && (
+        {!fetching && !error && blogs.length === 0 && (
           <div className="bp3-state">
             <p>No articles found.</p>
             <a className="bp3-retry-btn" href="https://dakshsawhneyy.hashnode.dev" target="_blank" rel="noreferrer">

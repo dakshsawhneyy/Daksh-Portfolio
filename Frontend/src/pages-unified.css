@@ -2212,3 +2212,20 @@ img { max-width: 100%; height: auto; }
   }
   .bp3-art-cover { display: none !important; }
 }
+
+/* ── Blog: subtle background-refresh indicator ──────────────────── */
+.bp3-refresh-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0 16px;
+  font: 500 11px 'DM Sans', sans-serif;
+  color: var(--pu-muted);
+}
+.bp3-refresh-dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  background: var(--pu-coral);
+  border-radius: 50%;
+  animation: bp3-spin .8s linear infinite;
+}
