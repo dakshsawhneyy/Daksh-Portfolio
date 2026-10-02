@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { Minus, Plus, Skull, ServerCrash, MousePointerClick } from 'lucide-react'
 import '../styles/self-healing-cluster.css'
@@ -165,7 +165,8 @@ const POD_STYLE = {
   terminating: { fill: 'rgba(243,241,235,.04)', stroke: '#6b6e67' },
 }
 
-const Pod = ({ pod, onKill, onHover }) => {
+// memo: the 280ms control-loop tick re-renders the panel; unchanged pods keep the same object, so they skip
+const Pod = memo(function Pod({ pod, onKill, onHover }) {
   const [sx, sy] = SLOTS[pod.slot]
   const node = NODES.find(n => n.id === pod.node)
   const cx = node.x + sx
@@ -225,7 +226,7 @@ const Pod = ({ pod, onKill, onHover }) => {
       )}
     </motion.g>
   )
-}
+})
 
 const Sparkline = ({ data }) => {
   const pts = data.map((v, i) => `${(i / (data.length - 1)) * 100},${28 - ((v - 50) / 50) * 20}`).join(' ')
@@ -275,6 +276,8 @@ const SelfHealingCluster = () => {
     }, 5200)
     return () => clearInterval(t)
   }, [inView, reduced])
+
+  const killPod = useCallback((id) => act({ type: 'kill', id }), [act])
 
   const killRandom = () => {
     const running = s.pods.filter(p => p.status === 'running')
@@ -385,7 +388,7 @@ const SelfHealingCluster = () => {
           {/* pods */}
           <AnimatePresence>
             {s.pods.map(p => (
-              <Pod key={p.id} pod={p} onKill={id => act({ type: 'kill', id })} onHover={setHovered} />
+              <Pod key={p.id} pod={p} onKill={killPod} onHover={setHovered} />
             ))}
           </AnimatePresence>
         </svg>

@@ -124,13 +124,17 @@ const Footer = () => {
     const state = { target: reduced ? 1 : 0, vel: 0, mouse: { x: 0, y: 0, active: false } }
     let lastStatus = ''
     let lastDrift = -1
+    let lastDriftStr = ''
+    let lastConvStr = ''
 
     const field = createMeshField(canvas, {
       state, reduced, mobile,
       onFrame: (p) => {
         const d = Math.pow(1 - p, 1.4)
-        headRef.current?.style.setProperty('--drift', d.toFixed(4))
-        rootRef.current?.style.setProperty('--conv', p.toFixed(4))
+        // write CSS vars only when they change: each write restyles ~30 glyphs
+        const dStr = d.toFixed(3), pStr = p.toFixed(3)
+        if (dStr !== lastDriftStr) { lastDriftStr = dStr; headRef.current?.style.setProperty('--drift', dStr) }
+        if (pStr !== lastConvStr) { lastConvStr = pStr; rootRef.current?.style.setProperty('--conv', pStr) }
         const drifted = Math.round(d * field.nodeCount)
         if (drifted !== lastDrift && driftRef.current) {
           lastDrift = drifted

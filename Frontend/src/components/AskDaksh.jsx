@@ -7,14 +7,13 @@ import '../styles/ask-daksh.css'
 
 /* ══════════════════════════════════════════════════════════════════
    ASK DAKSH — floating AI agent.
-   Streams answers from the backend (/api/agent → Claude). If the
-   backend is unreachable / not configured it answers from the local
-   knowledge base (data/knowledge.js) with the same streaming feel.
+   Offline-only (owner's choice: the LLM API was too slow). Answers come
+   instantly from the local knowledge base (data/knowledge.js).
+   Backend/routes/agentRoute.js still exists but nothing calls it.
    Other components can open it: window.dispatchEvent(
      new CustomEvent('dk-agent', { detail: { question } }))
    ══════════════════════════════════════════════════════════════════ */
 
-const API = `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000'}/api/agent`
 const STORE_KEY = 'dk-agent-chat'
 const GREET_KEY = 'dk-agent-greeted'
 const MAX_LEN = 600
@@ -81,11 +80,10 @@ const AskDaksh = () => {
   })
   const [input, setInput] = useState('')
   const [busy, setBusy] = useState(false)
-  const [offline, setOffline] = useState(false)
   const [greet, setGreet] = useState(false)
   const listRef = useRef(null)
   const inputRef = useRef(null)
-  const abortRef = useRef(null)
+  const cancelRef = useRef(false)
   const navigate = useNavigate()
 
   useEffect(() => { ss.set(STORE_KEY, JSON.stringify(messages.slice(-30))) }, [messages])
@@ -118,12 +116,14 @@ const AskDaksh = () => {
     return copy
   }), [])
 
-  /* type out an offline answer so it feels the same as streaming */
+  /* type the answer out quickly (3 words per ~16ms) so it feels alive but instant */
   const typeOut = useCallback(async (text) => {
-    const chunks = text.match(/\S+\s*/g) || [text]
-    for (const c of chunks) {
-      patchLast(m => ({ ...m, content: m.content + c }))
-      await sleep(18 + Math.random() * 22)
+    const words = text.match(/\S+\s*/g) || [text]
+    for (let i = 0; i < words.length; i += 3) {
+      if (cancelRef.current) return
+      const chunk = words.slice(i, i + 3).join('')
+      patchLast(m => ({ ...m, content: m.content + chunk }))
+      await sleep(16)
     }
   }, [patchLast])
 
@@ -135,41 +135,13 @@ const AskDaksh = () => {
     const history = [...messages, { role: 'user', content: question }]
     setMessages([...history, { role: 'assistant', content: '', pending: true }])
 
-    const payload = history.filter(m => m.content && m.content !== WELCOME.content).map(({ role, content }) => ({ role, content }))
-    let got = false
-    if (!offline) {
-      const ctrl = new AbortController()
-      abortRef.current = ctrl
-      try {
-        const res = await fetch(API, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: payload }),
-          signal: ctrl.signal,
-        })
-        if (res.status === 429) {
-          patchLast(m => ({ ...m, content: "You're asking faster than my rate limit allows, so here's what I know offline:\n\n" }))
-        } else if (res.ok && res.body) {
-          const reader = res.body.getReader()
-          const dec = new TextDecoder()
-          for (;;) {
-            const { done, value } = await reader.read()
-            if (done) break
-            const chunk = dec.decode(value, { stream: true })
-            if (chunk) { got = true; patchLast(m => ({ ...m, content: m.content + chunk })) }
-          }
-        } else {
-          setOffline(true)
-        }
-      } catch (err) {
-        if (err.name === 'AbortError') { setBusy(false); patchLast(m => ({ ...m, pending: false })); return }
-        setOffline(true)
-      }
-    }
-    if (!got) await typeOut(offlineAnswer(question))
+    cancelRef.current = false
+    await sleep(220) // brief "thinking" beat so the typing dots register
+    if (cancelRef.current) return
+    await typeOut(offlineAnswer(question))
     patchLast(m => ({ ...m, pending: false }))
     setBusy(false)
-  }, [busy, messages, offline, patchLast, typeOut])
+  }, [busy, messages, patchLast, typeOut])
 
   // let other parts of the site (terminal, CTAs) open the agent
   const askRef = useRef(ask)
@@ -185,7 +157,7 @@ const AskDaksh = () => {
   }, [])
 
   const reset = () => {
-    abortRef.current?.abort()
+    cancelRef.current = true
     setBusy(false)
     setMessages([WELCOME])
   }
@@ -223,7 +195,7 @@ const AskDaksh = () => {
               </div>
               <div className="ask-head-text">
                 <strong>Daksh's agent</strong>
-                <span>{offline ? 'offline mode · answers from his profile' : 'AI · knows his resume, projects & stack'}</span>
+                <span>offline mode · answers from his profile</span>
               </div>
               <button type="button" className="ask-icon-btn" onClick={reset} aria-label="New conversation" title="New conversation">
                 <RotateCcw size={15} />

@@ -1,5 +1,5 @@
 import { ArrowUpRight, ShieldCheck, Activity, Terminal, Zap, GitBranch, ExternalLink } from 'lucide-react'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useLayoutEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useInView, animate, AnimatePresence } from 'framer-motion'
 import SelfHealingCluster from '../components/SelfHealingCluster'
@@ -29,6 +29,7 @@ const Counter = ({ to, suffix = '' }) => {
 }
 
 /* ─── typing headline ─── */
+const TYPED_WORDS = ['that self-heal.', 'for resilience.', 'that scale.', 'for reliability.']
 const TypedText = ({ words }) => {
   const [idx, setIdx]           = useState(0)
   const [displayed, setDisplayed] = useState('')
@@ -47,7 +48,35 @@ const TypedText = ({ words }) => {
     }
     return () => clearTimeout(t)
   }, [displayed, deleting, idx, words])
-  return <span className="typed-word">{displayed}<span className="typed-cursor">|</span></span>
+
+  // Keep the phrase on ONE line: measure every phrase at the h1 size and scale
+  // this line down just enough for the widest one to fit the column.
+  const boxRef = useRef(null)
+  const sizerRefs = useRef([])
+  const [scale, setScale] = useState(1)
+  useLayoutEffect(() => {
+    const box = boxRef.current
+    if (!box) return
+    const fit = () => {
+      const avail = box.parentElement.clientWidth
+      const need = Math.max(...sizerRefs.current.map(el => el?.offsetWidth || 0))
+      if (avail && need) setScale(Math.min(1, (avail - 4) / need))
+    }
+    fit()
+    document.fonts?.ready.then(fit)
+    const ro = new ResizeObserver(fit)
+    ro.observe(box.parentElement)
+    return () => ro.disconnect()
+  }, [words])
+
+  return (
+    <span className="typed-fit" ref={boxRef}>
+      {words.map((w, i) => (
+        <span key={w} className="typed-sizer" aria-hidden="true" ref={el => (sizerRefs.current[i] = el)}>{w}|</span>
+      ))}
+      <span className="typed-word" style={{ fontSize: `${scale}em` }}>{displayed}<span className="typed-cursor">|</span></span>
+    </span>
+  )
 }
 
 /* ─── Incident Zero simulator — with real product screenshot ─── */
@@ -188,7 +217,7 @@ const Home = () => (
           <motion.h1 className="hv2-h1" variants={fadeUp}>
             <span className="hv2-h1-line">Building systems</span>
             <span className="hv2-h1-line hv2-h1-em">
-              <TypedText words={['that self-heal.','for resilience.','that scale.','for reliability.']}/>
+              <TypedText words={TYPED_WORDS}/>
             </span>
           </motion.h1>
 

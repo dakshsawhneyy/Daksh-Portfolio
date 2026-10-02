@@ -39,6 +39,39 @@ html body {
 /* keep `clip` (not `hidden`) on the home wrapper so sticky/fixed children work */
 main.home-v2 { overflow-x: clip; }
 
-/* the typed hero headline wraps to 2 lines for longer words; reserve both
-   lines so the hero doesn't jump vertically while typing */
-.hv2-hero .hv2-h1-em { display: block; min-height: 1.8em; }
+/* typed hero headline: always one line. Home.jsx scales the line so the widest
+   phrase fits the column; the hidden sizers measure every phrase. */
+.hv2-hero .hv2-h1-em { display: block; min-height: 0; }
+.typed-fit { position: relative; display: block; white-space: nowrap; }
+.typed-sizer { position: absolute; left: 0; top: 0; visibility: hidden; white-space: nowrap; pointer-events: none; }
+.typed-word { display: inline-block; white-space: nowrap; }
+
+/* ─────────────────────────────────────────────────────────────────
+   PERFORMANCE (measured with a scroll benchmark — see CLAUDE.md)
+   Same look, cheaper rendering.
+   ───────────────────────────────────────────────────────────────── */
+/* Desktop nav rail is 97% opaque: its backdrop blur was invisible but
+   re-rasterised the strip behind it on every scroll frame. */
+@media (min-width: 681px) {
+  .portfolio-app .site-nav { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+}
+/* Mobile nav is 92% opaque dark glass: a light blur keeps the frosted edge. */
+@media (max-width: 680px) {
+  .portfolio-app .site-nav { backdrop-filter: blur(8px) !important; -webkit-backdrop-filter: blur(8px) !important; }
+}
+/* Hero ambient orbs: a CSS blur(80px) on a 500px element that also scaled every
+   frame forced a full re-blur per frame. The radial gradient is already soft, so
+   widen the falloff instead and only translate (compositor-only). */
+.hv2-bg-orb {
+  filter: none !important;
+  opacity: .06 !important;
+  will-change: transform;
+}
+.hv2-orb-1 { background: radial-gradient(circle, #72dfac 0%, rgba(114, 223, 172, .35) 30%, transparent 68%) !important; }
+.hv2-orb-2 { background: radial-gradient(circle, #e8674a 0%, rgba(232, 103, 74, .35) 30%, transparent 68%) !important; }
+@keyframes orb-drift {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(30px, -20px, 0); }
+}
+/* infinite marquees: promote to their own layer */
+.hv2-marquee-track { will-change: transform; }

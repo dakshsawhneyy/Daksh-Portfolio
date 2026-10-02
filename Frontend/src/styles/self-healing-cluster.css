@@ -54,7 +54,7 @@
 
 .shc-route { fill: none; stroke: rgba(232, 103, 74, .22); stroke-width: 1; stroke-dasharray: 2 3; }
 .shc-route.is-down { stroke: rgba(232, 103, 74, .55); stroke-dasharray: 1 5; }
-.shc-packet { filter: drop-shadow(0 0 3px currentColor); }
+.shc-packet { opacity: .95; } /* no CSS filter: 9 moving SVG packets with drop-shadow repainted every frame */
 
 .shc-ingress rect { fill: #121a17; stroke: rgba(232, 103, 74, .45); stroke-width: 1; }
 .shc-ingress text { font: 600 8.5px ui-monospace, monospace; fill: #e9ece4; text-anchor: middle; }
@@ -82,7 +82,7 @@
 .shc-spin { animation: shc-spin .8s linear infinite; }
 @keyframes shc-spin { to { transform: rotate(360deg); } }
 
-.shc-pod-packet { fill: #72dfac; opacity: .75; filter: drop-shadow(0 0 2px #72dfac); }
+.shc-pod-packet { fill: #72dfac; opacity: .8; }
 .shc-cpu text { font: 600 6px ui-monospace, monospace; fill: #5e6862; }
 .shc-cpu .shc-cpu-pct { text-anchor: end; fill: #8d978f; }
 .shc-cpu-track { fill: rgba(255, 255, 255, .06); }

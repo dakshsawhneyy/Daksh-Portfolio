@@ -13,7 +13,6 @@ import '../styles/terminal.css'
    route navigation (`cd about`), tab-completion with ghost text.
    ══════════════════════════════════════════════════════════════════ */
 
-const API = `${import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000'}/api/agent`
 const BOOTED_KEY = 'dk-term-booted'
 
 const BANNER = [
@@ -233,37 +232,20 @@ const SreTerminal = ({ open, onClose }) => {
 
   const patch = (id, fn) => setLines(ls => ls.map(l => (l.id === id ? fn(l) : l)))
 
+  // offline-only agent (same knowledge base as the chat widget), typed out fast
   const askAgent = async (q) => {
     const id = idRef.current++
     setLines(ls => [...ls, { id, k: 'agent', t: '', pending: true }])
     setBusy(true)
-    const ctrl = new AbortController()
-    abortRef.current = ctrl
-    let got = false
-    try {
-      const res = await fetch(API, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: [{ role: 'user', content: q }] }), signal: ctrl.signal,
-      })
-      if (res.ok && res.body) {
-        const reader = res.body.getReader()
-        const dec = new TextDecoder()
-        for (;;) {
-          const { done, value } = await reader.read()
-          if (done) break
-          const chunk = dec.decode(value, { stream: true })
-          if (chunk) { got = true; patch(id, l => ({ ...l, t: l.t + chunk })) }
-        }
-      }
-    } catch (err) {
-      if (err.name === 'AbortError') { patch(id, l => ({ ...l, pending: false, t: l.t + ' ^C' })); setBusy(false); return }
-    }
-    if (!got) {
-      const ans = offlineAnswer(q)
-      for (const w of ans.match(/\S+\s*/g) || []) {
-        patch(id, l => ({ ...l, t: l.t + w }))
-        await new Promise(r => setTimeout(r, 14))
-      }
+    abortRef.current = { aborted: false }
+    const ticket = abortRef.current
+    await new Promise(r => setTimeout(r, 160))
+    const words = offlineAnswer(q).match(/\S+\s*/g) || []
+    for (let i = 0; i < words.length; i += 3) {
+      if (ticket.aborted) { patch(id, l => ({ ...l, pending: false, t: l.t + ' ^C' })); setBusy(false); return }
+      const chunk = words.slice(i, i + 3).join('')
+      patch(id, l => ({ ...l, t: l.t + chunk }))
+      await new Promise(r => setTimeout(r, 14))
     }
     patch(id, l => ({ ...l, pending: false }))
     setBusy(false)
@@ -412,7 +394,7 @@ const SreTerminal = ({ open, onClose }) => {
     } else if (e.key === 'l' && e.ctrlKey) {
       e.preventDefault(); setLines([])
     } else if (e.key === 'c' && e.ctrlKey && busy) {
-      e.preventDefault(); abortRef.current?.abort()
+      e.preventDefault(); if (abortRef.current) abortRef.current.aborted = true
     } else if (e.key === 'Tab') {
       e.preventDefault()
     }

@@ -38,6 +38,7 @@ export function createSignal(canvas, { reduced, onPhase, onStats }) {
   let incidents = 0
   let mttrs = []
   let jitterBoost = 0
+  let sampleAcc = 0
 
   const y = (val) => PAD_T + (1 - Math.min(val, MAX_V) / MAX_V) * (H - PAD_T - PAD_B)
   const x = (t) => (W - PAD_R) - ((now - t) / WINDOW) * (W - PAD_R - PAD_L)
@@ -104,7 +105,9 @@ export function createSignal(canvas, { reduced, onPhase, onStats }) {
       }
     }
     v += (target - v) * 0.14
-    samples.push({ t: now, v })
+    sampleAcc += dt
+    if (sampleAcc >= 32 || !samples.length) { sampleAcc = 0; samples.push({ t: now, v }) }
+    else samples[samples.length - 1] = { t: now, v }   // newest point tracks the live value
     while (samples.length && samples[0].t < now - WINDOW - 400) samples.shift()
     while (notes.length && notes[0].t < now - WINDOW) notes.shift()
 
@@ -157,18 +160,20 @@ export function createSignal(canvas, { reduced, onPhase, onStats }) {
       c.fillStyle = grad
       c.fill()
 
-      // line, colored per segment against the SLO
-      c.lineWidth = 2
-      c.lineJoin = 'round'
-      c.shadowBlur = 10
+      // line: two batched paths (healthy / breached) + a wide faint stroke as glow.
+      // (per-segment shadowBlur cost ~30ms/frame — never reintroduce it)
+      const okPath = new Path2D(), hotPath = new Path2D()
       for (let i = 1; i < samples.length; i++) {
         const a = samples[i - 1], b = samples[i]
-        const col = b.v > SLO ? CORAL : GREEN
-        c.strokeStyle = `rgba(${col},1)`
-        c.shadowColor = `rgba(${col},0.8)`
-        c.beginPath(); c.moveTo(x(a.t), y(a.v)); c.lineTo(x(b.t), y(b.v)); c.stroke()
+        const path = b.v > SLO ? hotPath : okPath
+        path.moveTo(x(a.t), y(a.v)); path.lineTo(x(b.t), y(b.v))
       }
-      c.shadowBlur = 0
+      c.lineJoin = 'round'
+      c.lineCap = 'round'
+      for (const [path, col] of [[okPath, GREEN], [hotPath, CORAL]]) {
+        c.strokeStyle = `rgba(${col},0.16)`; c.lineWidth = 7; c.stroke(path)
+        c.strokeStyle = `rgba(${col},1)`; c.lineWidth = 2; c.stroke(path)
+      }
 
       // head
       const hx = x(now), hy = y(v)

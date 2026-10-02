@@ -136,8 +136,12 @@ export function createGalaxy({ canvas, nodes, edges, reduced }) {
         c.beginPath(); c.arc(p.x + (q.x - p.x) * t, p.y + (q.y - p.y) * t, 2.4, 0, Math.PI * 2); c.fill()
       }
     }
+    // only touch the DOM for nodes that actually moved (settled graph = no style work)
     for (const nd of nodes) {
-      if (nd.el) nd.el.style.transform = `translate3d(${(nd.x - nd.w / 2).toFixed(1)}px, ${(nd.y - nd.h / 2).toFixed(1)}px, 0)`
+      if (!nd.el) continue
+      if (nd.px !== undefined && Math.abs(nd.x - nd.px) < 0.15 && Math.abs(nd.y - nd.py) < 0.15) continue
+      nd.px = nd.x; nd.py = nd.y
+      nd.el.style.transform = `translate3d(${(nd.x - nd.w / 2).toFixed(1)}px, ${(nd.y - nd.h / 2).toFixed(1)}px, 0)`
     }
   }
 
