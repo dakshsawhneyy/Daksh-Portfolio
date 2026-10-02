@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { motion, useInView, animate, AnimatePresence } from 'framer-motion'
 import SelfHealingCluster from '../components/SelfHealingCluster'
 import SkillGalaxy from '../components/SkillGalaxy'
-import SignalScope from '../components/SignalScope'
+import IncidentDeck from '../components/IncidentDeck'
 import '../home-v2.css'
 
 /* ─── variants ─── */
@@ -318,8 +318,8 @@ const Home = () => (
       </motion.div>
     </motion.section>
 
-    {/* ══ FEEDBACK LOOP — live telemetry you can break ══ */}
-    <SignalScope/>
+    {/* ══ FEEDBACK LOOP — the incident deck ══ */}
+    <IncidentDeck/>
 
     {/* ══ STACK — physics constellation: tools wired to real work ══ */}
     <SkillGalaxy/>

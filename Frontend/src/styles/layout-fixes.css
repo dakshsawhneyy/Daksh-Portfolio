@@ -125,3 +125,15 @@ main.home-v2 { overflow-x: clip; }
 [data-offscreen], [data-offscreen] *, [data-offscreen] *::before, [data-offscreen] *::after {
   animation-play-state: paused !important;
 }
+
+/* responsive.css forces `h1 { font-size: … !important }` on mobile; the new
+   pages size their own display headings */
+@media (max-width: 680px) {
+  .ct-root .ct-h1 { font-size: clamp(4rem, 22vw, 5.6rem) !important; }
+  .bl-root .bl-h1 { font-size: clamp(3.6rem, 21vw, 5.4rem) !important; }
+  .ab-root .ab-name { font-size: clamp(3.2rem, 17vw, 4.6rem) !important; }
+  .wk-root .wk-h1 { font-size: clamp(2.6rem, 13vw, 3.6rem) !important; }
+}
+@media (max-width: 480px) {
+  .dk-root .dk-h2, .ab-root .ab-h2, .sg-root .sg-h2 { font-size: clamp(2.1rem, 10.5vw, 2.8rem) !important; }
+}

@@ -1,0 +1,283 @@
+/* ══════════════════════════════════════════════════════════════════
+   INCIDENT DECK (dk-*) — dark "card table" band on the home page.
+   Cards keep ONE size everywhere so framer's layoutId flight never
+   scales (and distorts) their content.
+   ══════════════════════════════════════════════════════════════════ */
+.dk-root {
+  --cw: 232px;
+  --ch: 326px;
+  position: relative;
+  padding: clamp(72px, 11vh, 130px) clamp(18px, 5vw, 80px);
+  background:
+    radial-gradient(70% 60% at 78% 55%, rgba(39, 120, 84, .22), transparent 70%),
+    radial-gradient(50% 50% at 10% 0%, rgba(232, 103, 74, .12), transparent 70%),
+    #0b0e0c;
+  color: #f3f1eb;
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.dk-inner { position: relative; max-width: 1280px; margin: 0 auto; }
+
+.dk-head { display: grid; grid-template-columns: 1.1fr .9fr; gap: 24px 56px; align-items: end; margin-bottom: 40px; }
+.dk-eyebrow { margin: 0 0 14px; font: 700 10px ui-monospace, monospace; letter-spacing: .16em; text-transform: uppercase; color: #e8674a; }
+.dk-h2 { margin: 0; font: 500 clamp(2.4rem, 4.6vw, 4.2rem)/.94 'Space Grotesk', sans-serif; letter-spacing: -.06em; }
+.dk-h2 em { font-style: normal; color: #e8674a; }
+.dk-sub { margin: 0; max-width: 470px; font-size: 15px; line-height: 1.65; color: #9a9d95; }
+
+/* ── stage: hand + table ── */
+.dk-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) calc(var(--cw) + 90px);
+  gap: 32px;
+  align-items: center;
+  min-height: calc(var(--ch) + 120px);
+}
+.dk-hand {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 70px 40px 30px;
+}
+.dk-empty { font: 600 11px ui-monospace, monospace; letter-spacing: .14em; text-transform: uppercase; color: #5d605a; }
+
+.dk-card {
+  position: relative;
+  flex-shrink: 0;
+  width: var(--cw);
+  height: var(--ch);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+.dk-card:focus-visible { outline: none; }
+.dk-card:focus-visible .dk-front { box-shadow: 0 0 0 3px #e8674a; }
+
+/* fan: overlap + tilt live on the face so framer's layout transform stays free */
+.dk-in-hand { margin-left: calc(var(--cw) * -.42); }
+.dk-in-hand:first-child { margin-left: 0; }
+.dk-in-hand > .dk-face {
+  transform: translateY(var(--lift)) rotate(var(--rot));
+  transform-origin: 50% 115%;
+  transition: transform .45s cubic-bezier(.2, .9, .25, 1.15), box-shadow .3s;
+}
+.dk-in-hand:hover { z-index: 20 !important; }
+.dk-in-hand:hover > .dk-face {
+  transform: translateY(-34px) rotate(0deg) scale(1.05);
+  box-shadow: 0 40px 70px -20px rgba(0, 0, 0, .8), 0 0 0 1px color-mix(in srgb, var(--c) 70%, transparent), 0 0 50px -10px var(--c);
+}
+
+/* ── faces ── */
+.dk-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.dk-front {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 26px 20px;
+  background:
+    radial-gradient(90% 60% at 50% 38%, color-mix(in srgb, var(--c) 22%, transparent), transparent 70%),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, .025) 0 2px, transparent 2px 9px),
+    linear-gradient(160deg, #1b211d, #0e1210 65%);
+  border: 1px solid rgba(255, 255, 255, .09);
+  box-shadow: 0 24px 50px -22px rgba(0, 0, 0, .85), inset 0 0 0 6px rgba(0, 0, 0, .25), inset 0 0 0 7px color-mix(in srgb, var(--c) 35%, transparent);
+}
+.dk-corner {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: var(--c);
+  font: 800 10px ui-monospace, monospace;
+  letter-spacing: .06em;
+}
+.dk-corner-tl { left: 16px; top: 14px; }
+.dk-corner-br { right: 16px; bottom: 14px; transform: rotate(180deg); }
+.dk-emblem {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--c);
+  background: radial-gradient(circle, color-mix(in srgb, var(--c) 22%, #0e1210), #0e1210 70%);
+  border: 1px solid color-mix(in srgb, var(--c) 55%, transparent);
+  box-shadow: 0 0 0 8px rgba(255, 255, 255, .02), 0 0 40px -6px var(--c);
+}
+.dk-name { font: 700 21px/1.05 'Space Grotesk', sans-serif; letter-spacing: -.03em; text-align: center; color: #fff; }
+.dk-signal { font: 500 10.5px/1.45 ui-monospace, monospace; color: #9aa59d; text-align: center; max-width: 170px; }
+.dk-n { position: absolute; bottom: 16px; left: 18px; font: 700 9.5px ui-monospace, monospace; color: #5d605a; letter-spacing: .1em; }
+/* holographic sheen follows the pointer (CSS vars set on pointermove) */
+.dk-sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(260px circle at var(--sx, 50%) var(--sy, 30%), rgba(255, 255, 255, .16), transparent 55%),
+    linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, .06) 45%, color-mix(in srgb, var(--c) 18%, transparent) 50%, transparent 62%);
+  transition: opacity .3s;
+}
+.dk-card:hover .dk-sheen { opacity: 1; }
+
+/* ── table ── */
+.dk-table {
+  position: relative;
+  height: calc(var(--ch) + 80px);
+  display: grid;
+  place-items: center;
+  perspective: 1400px;
+}
+.dk-felt {
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  border: 1px dashed rgba(243, 241, 235, .14);
+  background: radial-gradient(circle at 50% 45%, rgba(114, 223, 172, .08), transparent 70%);
+}
+.dk-slot {
+  position: relative;
+  width: var(--cw);
+  height: var(--ch);
+  border-radius: 18px;
+  border: 1.5px dashed rgba(243, 241, 235, .2);
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 10px;
+  color: #6b6e67;
+  font: 600 10.5px ui-monospace, monospace;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 20px;
+}
+.dk-on-table { z-index: 30; cursor: pointer; }
+.dk-flip {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transition: transform .8s cubic-bezier(.2, .9, .25, 1.05);
+}
+.dk-flip.is-flipped { transform: rotateY(180deg); }
+.dk-on-table .dk-front { box-shadow: 0 50px 90px -25px rgba(0, 0, 0, .9), 0 0 60px -12px var(--c), inset 0 0 0 6px rgba(0, 0, 0, .25), inset 0 0 0 7px color-mix(in srgb, var(--c) 45%, transparent); }
+
+/* back: the postmortem, printed on paper */
+.dk-back {
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  padding: 18px 18px 16px;
+  background:
+    linear-gradient(rgba(16, 17, 15, .05) 1px, transparent 1px) 0 0 / 100% 18px,
+    #f6f3ec;
+  color: #10110f;
+  border: 1px solid #e0ded6;
+  box-shadow: 0 50px 90px -25px rgba(0, 0, 0, .9);
+}
+.dk-back::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--c); }
+.dk-back-k { font: 700 9px ui-monospace, monospace; letter-spacing: .14em; text-transform: uppercase; color: #8a8d86; }
+.dk-back-t { display: block; margin: 3px 0 10px; font: 700 17px/1.05 'Space Grotesk', sans-serif; letter-spacing: -.03em; }
+.dk-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+.dk-steps li { display: grid; grid-template-columns: 10px 1fr; column-gap: 8px; }
+.dk-steps i { grid-row: span 2; width: 8px; height: 8px; margin-top: 3px; border-radius: 50%; }
+.dk-steps i.o { background: #27ae78; }
+.dk-steps i.i { background: #d4940a; }
+.dk-steps i.r { background: #e8674a; }
+.dk-steps b { font: 700 9.5px ui-monospace, monospace; letter-spacing: .1em; text-transform: uppercase; color: #4b4e48; }
+.dk-steps span { font-size: 11.5px; line-height: 1.4; color: #2c2e2b; }
+.dk-stamp {
+  margin-top: auto;
+  align-self: flex-end;
+  padding: 5px 10px;
+  border: 2px solid #e8674a;
+  border-radius: 6px;
+  color: #e8674a;
+  font: 800 10px ui-monospace, monospace;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  transform: rotate(-7deg);
+  opacity: .9;
+}
+
+/* ── footer row ── */
+.dk-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 26px;
+  margin-top: 36px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(243, 241, 235, .08);
+  font: 600 11px ui-monospace, monospace;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: #6b6e67;
+}
+.dk-foot b { color: #f3f1eb; }
+.dk-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(232, 103, 74, .55);
+  background: rgba(232, 103, 74, .12);
+  color: #f3f1eb !important;
+  font: 700 11px ui-monospace, monospace;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform .3s cubic-bezier(.2, .9, .25, 1.4), background .25s;
+}
+.dk-btn:first-of-type { margin-left: auto; }
+.dk-btn:hover { transform: translateY(-2px); background: rgba(232, 103, 74, .25); }
+.dk-btn-ghost { border-color: rgba(243, 241, 235, .18); background: transparent; }
+
+/* ── responsive ── */
+@media (max-width: 1100px) {
+  .dk-stage { grid-template-columns: 1fr; }
+  .dk-table { height: calc(var(--ch) + 60px); }
+}
+@media (max-width: 900px) {
+  .dk-head { grid-template-columns: 1fr; }
+}
+/* mobile: the hand becomes a swipeable row, the table sits below */
+@media (max-width: 680px) {
+  .dk-root { --cw: 212px; --ch: 300px; padding: 64px 0 80px; }
+  .dk-inner { padding: 0; }
+  .dk-head { padding: 0 16px; margin-bottom: 18px; }
+  .dk-hand {
+    justify-content: flex-start;
+    gap: 14px;
+    padding: 30px 16px 24px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .dk-hand::-webkit-scrollbar { display: none; }
+  .dk-in-hand { margin-left: 0; scroll-snap-align: center; }
+  .dk-in-hand > .dk-face { transform: none; }
+  .dk-in-hand:hover > .dk-face { transform: translateY(-8px); }
+  .dk-table { margin: 0 16px; height: calc(var(--ch) + 50px); }
+  .dk-steps span { font-size: 11px; }
+  .dk-foot { padding: 20px 16px 0; gap: 12px 18px; font-size: 10px; }
+  .dk-btn:first-of-type { margin-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dk-flip, .dk-in-hand > .dk-face { transition: none; }
+}

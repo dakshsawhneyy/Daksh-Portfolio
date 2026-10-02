@@ -1,177 +1,236 @@
-import { ArrowUpRight, Github, Linkedin, Mail, MapPin, CheckCircle, AlertCircle, Loader, Send } from 'lucide-react'
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import '../pages-unified.css'
+import { useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { ArrowUpRight, Check, Copy, Github, Linkedin, Rss, Play, RotateCcw, Mail } from 'lucide-react'
+import useMagnetic from '../components/footer/useMagnetic'
+import '../styles/contact.css'
 
-const fadeUp  = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22,1,0.36,1] } } }
-const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.09 } } }
+/* ══════════════════════════════════════════════════════════════════
+   CONTACT — "Deploy a conversation."
+   The form IS a Kubernetes manifest: inputs live inside YAML lines.
+   Apply runs a rollout log, then POSTs to /api/message (unchanged
+   backend contract: { name, email, message }).
+   ══════════════════════════════════════════════════════════════════ */
+
+const EMAIL = 'dakshsawhneyy@gmail.com'
+const ease = [0.22, 1, 0.36, 1]
+const INTENTS = [
+  { key: 'hire', label: 'Hire me', yaml: 'FullTimeRole' },
+  { key: 'project', label: 'Build something', yaml: 'Project' },
+  { key: 'collab', label: 'Collaborate', yaml: 'Collaboration' },
+  { key: 'hi', label: 'Just say hi', yaml: 'Hello' },
+]
+const slug = (s) => (s || 'you').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '').slice(0, 24) || 'you'
+
+const useJammuClock = () => {
+  const [now, setNow] = useState(() => new Date())
+  useEffect(() => { const t = setInterval(() => setNow(new Date()), 1000); return () => clearInterval(t) }, [])
+  const time = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(now)
+  const h = +time.slice(0, 2)
+  return { time, awake: h >= 9 && h < 23 }
+}
 
 const Contact = () => {
-  const [form, setForm]     = useState({ name:'', email:'', message:'' })
-  const [status, setStatus] = useState('idle')
+  const [form, setForm] = useState({ name: '', email: '', company: '', message: '' })
+  const [intent, setIntent] = useState('hire')
+  const [phase, setPhase] = useState('edit') // edit | applying | done | error
+  const [logLines, setLogLines] = useState([])
+  const [copied, setCopied] = useState(false)
+  const clock = useJammuClock()
+  const hello = useMagnetic(0.25)
+  const apply = useMagnetic(0.35)
+  const firstRef = useRef(null)
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    setStatus('loading')
-    try {
-      const base = import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000'
-      const res  = await fetch(`${base}/api/message`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form)
-      })
-      const data = await res.json()
-      if (res.ok && data.success) { setStatus('success'); setForm({ name:'', email:'', message:'' }) }
-      else setStatus('error')
-    } catch { setStatus('error') }
+  const set = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }))
+  const it = INTENTS.find(i => i.key === intent)
+  const valid = form.name.trim() && /\S+@\S+\.\S+/.test(form.email) && form.message.trim().length > 3
+
+  const copy = async () => {
+    try { await navigator.clipboard.writeText(EMAIL); setCopied(true); setTimeout(() => setCopied(false), 2000) }
+    catch { window.location.href = `mailto:${EMAIL}` }
   }
 
+  const submit = async (e) => {
+    e.preventDefault()
+    if (!valid || phase === 'applying') return
+    setPhase('applying')
+    const name = slug(form.name)
+    const steps = [
+      `$ kubectl apply -f conversation.yaml`,
+      `validating manifest… ok`,
+      `conversation.daksh.dev/${name} created`,
+      `routing to inbox: ${EMAIL.replace(/(.{3}).*@/, '$1•••@')}`,
+    ]
+    setLogLines([])
+    for (const [i, l] of steps.entries()) {
+      await new Promise(r => setTimeout(r, i ? 380 : 120))
+      setLogLines(ls => [...ls, l])
+    }
+    try {
+      const base = import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000'
+      const body = {
+        name: form.name.trim(),
+        email: form.email.trim(),
+        message: `[${it.label}]${form.company.trim() ? ` · ${form.company.trim()}` : ''}\n\n${form.message.trim()}`,
+      }
+      const res = await fetch(`${base}/api/message`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok || !data.success) throw new Error('send failed')
+      await new Promise(r => setTimeout(r, 300))
+      setLogLines(ls => [...ls, `rollout status: 1/1 delivered ✓  ·  expect a reply within 24h`])
+      setPhase('done')
+    } catch {
+      setLogLines(ls => [...ls, `error: inbox unreachable. Email ${EMAIL} directly.`])
+      setPhase('error')
+    }
+  }
+
+  const reset = () => {
+    setForm({ name: '', email: '', company: '', message: '' })
+    setPhase('edit'); setLogLines([])
+    setTimeout(() => firstRef.current?.focus(), 50)
+  }
+
+  const locked = phase === 'applying' || phase === 'done'
+
   return (
-    <main className="contact-page-v3">
+    <main className="ct-root">
+      <div className="ct-grid">
+        {/* ═════ LEFT ═════ */}
+        <section className="ct-left">
+          <motion.p className="ct-k" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .6, ease }}>
+            <span className="ap3-available-dot" /> Open to work · immediate joiner
+          </motion.p>
+          <motion.h1 className="ct-h1" style={{ x: hello.x, y: hello.y }} {...hello.handlers}>
+            {['Say', 'hello.'].map((w, i) => (
+              <span key={w} className="ct-h1-line">
+                <motion.span className={i ? 'is-em' : ''} initial={{ y: '105%' }} animate={{ y: '0%' }} transition={{ duration: .9, ease, delay: .1 + i * .12 }}>{w}</motion.span>
+              </span>
+            ))}
+          </motion.h1>
+          <motion.p className="ct-lead" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .45 }}>
+            A role, a platform problem, or a system that needs to stop paging people at 3 a.m.?
+            Deploy a conversation, or skip the YAML and email me.
+          </motion.p>
 
-      {/* ── Hero ── */}
-      <section className="cp3-hero">
-        <div className="cp3-hero-inner">
-          <motion.div initial="hidden" animate="visible" variants={stagger}>
-            <motion.p className="cp3-eyebrow" variants={fadeUp}>
-              <Send size={11} /> Get in touch
-            </motion.p>
-            <motion.h1 className="cp3-h1" variants={fadeUp}>
-              Let's build something<br /><em>worth running.</em>
-            </motion.h1>
-            <motion.p className="cp3-hero-sub" variants={fadeUp}>
-              Platform problem, reliability question, or a project that needs a clearer shape?
-              I'd like to hear about it.
-            </motion.p>
+          <motion.div className="ct-cards" initial="h" animate="s" variants={{ h: {}, s: { transition: { staggerChildren: .08, delayChildren: .5 } } }}>
+            <motion.button type="button" className="ct-mail" onClick={copy} variants={{ h: { opacity: 0, y: 16 }, s: { opacity: 1, y: 0 } }}>
+              <span className="ct-mail-k"><Mail size={13} /> {copied ? 'copied to clipboard' : 'click to copy'}</span>
+              <span className="ct-mail-v">{EMAIL}</span>
+              <span className="ct-mail-icon">{copied ? <Check size={16} /> : <Copy size={16} />}</span>
+            </motion.button>
+
+            <motion.div className="ct-meta" variants={{ h: { opacity: 0, y: 16 }, s: { opacity: 1, y: 0 } }}>
+              <div className="ct-clock">
+                <span className={`ct-sun ${clock.awake ? 'is-day' : 'is-night'}`} aria-hidden="true" />
+                <div>
+                  <b>{clock.time}</b>
+                  <small>Jammu, India · {clock.awake ? 'awake, probably shipping' : 'asleep, replies at sunrise'}</small>
+                </div>
+              </div>
+              <div className="ct-slo">
+                <small>reply SLO</small>
+                <b>&lt; 24h</b>
+                <span className="ct-slo-bar"><i /></span>
+                <small>usually the same day</small>
+              </div>
+            </motion.div>
+
+            <motion.div className="ct-socials" variants={{ h: { opacity: 0, y: 16 }, s: { opacity: 1, y: 0 } }}>
+              {[
+                { href: 'https://github.com/dakshsawhneyy', Icon: Github, label: 'GitHub', sub: '@dakshsawhneyy' },
+                { href: 'https://linkedin.com/in/dakshsawhneyy', Icon: Linkedin, label: 'LinkedIn', sub: 'in/dakshsawhneyy' },
+                { href: 'https://dakshsawhneyy.hashnode.dev', Icon: Rss, label: 'Hashnode', sub: 'field notes' },
+              ].map(s => (
+                <a key={s.label} href={s.href} target="_blank" rel="noreferrer" className="ct-social">
+                  <s.Icon size={18} />
+                  <span><b>{s.label}</b><small>{s.sub}</small></span>
+                  <ArrowUpRight size={16} className="ct-social-arrow" />
+                </a>
+              ))}
+            </motion.div>
           </motion.div>
+        </section>
 
-          <motion.div
-            className="cp3-status"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.35, duration: 0.4 }}
-          >
-            <span className="cp3-status-dot" />
-            Open to work
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── Body ── */}
-      <motion.div
-        className="cp3-body"
-        initial="hidden"
-        animate="visible"
-        variants={stagger}
-      >
-
-        {/* ── Left: details ── */}
-        <motion.div className="cp3-details" variants={fadeUp}>
-
-          <div className="cp3-detail-section">
-            <p className="cp3-detail-label">Direct email</p>
-            <a className="cp3-email-link" href="mailto:dakshsawhneyy@gmail.com">
-              dakshsawhneyy@gmail.com <ArrowUpRight size={15}/>
-            </a>
-            <p className="cp3-reply-note">I reply within 24 hours.</p>
+        {/* ═════ RIGHT: the manifest ═════ */}
+        <motion.section className="ct-editor" initial={{ opacity: 0, y: 40, rotateX: 8 }} animate={{ opacity: 1, y: 0, rotateX: 0 }} transition={{ duration: .9, ease, delay: .2 }}>
+          <div className="ct-tabs">
+            <span className="ct-dots"><i /><i /><i /></span>
+            <span className="ct-tab is-on">conversation.yaml</span>
+            <span className="ct-tab">README.md</span>
+            <span className={`ct-state is-${phase}`}>{phase === 'edit' ? (valid ? '● ready to apply' : '○ draft') : phase === 'applying' ? '◌ applying…' : phase === 'done' ? '✓ deployed' : '✗ failed'}</span>
           </div>
 
-          <div className="cp3-detail-section">
-            <p className="cp3-detail-label">Find me online</p>
-            <div className="cp3-socials">
-              <a className="cp3-social-link" href="https://github.com/dakshsawhneyy" target="_blank" rel="noreferrer">
-                <Github size={17} className="cp3-social-icon"/>
-                <span>GitHub</span>
-                <ArrowUpRight size={13} className="cp3-social-arrow"/>
-              </a>
-              <a className="cp3-social-link" href="https://linkedin.com/in/dakshsawhneyy" target="_blank" rel="noreferrer">
-                <Linkedin size={17} className="cp3-social-icon"/>
-                <span>LinkedIn</span>
-                <ArrowUpRight size={13} className="cp3-social-arrow"/>
-              </a>
-              <a className="cp3-social-link" href="https://dakshsawhneyy.hashnode.dev" target="_blank" rel="noreferrer">
-                <Mail size={17} className="cp3-social-icon"/>
-                <span>Hashnode Blog</span>
-                <ArrowUpRight size={13} className="cp3-social-arrow"/>
-              </a>
+          <div className="ct-intents" role="radiogroup" aria-label="What is this about?">
+            {INTENTS.map(i => (
+              <button key={i.key} type="button" role="radio" aria-checked={intent === i.key}
+                className={intent === i.key ? 'is-on' : ''} disabled={locked} onClick={() => setIntent(i.key)}>{i.label}</button>
+            ))}
+          </div>
+
+          <form className="ct-yaml" onSubmit={submit} noValidate>
+            <ol>
+              <li><span className="y-k">apiVersion</span>: <span className="y-s">daksh.dev/v1</span></li>
+              <li><span className="y-k">kind</span>: <span className="y-s">Conversation</span></li>
+              <li><span className="y-k">metadata</span>:</li>
+              <li className="i1"><span className="y-k">name</span>: <span className="y-v">{slug(form.name)}</span><span className="y-c">  # generated from your name</span></li>
+              <li><span className="y-k">spec</span>:</li>
+              <li className="i1"><span className="y-k">type</span>: <motion.span key={it.yaml} className="y-s" initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }}>{it.yaml}</motion.span></li>
+              <li className="i1"><span className="y-k">from</span>:</li>
+              <li className="i2 has-input">
+                <label htmlFor="ct-name"><span className="y-k">name</span>: </label>
+                <input id="ct-name" ref={firstRef} value={form.name} onChange={set('name')} placeholder='"Ada Lovelace"' autoComplete="name" disabled={locked} required />
+              </li>
+              <li className="i2 has-input">
+                <label htmlFor="ct-email"><span className="y-k">email</span>: </label>
+                <input id="ct-email" type="email" value={form.email} onChange={set('email')} placeholder='"ada@company.com"' autoComplete="email" disabled={locked} required />
+              </li>
+              <li className="i2 has-input">
+                <label htmlFor="ct-company"><span className="y-k">company</span>: </label>
+                <input id="ct-company" value={form.company} onChange={set('company')} placeholder='"optional"' autoComplete="organization" disabled={locked} />
+              </li>
+              <li className="i1"><label htmlFor="ct-msg"><span className="y-k">message</span>: <span className="y-p">|</span></label></li>
+              <li className="i2 has-area">
+                <textarea id="ct-msg" rows={5} value={form.message} onChange={set('message')} disabled={locked} required
+                  placeholder={'Tell me about the role, the system,\nor the problem you are trying to solve…'} />
+              </li>
+              <li className="i1"><span className="y-k">replyWithin</span>: <span className="y-s">24h</span></li>
+            </ol>
+
+            <div className="ct-actions">
+              <AnimatePresence mode="wait">
+                {phase === 'done' || phase === 'error' ? (
+                  <motion.button key="reset" type="button" className="ct-apply is-ghost" onClick={reset}
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <RotateCcw size={15} /> Deploy another
+                  </motion.button>
+                ) : (
+                  <motion.button key="apply" type="submit" className="ct-apply" disabled={!valid || phase === 'applying'}
+                    style={{ x: apply.x, y: apply.y }} {...apply.handlers}
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                    <Play size={14} /> {phase === 'applying' ? 'Applying…' : 'kubectl apply'}
+                  </motion.button>
+                )}
+              </AnimatePresence>
+              <span className="ct-hint">{valid ? 'manifest valid · ⏎ to deploy' : 'fill name, email and message'}</span>
             </div>
-          </div>
+          </form>
 
-          <div className="cp3-detail-section">
-            <p className="cp3-detail-label">Details</p>
-            <div className="cp3-meta-pills">
-              <span className="cp3-meta-pill"><MapPin size={13}/> Jammu, India</span>
-              <span className="cp3-meta-pill"><Mail size={13}/> Available for selected full-time roles</span>
-            </div>
-          </div>
-
-        </motion.div>
-
-        {/* ── Right: form ── */}
-        <motion.form className="cp3-form-card" onSubmit={handleSubmit} variants={fadeUp}>
-          <div className="cp3-form-head">
-            <p className="cp3-form-title">Send a message</p>
-            <p className="cp3-form-sub">All fields required · replies within 24 h</p>
-          </div>
-
-          <div className="cp3-field">
-            <label htmlFor="cp3-name">Your name</label>
-            <input
-              id="cp3-name" required
-              value={form.name}
-              onChange={e => setForm({...form, name: e.target.value})}
-              placeholder="Daksh Sawhney"
-              disabled={status === 'loading' || status === 'success'}
-            />
-          </div>
-
-          <div className="cp3-field">
-            <label htmlFor="cp3-email">Email address</label>
-            <input
-              id="cp3-email" required type="email"
-              value={form.email}
-              onChange={e => setForm({...form, email: e.target.value})}
-              placeholder="you@company.com"
-              disabled={status === 'loading' || status === 'success'}
-            />
-          </div>
-
-          <div className="cp3-field">
-            <label htmlFor="cp3-msg">What are you working on?</label>
-            <textarea
-              id="cp3-msg" required rows={5}
-              value={form.message}
-              onChange={e => setForm({...form, message: e.target.value})}
-              placeholder="A few words about the project or problem…"
-              disabled={status === 'loading' || status === 'success'}
-            />
-          </div>
-
-          {status !== 'success' && (
-            <button className="cp3-submit" type="submit" disabled={status === 'loading'}>
-              {status === 'loading'
-                ? <><Loader size={15} className="spin-icon"/> Sending…</>
-                : <>Send message <ArrowUpRight size={16}/></>
-              }
-            </button>
-          )}
-
-          {status === 'success' && (
-            <div className="cp3-feedback cp3-success">
-              <CheckCircle size={17}/>
-              Message sent — I'll get back to you soon.
-            </div>
-          )}
-          {status === 'error' && (
-            <div className="cp3-feedback cp3-error">
-              <AlertCircle size={17}/>
-              Something went wrong.{' '}
-              <a href="mailto:dakshsawhneyy@gmail.com">Email me directly.</a>
-            </div>
-          )}
-        </motion.form>
-
-      </motion.div>
+          <AnimatePresence>
+            {logLines.length > 0 && (
+              <motion.div className={`ct-log is-${phase}`} initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}>
+                {logLines.map((l, i) => (
+                  <motion.p key={i} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}>{l}</motion.p>
+                ))}
+                {phase === 'done' && (
+                  <motion.div className="ct-done" initial={{ scale: .6, opacity: 0, rotate: -8 }} animate={{ scale: 1, opacity: 1, rotate: -4 }} transition={{ type: 'spring', stiffness: 260, damping: 14 }}>
+                    message received
+                  </motion.div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.section>
+      </div>
     </main>
   )
 }

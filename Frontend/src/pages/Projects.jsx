@@ -66,7 +66,9 @@ const CaseMedia = ({ project, color, href }) => {
             <span className="wk-chrome-url">{url}</span>
           </div>
           <div className="wk-shot">
-            <img src={project.image} alt={`${project.title} screenshot`} loading="lazy" />
+            {/* ambient copy of the artwork fills the frame; the real image is shown whole */}
+            <img className="wk-shot-ambient" src={project.image} alt="" aria-hidden="true" loading="lazy" />
+            <img className="wk-shot-img" src={project.image} alt={`${project.title} artwork`} loading="lazy" />
           </div>
           {href && (
             <motion.span className="wk-pill" style={{ x: pillX, y: pillY }} aria-hidden="true">

@@ -1,182 +1,206 @@
-import { ArrowUpRight, Clock3, Rss, RefreshCw, BookOpen } from 'lucide-react'
-import { useEffect, useState, useCallback } from 'react'
-import { motion } from 'framer-motion'
+import { useEffect, useMemo, useRef, useState, useCallback } from 'react'
+import { AnimatePresence, motion, useMotionValue, useSpring } from 'framer-motion'
+import { ArrowUpRight, Clock3, Rss, GitCommitHorizontal, Pin } from 'lucide-react'
 import { fetchBlogs, FALLBACK_POSTS } from '../data/blogService'
-import '../pages-unified.css'
+import '../styles/blog.css'
 
-const fadeUp  = { hidden: { opacity: 0, y: 22 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22,1,0.36,1] } } }
-const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.08 } } }
+/* ══════════════════════════════════════════════════════════════════
+   BLOG — "Field notes" as a git log.
+   Latest post is pinned as `cat README.md`; the rest are commits on a
+   branch graph. Hovering a commit floats a preview with generative
+   cover art (seeded from the slug). Topic chips filter the log.
+   ══════════════════════════════════════════════════════════════════ */
 
-const readTime = (text = '') => Math.max(1, Math.ceil(text.trim().split(/\s+/).length / 200))
+const ease = [0.22, 1, 0.36, 1]
+const readTime = (text = '') => Math.max(3, Math.ceil(text.trim().split(/\s+/).length / 22))
+const fmt = (d) => new Date(d || Date.now()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619) } return h >>> 0 }
+const shortSha = (s) => hash(s).toString(16).padStart(8, '0').slice(0, 7)
+
+const TOPICS = [
+  { key: 'k8s', label: 'Kubernetes', color: '#2d8bbf', re: /kubernetes|k8s|eks|aks|helm|container|pod/i },
+  { key: 'cloud', label: 'Cloud', color: '#d4940a', re: /aws|azure|gcp|cloud|hyperscale|million|multi/i },
+  { key: 'sre', label: 'SRE', color: '#e8674a', re: /sre|reliab|incident|healing|monitor|health|aiops/i },
+  { key: 'devsecops', label: 'DevSecOps', color: '#7c79ca', re: /devsecops|jenkins|ci\/cd|cicd|pipeline|trivy|sonar|secure|owasp/i },
+  { key: 'iac', label: 'IaC', color: '#27ae78', re: /terraform|ansible|infra|iac/i },
+]
+const topicsOf = (p) => TOPICS.filter(t => t.re.test(`${p.title} ${p.brief}`))
+
+/* generative cover: layered rings + grid, palette from the post's first topic */
+const Cover = ({ post, big }) => {
+  const h = hash(post.slug || post.title)
+  const t = topicsOf(post)[0] || TOPICS[2]
+  const rings = 4 + (h % 4)
+  const cx = 30 + (h % 40), cy = 30 + ((h >> 5) % 40)
+  return (
+    <svg className={`bl-cover ${big ? 'is-big' : ''}`} viewBox="0 0 100 62" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <radialGradient id={`g${h}`} cx={`${cx}%`} cy={`${cy}%`} r="80%">
+          <stop offset="0%" stopColor={t.color} stopOpacity=".9" />
+          <stop offset="55%" stopColor={t.color} stopOpacity=".18" />
+          <stop offset="100%" stopColor="#0c0e0c" stopOpacity="0" />
+        </radialGradient>
+        <pattern id={`p${h}`} width="5" height="5" patternUnits="userSpaceOnUse">
+          <circle cx="1" cy="1" r=".35" fill="rgba(255,255,255,.18)" />
+        </pattern>
+      </defs>
+      <rect width="100" height="62" fill="#0c0e0c" />
+      <rect width="100" height="62" fill={`url(#g${h})`} />
+      <rect width="100" height="62" fill={`url(#p${h})`} />
+      {Array.from({ length: rings }, (_, i) => (
+        <circle key={i} cx={cx} cy={cy * 0.62} r={6 + i * (5 + (h % 3))} fill="none"
+          stroke="rgba(255,255,255,.22)" strokeWidth=".3" strokeDasharray={i % 2 ? '1 1.5' : undefined} />
+      ))}
+      <path d={`M0 ${40 + (h % 12)} Q 30 ${20 + (h % 20)} 55 ${35 + (h % 10)} T 100 ${18 + (h % 25)}`} fill="none" stroke={t.color} strokeWidth=".8" />
+      <text x="4" y="58" fill="rgba(255,255,255,.55)" fontSize="3.2" fontFamily="ui-monospace, monospace">{shortSha(post.slug || post.title)} · {t.label.toLowerCase()}</text>
+    </svg>
+  )
+}
 
 const Blog = () => {
-  // Start with fallback posts immediately — no empty loading state
-  const [blogs, setBlogs]       = useState(FALLBACK_POSTS)
-  const [fetching, setFetching] = useState(true)   // background fetch in progress
-  const [error, setError]       = useState(false)
+  const [blogs, setBlogs] = useState(FALLBACK_POSTS)
+  const [fetching, setFetching] = useState(true)
+  const [topic, setTopic] = useState(null)
+  const [hover, setHover] = useState(null)
+  const listRef = useRef(null)
 
   const load = useCallback(() => {
-    setFetching(true); setError(false)
-    fetchBlogs()
-      .then(posts => {
-        setBlogs(posts)
-        setError(false)
-      })
-      .catch(() => setError(true))
-      .finally(() => setFetching(false))
+    setFetching(true)
+    fetchBlogs().then(setBlogs).finally(() => setFetching(false))
   }, [])
-
   useEffect(() => { load() }, [load])
 
-  const featured = blogs[0] || null
-  const rest     = blogs.slice(1)
+  const posts = useMemo(() => [...blogs].sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt)), [blogs])
+  const pinned = posts[0]
+  const log = posts.slice(1)
+  const shown = topic ? log.filter(p => topicsOf(p).some(t => t.key === topic)) : log
+  const counts = useMemo(() => Object.fromEntries(TOPICS.map(t => [t.key, log.filter(p => t.re.test(`${p.title} ${p.brief}`)).length])), [log])
+  const years = new Set(posts.map(p => new Date(p.publishedAt).getFullYear()))
+
+  /* floating preview follows the cursor (springs, no re-render per move) */
+  const px = useMotionValue(0), py = useMotionValue(0)
+  const sx = useSpring(px, { stiffness: 260, damping: 26 }), sy = useSpring(py, { stiffness: 260, damping: 26 })
+  const onMove = (e) => {
+    const r = listRef.current.getBoundingClientRect()
+    // ride along the right edge (never over the title), follow the cursor vertically
+    px.set(r.width - 330)
+    py.set(e.clientY - r.top - 95)
+  }
+
+  const url = (p) => p.url || `https://dakshsawhneyy.hashnode.dev/${p.slug}`
 
   return (
-    <main className="blog-page-v3">
-
-      {/* ── Hero ── */}
-      <section className="bp3-hero">
-        <div className="bp3-hero-inner">
-          <motion.div initial="hidden" animate="visible" variants={stagger}>
-            <motion.p className="bp3-eyebrow" variants={fadeUp}>
-              <BookOpen size={11} /> Notes from the field
+    <main className="bl-root">
+      {/* ═════ HERO ═════ */}
+      <header className="bl-hero">
+        <div className="bl-wrap bl-hero-grid">
+          <div>
+            <motion.p className="bl-k" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .6, ease }}>
+              <GitCommitHorizontal size={13} /> git log --oneline --author=daksh
             </motion.p>
-            <motion.h1 className="bp3-h1" variants={fadeUp}>
-              Writing on systems,<br /><em>failure &amp; craft.</em>
-            </motion.h1>
-          </motion.div>
-          <motion.div
-            className="bp3-hero-right"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.4 }}
-          >
-            <a className="bp3-hashnode-btn" href="https://dakshsawhneyy.hashnode.dev" target="_blank" rel="noreferrer">
-              Open Hashnode <Rss size={14} />
+            <h1 className="bl-h1">
+              {['Field', 'notes.'].map((w, i) => (
+                <span key={w} className="bl-h1-line">
+                  <motion.span initial={{ y: '105%' }} animate={{ y: '0%' }} transition={{ duration: .9, ease, delay: .1 + i * .12 }}
+                    className={i ? 'is-em' : ''}>{w}</motion.span>
+                </span>
+              ))}
+            </h1>
+            <motion.p className="bl-lead" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .5 }}>
+              Write-ups from building, breaking and fixing real systems: scaling to a million users, self-healing platforms,
+              DevSecOps pipelines and multi-cloud plumbing.
+            </motion.p>
+          </div>
+          <motion.dl className="bl-stats" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .35, duration: .7, ease }}>
+            <div><dt>commits</dt><dd>{String(posts.length).padStart(2, '0')}</dd></div>
+            <div><dt>since</dt><dd>{Math.min(...years)}</dd></div>
+            <div><dt>status</dt><dd className="ok">{fetching ? 'syncing…' : 'up to date'}</dd></div>
+            <a className="bl-hashnode" href="https://dakshsawhneyy.hashnode.dev" target="_blank" rel="noreferrer">
+              <Rss size={14} /> Follow on Hashnode <ArrowUpRight size={14} />
             </a>
-            {!fetching && !error && (
-              <span className="bp3-count">{blogs.length} article{blogs.length !== 1 ? 's' : ''} published</span>
+          </motion.dl>
+        </div>
+      </header>
+
+      {/* ═════ PINNED: cat README.md ═════ */}
+      {pinned && (
+        <section className="bl-wrap bl-pinned-wrap">
+          <motion.a className="bl-pinned" href={url(pinned)} target="_blank" rel="noreferrer"
+            initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .25, duration: .8, ease }}>
+            <div className="bl-pinned-cover">
+              {pinned.cover ? <img src={pinned.cover} alt="" /> : <Cover post={pinned} big />}
+              <span className="bl-pin"><Pin size={12} /> latest · HEAD</span>
+            </div>
+            <div className="bl-pinned-term">
+              <div className="bl-term-bar"><i /><i /><i /><span>~/notes/{(pinned.slug || '').slice(0, 34)}</span></div>
+              <div className="bl-term-body">
+                <p className="bl-term-cmd"><b>❯</b> cat README.md</p>
+                <p className="bl-term-meta">{fmt(pinned.publishedAt)} · <Clock3 size={11} /> {readTime(pinned.brief)} min read · {topicsOf(pinned).map(t => t.label).join(' · ')}</p>
+                <h2 className="bl-pinned-title"># {pinned.title}</h2>
+                <p className="bl-pinned-brief">{pinned.brief}</p>
+                <span className="bl-read">read the full note <ArrowUpRight size={15} /></span>
+              </div>
+            </div>
+          </motion.a>
+        </section>
+      )}
+
+      {/* ═════ THE LOG ═════ */}
+      <section className="bl-wrap bl-log-wrap">
+        <div className="bl-filters" role="group" aria-label="Filter by topic">
+          <button type="button" className={!topic ? 'is-on' : ''} onClick={() => setTopic(null)}>all <b>{log.length}</b></button>
+          {TOPICS.map(t => counts[t.key] > 0 && (
+            <button key={t.key} type="button" className={topic === t.key ? 'is-on' : ''} style={{ '--c': t.color }}
+              onClick={() => setTopic(v => (v === t.key ? null : t.key))}>
+              <i />{t.label} <b>{counts[t.key]}</b>
+            </button>
+          ))}
+        </div>
+
+        <div className="bl-log" ref={listRef} onPointerMove={onMove} onPointerLeave={() => setHover(null)}>
+          <span className="bl-branch" aria-hidden="true" />
+          <AnimatePresence initial={false}>
+            {shown.map((p, i) => {
+              const tps = topicsOf(p)
+              return (
+                <motion.a key={p.slug || p.title} className="bl-commit" href={url(p)} target="_blank" rel="noreferrer"
+                  layout
+                  initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: .45, ease, delay: Math.min(i, 8) * .04 }}
+                  style={{ '--c': (tps[0] || TOPICS[2]).color }}
+                  onPointerEnter={(e) => e.pointerType === 'mouse' && setHover(p)}>
+                  <span className="bl-dot" aria-hidden="true" />
+                  <span className="bl-sha">{shortSha(p.slug || p.title)}</span>
+                  <div className="bl-commit-body">
+                    <h3><span>{p.title}</span></h3>
+                    <p>{p.brief}</p>
+                    <div className="bl-commit-meta">
+                      <span>{fmt(p.publishedAt)}</span>
+                      <span><Clock3 size={11} /> {readTime(p.brief)} min</span>
+                      {tps.slice(0, 2).map(t => <span key={t.key} className="bl-tag" style={{ '--c': t.color }}>{t.label}</span>)}
+                    </div>
+                  </div>
+                  <span className="bl-arrow"><ArrowUpRight size={18} /></span>
+                </motion.a>
+              )
+            })}
+          </AnimatePresence>
+          <div className="bl-root-commit"><span className="bl-dot" /> <code>initial commit</code> · the first note. More on the way.</div>
+
+          {/* floating preview */}
+          <AnimatePresence>
+            {hover && (
+              <motion.div className="bl-preview" style={{ x: sx, y: sy }}
+                initial={{ opacity: 0, scale: .85, rotate: -4 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} exit={{ opacity: 0, scale: .9 }}
+                transition={{ duration: .22 }}>
+                {hover.cover ? <img src={hover.cover} alt="" /> : <Cover post={hover} />}
+              </motion.div>
             )}
-          </motion.div>
+          </AnimatePresence>
         </div>
       </section>
-
-      {/* ── Body ── */}
-      <div className="bp3-body">
-
-        {/* Subtle background refresh indicator */}
-        {fetching && blogs.length > 0 && (
-          <div className="bp3-refresh-bar">
-            <span className="bp3-refresh-dot" /> Fetching latest posts…
-          </div>
-        )}
-
-        {/* error — only shown if we have no posts at all */}
-        {error && blogs.length === 0 && (
-          <div className="bp3-state">
-            <p>Couldn't load articles.</p>
-            <div style={{ display:'flex', gap:10, justifyContent:'center', flexWrap:'wrap', marginTop:14 }}>
-              <button className="bp3-retry-btn" onClick={load}><RefreshCw size={13}/> Retry</button>
-              <a className="bp3-retry-btn" href="https://dakshsawhneyy.hashnode.dev" target="_blank" rel="noreferrer">
-                Browse Hashnode <ArrowUpRight size={13}/>
-              </a>
-            </div>
-          </div>
-        )}
-
-        {/* content — always shown (starts with fallback, updates when real posts arrive) */}
-        {blogs.length > 0 && (
-          <motion.div initial="hidden" animate="visible" variants={stagger}>
-
-            {/* featured first article */}
-            {featured && (
-              <motion.a
-                className="bp3-featured"
-                href={featured.url || `https://dakshsawhneyy.hashnode.dev/${featured.slug}`}
-                target="_blank"
-                rel="noreferrer"
-                variants={fadeUp}
-              >
-                <div className="bp3-feat-visual">
-                  {featured.cover
-                    ? <img src={featured.cover} alt={featured.title} className="bp3-feat-cover" />
-                    : <div className="bp3-feat-visual-inner"><span className="bp3-feat-num">01</span></div>
-                  }
-                  <span className="bp3-feat-badge">LATEST POST</span>
-                </div>
-                <div className="bp3-feat-body">
-                  <div className="bp3-feat-meta">
-                    <span>
-                      {new Date(featured.publishedAt || Date.now()).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' })}
-                    </span>
-                    <span><Clock3 size={11}/> {readTime(featured.brief)} min read</span>
-                  </div>
-                  <h2 className="bp3-feat-title">{featured.title}</h2>
-                  <p className="bp3-feat-brief">{featured.brief}</p>
-                  <span className="bp3-feat-cta">
-                    Read article <ArrowUpRight size={14}/>
-                  </span>
-                </div>
-              </motion.a>
-            )}
-
-            {/* remaining articles list */}
-            {rest.length > 0 && (
-              <div className="bp3-list">
-                {rest.map((item, i) => {
-                  const url  = item.url || `https://dakshsawhneyy.hashnode.dev/${item.slug}`
-                  const mins = readTime(item.brief)
-                  return (
-                    <motion.a
-                      key={item.slug || i}
-                      className="bp3-article"
-                      href={url}
-                      target="_blank"
-                      rel="noreferrer"
-                      variants={fadeUp}
-                    >
-                      <div className="bp3-art-num">{String(i + 2).padStart(2, '0')}</div>
-                      <div className="bp3-art-copy">
-                        <div className="bp3-art-meta">
-                          <span>
-                            {new Date(item.publishedAt || Date.now()).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' })}
-                          </span>
-                          <span><Clock3 size={11}/> {mins} min read</span>
-                        </div>
-                        <h2 className="bp3-art-title">{item.title}</h2>
-                        <p className="bp3-art-brief">{item.brief}</p>
-                      </div>
-                      {item.cover && (
-                        <div className="bp3-art-cover">
-                          <img src={item.cover} alt={item.title} />
-                        </div>
-                      )}
-                      <div className="bp3-art-arrow"><ArrowUpRight size={16}/></div>
-                    </motion.a>
-                  )
-                })}
-              </div>
-            )}
-
-          </motion.div>
-        )}
-
-        {/* empty */}
-        {!fetching && !error && blogs.length === 0 && (
-          <div className="bp3-state">
-            <p>No articles found.</p>
-            <a className="bp3-retry-btn" href="https://dakshsawhneyy.hashnode.dev" target="_blank" rel="noreferrer">
-              Open Hashnode <ArrowUpRight size={13}/>
-            </a>
-          </div>
-        )}
-
-      </div>
     </main>
   )
 }
 
 export default Blog
-
-
-
