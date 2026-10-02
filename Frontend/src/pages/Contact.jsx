@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowUpRight, Check, Copy, Github, Linkedin, Rss, Play, RotateCcw, Mail } from 'lucide-react'
 import useMagnetic from '../components/footer/useMagnetic'
+import { apiUrl } from '../lib/api'
 import '../styles/contact.css'
 
 /* ══════════════════════════════════════════════════════════════════
@@ -66,13 +67,12 @@ const Contact = () => {
       setLogLines(ls => [...ls, l])
     }
     try {
-      const base = import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000'
       const body = {
         name: form.name.trim(),
         email: form.email.trim(),
         message: `[${it.label}]${form.company.trim() ? ` · ${form.company.trim()}` : ''}\n\n${form.message.trim()}`,
       }
-      const res = await fetch(`${base}/api/message`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      const res = await fetch(apiUrl('/api/message'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
       const data = await res.json().catch(() => ({}))
       if (!res.ok || !data.success) throw new Error('send failed')
       await new Promise(r => setTimeout(r, 300))

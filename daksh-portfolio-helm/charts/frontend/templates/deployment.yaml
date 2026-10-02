@@ -21,6 +21,6 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: {{ .Values.service.targetPort | default 5173 }}
-        env:
-        - name: VITE_BACKEND_URL
-          value: "http://daksh-portfolio-backend-service:4000"
+        # No VITE_BACKEND_URL here: Vite inlines env at BUILD time, so a runtime
+        # env var is ignored. The app calls same-origin /api/*, which the ingress
+        # routes to daksh-portfolio-backend-service.

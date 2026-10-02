@@ -1,0 +1,80 @@
+/* STACK MARQUEE (sm-*) — dark cinematic band, velocity-driven rows */
+.sm-root {
+  position: relative;
+  padding: clamp(40px, 6vh, 64px) 0 clamp(44px, 7vh, 72px);
+  background:
+    radial-gradient(60% 120% at 50% 0%, rgba(232, 103, 74, .13), transparent 70%),
+    #0c0e0c;
+  color: #f3f1eb;
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+}
+/* soft fade at both edges */
+.sm-root::before, .sm-root::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: clamp(40px, 12vw, 180px);
+  z-index: 2;
+  pointer-events: none;
+}
+.sm-root::before { left: 0; background: linear-gradient(90deg, #0c0e0c, transparent); }
+.sm-root::after { right: 0; background: linear-gradient(-90deg, #0c0e0c, transparent); }
+
+.sm-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 clamp(18px, 5vw, 80px) 22px;
+  font: 700 10.5px ui-monospace, monospace;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: #e8674a;
+}
+.sm-head-r { color: #5d605a; }
+
+.sm-row { overflow: hidden; }
+.sm-track { display: flex; width: max-content; will-change: transform; }
+.sm-set { display: flex; flex-shrink: 0; }
+.sm-set > * { flex-shrink: 0; }
+
+/* row 1: logos + names */
+.sm-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px clamp(22px, 2.6vw, 40px);
+  font: 700 clamp(2rem, 4.4vw, 3.8rem)/1 'Space Grotesk', sans-serif;
+  letter-spacing: -.05em;
+  color: rgba(243, 241, 235, .9);
+  white-space: nowrap;
+  transition: color .3s;
+}
+.sm-logo { flex-shrink: 0; width: .9em; height: .9em; color: rgba(243, 241, 235, .55); transition: color .3s, filter .3s, transform .5s cubic-bezier(.2, .9, .25, 1.4); }
+.sm-tool:hover { color: #fff; }
+.sm-tool:hover .sm-logo { color: var(--c); filter: drop-shadow(0 0 14px var(--c)); transform: scale(1.15) rotate(-6deg); }
+
+/* row 2: practices, outlined */
+.sm-practices { margin-top: clamp(10px, 1.6vh, 18px); }
+.sm-practice {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(22px, 2.6vw, 40px);
+  padding-right: clamp(22px, 2.6vw, 40px);
+  font: 600 clamp(1.3rem, 2.6vw, 2.2rem)/1.3 'Space Grotesk', sans-serif;
+  letter-spacing: -.03em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(243, 241, 235, .35);
+  white-space: nowrap;
+  transition: color .3s, -webkit-text-stroke-color .3s;
+}
+.sm-practice i { font-style: normal; color: #e8674a; -webkit-text-stroke: 0; font-size: .6em; }
+.sm-practice:hover { color: #e8674a; -webkit-text-stroke-color: transparent; }
+
+@media (max-width: 680px) {
+  .sm-head-r { display: none; }
+  .sm-tool { gap: 10px; }
+}
+.sm-track, .sm-set, .sm-set > * { max-width: none !important; } /* legacy global max-width:100% would collapse the sets */

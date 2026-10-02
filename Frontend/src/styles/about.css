@@ -309,3 +309,12 @@
   .ab-marquee-track, .ab-caret { animation: none; }
   .ab-matrix i { transition: none; }
 }
+
+/* portrait size: smaller, so the name stays the hero */
+.ab-hero .pt-root { max-width: 360px; }
+@media (max-width: 1000px) { .ab-hero .pt-root { max-width: 320px; } }
+@media (max-width: 680px) { .ab-hero .pt-root { max-width: 260px; } }
+
+/* legacy global `max-width: 100%` capped each copy of the role list, so the
+   second copy started on top of the first (overlapping words) */
+.ab-marquee-track, .ab-marquee-set, .ab-marquee-set > * { max-width: none !important; flex-shrink: 0; }

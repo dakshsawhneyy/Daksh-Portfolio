@@ -1,0 +1,47 @@
+/* IMPACT STRIP (im-*) — monochrome metrics with one coral accent */
+.im-root {
+  border-top: 1px solid var(--h-line, #d8d8ce);
+  border-bottom: 1px solid var(--h-line, #d8d8ce);
+  background: var(--h-paper, #f3f1eb);
+}
+.im-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.im-cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: clamp(26px, 4vw, 44px) clamp(16px, 2.4vw, 32px);
+  border-right: 1px solid var(--h-line, #d8d8ce);
+  transition: background .3s;
+}
+.im-cell:last-child { border-right: 0; }
+.im-cell:hover { background: #fff; }
+.im-idx { font: 700 10px ui-monospace, monospace; letter-spacing: .14em; color: #a3a69e; }
+.im-val {
+  display: flex;
+  align-items: baseline;
+  font: 700 clamp(2.4rem, 4.4vw, 4rem)/1 'Space Grotesk', sans-serif;
+  letter-spacing: -.06em;
+  color: #10110f;
+  font-variant-numeric: tabular-nums;
+}
+.im-sign { color: #10110f; margin-right: .02em; }
+.im-unit { color: #e8674a; font-size: .55em; margin-left: .04em; letter-spacing: -.02em; }
+.im-label { font: 600 14px 'DM Sans', sans-serif; color: #10110f; }
+.im-bar { display: block; height: 2px; margin: 4px 0 2px; background: #e0ded6; border-radius: 2px; overflow: hidden; }
+.im-bar i { display: block; height: 100%; background: #10110f; border-radius: 2px; transition: background .3s; }
+.im-cell:hover .im-bar i { background: #e8674a; }
+.im-ctx { font: 500 11.5px/1.45 'DM Sans', sans-serif; color: #6b6e67; }
+
+@media (max-width: 900px) {
+  .im-grid { grid-template-columns: repeat(3, 1fr); }
+  .im-cell:nth-child(3) { border-right: 0; }
+  .im-cell:nth-child(n + 4) { border-top: 1px solid var(--h-line, #d8d8ce); }
+}
+@media (max-width: 680px) {
+  .im-grid { grid-template-columns: 1fr 1fr; }
+  .im-cell { border-right: 1px solid var(--h-line, #d8d8ce) !important; border-top: 1px solid var(--h-line, #d8d8ce); padding: 22px 16px; }
+  .im-cell:nth-child(-n + 2) { border-top: 0; }
+  .im-cell:nth-child(2n) { border-right: 0 !important; }
+  .im-cell:last-child { grid-column: 1 / -1; border-right: 0 !important; }
+}
