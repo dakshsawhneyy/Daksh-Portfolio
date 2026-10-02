@@ -4,8 +4,8 @@
 .mdisc {
   --energy: 0;
   position: fixed;
-  right: 22px;
-  bottom: 22px;
+  right: 14px;      /* centred over the agent launcher below it */
+  bottom: 92px;
   z-index: 140;
   display: flex;
   align-items: center;
@@ -183,7 +183,7 @@
 
 /* mobile: sit above the bottom nav bar */
 @media (max-width: 680px) {
-  .mdisc { right: 12px; bottom: 82px; }
+  .mdisc { right: 7px; bottom: 142px; }
   .mdisc-btn { width: 64px; height: 64px; }
   .mdisc-vinyl { width: 40px; height: 40px; }
   .mdisc-center { width: 15px; height: 15px; }

@@ -21,6 +21,22 @@ const MusicDisc = () => {
   const playingRef = useRef(false)
   const rafRef = useRef(0)
   const kickRef = useRef(() => {})
+  // which track is actually available: the configured file, or the synth fallback
+  const [track, setTrack] = useState(music.fallback)
+  const fileOkRef = useRef(false)
+
+  useEffect(() => {
+    if (!music.src) return
+    let cancelled = false
+    // SPA hosts answer missing files with index.html (200), so check the content type
+    fetch(music.src, { method: 'HEAD' })
+      .then(r => {
+        const ok = r.ok && (r.headers.get('content-type') || '').startsWith('audio')
+        if (!cancelled && ok) { fileOkRef.current = true; setTrack({ title: music.title, artist: music.artist }) }
+      })
+      .catch(() => {})
+    return () => { cancelled = true }
+  }, [])
 
   // one-time nudge so people notice the disc exists
   useEffect(() => {
@@ -92,12 +108,25 @@ const MusicDisc = () => {
 
   useEffect(() => () => engineRef.current?.destroy(), [])
 
+  // remote control (e.g. the terminal's `play` / `pause` commands)
+  const toggleRef = useRef(null)
+  useEffect(() => {
+    const onCmd = (e) => {
+      const want = e.detail?.action
+      if (want === 'toggle' || (want === 'play' && !playingRef.current) || (want === 'pause' && playingRef.current)) {
+        toggleRef.current?.()
+      }
+    }
+    window.addEventListener('dk-music', onCmd)
+    return () => window.removeEventListener('dk-music', onCmd)
+  }, [])
+
   const toggle = async () => {
     setHint(false)
     try { sessionStorage.setItem(HINT_KEY, '1') } catch { /* storage blocked */ }
+    const mod = await import('../audio/rockEngine')
     if (!engineRef.current) {
-      const mod = await import('../audio/rockEngine')
-      engineRef.current = music.src ? mod.createFileEngine(music.src) : mod.createRockEngine()
+      engineRef.current = fileOkRef.current ? mod.createFileEngine(music.src) : mod.createRockEngine()
     }
     const e = engineRef.current
     if (playingRef.current) {
@@ -107,14 +136,21 @@ const MusicDisc = () => {
     } else {
       try {
         await e.play()
-        playingRef.current = true
-        setPlaying(true)
       } catch (err) {
-        console.warn('Music playback failed', err)
+        // file couldn't play (codec, blocked, removed) → fall back to the synth loop
+        console.warn('Track playback failed, using the built-in loop', err)
+        e.destroy()
+        fileOkRef.current = false
+        setTrack(music.fallback)
+        engineRef.current = mod.createRockEngine()
+        await engineRef.current.play()
       }
+      playingRef.current = true
+      setPlaying(true)
     }
     kickRef.current()
   }
+  toggleRef.current = toggle
 
   return (
     <div className={`mdisc ${playing ? 'is-playing' : ''}`}>
@@ -124,8 +160,8 @@ const MusicDisc = () => {
 
       <div className="mdisc-label" aria-hidden="true">
         <span className="mdisc-label-k">{playing ? 'Now playing' : 'Paused'}</span>
-        <span className="mdisc-label-t">{music.title}</span>
-        <span className="mdisc-label-a">{music.artist}</span>
+        <span className="mdisc-label-t">{track.title}</span>
+        <span className="mdisc-label-a">{track.artist}</span>
       </div>
 
       <button
@@ -133,7 +169,7 @@ const MusicDisc = () => {
         className="mdisc-btn"
         onClick={toggle}
         aria-pressed={playing}
-        aria-label={playing ? `Pause ${music.title}` : `Play ${music.title}`}
+        aria-label={playing ? `Pause ${track.title}` : `Play ${track.title}`}
         title={playing ? 'Pause music' : 'Play music'}
       >
         <canvas ref={canvasRef} className="mdisc-viz" aria-hidden="true" />

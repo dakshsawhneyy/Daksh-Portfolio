@@ -19,7 +19,7 @@ export const timeline = [
     year: "2023 – 2027",
     title: "B.Tech Computer Science · HBTU Kanpur",
     role: "CGPA 8.2 / 10",
-    description: "Building production-grade cloud systems and teaching multi-cloud engineering in parallel with academics. Available full-time from Aug 2027.",
+    description: "Building production-grade cloud systems and teaching multi-cloud engineering in parallel with academics. Open to full-time roles as an immediate joiner.",
     type: "education",
   },
 ]

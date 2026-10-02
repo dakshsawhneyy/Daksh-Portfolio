@@ -7,6 +7,7 @@ import './pages-unified.css'
 import './responsive.css'
 import './mobile-premium.css'
 import './fixes.css'
+import './styles/layout-fixes.css'
 import Home from "./pages/Home"
 import About from "./pages/About"
 import Navbar from "./components/Navbar"
@@ -20,6 +21,8 @@ import SystemWorkspace from "./components/SystemWorkspace"
 import CommandPalette from "./components/CommandPalette"
 import SreTerminal from "./components/SreTerminal"
 import MusicDisc from "./components/MusicDisc"
+import AskDaksh from "./components/AskDaksh"
+import ScrollProgress from "./components/ScrollProgress"
 
 /* Scroll to top on every route change — or to #anchor when the link has one */
 const ScrollToTop = () => {
@@ -106,6 +109,7 @@ const App = () => {
   return (
     <div className="portfolio-app">
       <TrackVisitor />
+      {!isSystem && <ScrollProgress />}
       <ScrollToTop />
 
       {!isSystem && <Navbar onOpenSreMode={() => setSreModeOpen(true)} />}
@@ -166,6 +170,7 @@ const App = () => {
 
       {!isSystem && !isProjectDetail && <Footer />}
       <MusicDisc />
+      <AskDaksh />
     </div>
   )
 }

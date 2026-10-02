@@ -154,8 +154,8 @@
 .pt-logo-code { background: #0f172a; }
 .pt-logo-aws { background: #232f3e; color: #ff9900; font: 800 11px Arial, sans-serif; letter-spacing: .02em; }
 
-.pt-chip-tl { left: -4cqw; top: 26cqw; }
-.pt-chip-br { right: -6cqw; bottom: 22cqw; }
+.pt-chip-tl { left: -10cqw; top: 66cqw; }
+.pt-chip-br { right: -8cqw; bottom: 8cqw; }
 .pt-chip-r {
   right: 2cqw;
   top: 12cqw;
@@ -191,8 +191,8 @@
   .pt-chip b { font-size: 11px; }
   .pt-chip small { font-size: 9.5px; }
   .pt-chip-logo { width: 24px; height: 24px; }
-  .pt-chip-tl { left: -2cqw; top: 30cqw; }
-  .pt-chip-br { right: -2cqw; bottom: 20cqw; }
+  .pt-chip-tl { left: -3cqw; top: 64cqw; }
+  .pt-chip-br { right: -3cqw; bottom: 6cqw; }
   .pt-ring-text text { font-size: 11.5px; }
 }
 

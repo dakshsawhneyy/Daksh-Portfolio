@@ -1,8 +1,10 @@
-import { ArrowUpRight, ShieldCheck, Search, Wrench, Activity, Terminal, Zap, GitBranch, ExternalLink } from 'lucide-react'
+import { ArrowUpRight, ShieldCheck, Activity, Terminal, Zap, GitBranch, ExternalLink } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useInView, animate, AnimatePresence } from 'framer-motion'
 import SelfHealingCluster from '../components/SelfHealingCluster'
+import SkillGalaxy from '../components/SkillGalaxy'
+import SignalScope from '../components/SignalScope'
 import '../home-v2.css'
 
 /* ─── variants ─── */
@@ -223,7 +225,14 @@ const Home = () => (
 
     {/* ══ METRICS ══ */}
     <motion.section className="hv2-metrics"
-      initial="hidden" whileInView="visible" viewport={{once:true,margin:'-50px'}} variants={stagger}>
+      initial="hidden" whileInView="visible" viewport={{once:true,margin:'-50px'}} variants={stagger}
+      onPointerMove={e => {
+        const card = e.target.closest('.hv2-metric-card')
+        if (!card) return
+        const r = card.getBoundingClientRect()
+        card.style.setProperty('--mx', `${e.clientX - r.left}px`)
+        card.style.setProperty('--my', `${e.clientY - r.top}px`)
+      }}>
       {[
         {value:40,  suffix:'%',   label:'P95 latency cut',         icon:<Zap size={16}/>,         accent:'#e8674a'},
         {value:78,  suffix:'%',   label:'MTTR reduction',           icon:<Activity size={16}/>,    accent:'#72dfac'},
@@ -266,56 +275,11 @@ const Home = () => (
       </motion.div>
     </motion.section>
 
-    {/* ══ FEEDBACK LOOP ══ */}
-    <motion.section className="hv2-section hv2-loop-section"
-      initial="hidden" whileInView="visible" viewport={{once:true,margin:'-60px'}} variants={stagger}>
-      <motion.div className="hv2-section-lead" variants={fadeUp}>
-        <p className="hv2-eyebrow">How I think</p>
-        <h2>Reliability is a<br/><em>feedback loop.</em></h2>
-      </motion.div>
-      <motion.div className="hv2-loop-grid" variants={stagger}>
-        {[
-          {Icon:ShieldCheck, title:'OBSERVE',     body:'SLIs, SLOs, metrics, structured logs, and alert policies that fire before customers notice.',      accent:'#72dfac'},
-          {Icon:Search,      title:'INVESTIGATE', body:'Incident response, Kubernetes event correlation, distributed tracing, and structured RCA templates.', accent:'#f0bc62'},
-          {Icon:Wrench,      title:'RECOVER',     body:'Automated runbooks, canary rollbacks, self-healing policies, and CI/CD guardrails.',                 accent:'#df694e'},
-        ].map(({Icon,title,body,accent}) => (
-          <motion.article key={title} className="hv2-loop-card" variants={fadeUp}
-            whileHover={{y:-6,transition:{duration:0.2}}}>
-            <div className="hv2-lc-accent" style={{background:accent}}/>
-            <div className="hv2-lc-icon" style={{color:accent}}><Icon size={24}/></div>
-            <h3>{title}</h3>
-            <p>{body}</p>
-          </motion.article>
-        ))}
-      </motion.div>
-    </motion.section>
+    {/* ══ FEEDBACK LOOP — live telemetry you can break ══ */}
+    <SignalScope/>
 
-    {/* ══ STACK ══ */}
-    <motion.section className="hv2-section hv2-stack-section"
-      initial="hidden" whileInView="visible" viewport={{once:true,margin:'-60px'}} variants={stagger}>
-      <motion.div className="hv2-section-lead" variants={fadeUp}>
-        <p className="hv2-eyebrow">Reliability stack</p>
-        <h2>Systems thinking,<br/><em>layer by layer.</em></h2>
-      </motion.div>
-      <motion.div className="hv2-stack-layers" variants={stagger}>
-        {[
-          {label:'OPERATIONS',    detail:'SLO · SLI · Incident Response · RCA · Runbooks · On-call', color:'#df694e'},
-          {label:'OBSERVABILITY', detail:'Prometheus · Grafana · CloudWatch · Jaeger · OpenTelemetry',color:'#f0bc62'},
-          {label:'ORCHESTRATION', detail:'Kubernetes · EKS · AKS · Helm · ArgoCD',                  color:'#65cfe5'},
-          {label:'INFRASTRUCTURE',detail:'Terraform · AWS · Azure · GCP · Ansible',                 color:'#72dfac'},
-          {label:'AUTOMATION',    detail:'Python · Bash · GitHub Actions · Jenkins · CI/CD',        color:'#8784d2'},
-        ].map(({label,detail,color},i) => (
-          <motion.div key={label} className="hv2-stack-row" variants={fadeUp}>
-            <div className="hv2-stack-bar" style={{background:color}}/>
-            <div className="hv2-stack-content">
-              <span className="hv2-stack-label">{label}</span>
-              <span className="hv2-stack-detail">{detail}</span>
-            </div>
-            <span className="hv2-stack-index">{String(i+1).padStart(2,'0')}</span>
-          </motion.div>
-        ))}
-      </motion.div>
-    </motion.section>
+    {/* ══ STACK — physics constellation: tools wired to real work ══ */}
+    <SkillGalaxy/>
 
     {/* ══ SKILL MARQUEE — colored pills, two-row scroll ══ */}
     <motion.div className="hv2-marquee-wrap"

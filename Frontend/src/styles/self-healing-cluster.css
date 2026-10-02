@@ -1,11 +1,8 @@
 /* ══════════════════════════════════════════════════════════════════
    SELF-HEALING CLUSTER — home hero interactive panel
+   (no hover tilt / morph — removed at the user's request)
    ══════════════════════════════════════════════════════════════════ */
-.shc-perspective { perspective: 1400px; width: 100%; }
-
 .shc-root {
-  --gx: 50%;
-  --gy: 0%;
   position: relative;
   width: 100%;
   border-radius: 16px;
@@ -20,19 +17,8 @@
   color: #e9ece4;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   overflow: hidden;
-  transform-style: preserve-3d;
-  will-change: transform;
   -webkit-user-select: none;
   user-select: none;
-}
-
-/* cursor-following glare */
-.shc-glare {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(420px circle at var(--gx) var(--gy), rgba(255, 255, 255, .05), transparent 60%);
-  z-index: 2;
 }
 
 /* title bar */
@@ -63,7 +49,7 @@
 .shc-status-dot { width: 6px; height: 6px; border-radius: 50%; transition: background .3s, box-shadow .3s; }
 
 /* stage */
-.shc-stage { position: relative; padding: 6px 8px 0; }
+.shc-stage { position: relative; padding: 6px 8px 0; cursor: crosshair; }
 .shc-svg { display: block; width: 100%; height: auto; overflow: visible; }
 
 .shc-route { fill: none; stroke: rgba(232, 103, 74, .22); stroke-width: 1; stroke-dasharray: 2 3; }
@@ -95,6 +81,14 @@
 .shc-pod-id { font: 500 6px ui-monospace, monospace; fill: #6f7a73; text-anchor: middle; pointer-events: none; }
 .shc-spin { animation: shc-spin .8s linear infinite; }
 @keyframes shc-spin { to { transform: rotate(360deg); } }
+
+.shc-pod-packet { fill: #72dfac; opacity: .75; filter: drop-shadow(0 0 2px #72dfac); }
+.shc-cpu text { font: 600 6px ui-monospace, monospace; fill: #5e6862; }
+.shc-cpu .shc-cpu-pct { text-anchor: end; fill: #8d978f; }
+.shc-cpu-track { fill: rgba(255, 255, 255, .06); }
+.shc-cpu-fill { fill: #72dfac; transition: width .5s ease, fill .3s; }
+.shc-cpu-fill.warm { fill: #f0bc62; }
+.shc-cpu-fill.hot { fill: #e8674a; }
 
 .shc-coach {
   position: absolute;
@@ -161,6 +155,7 @@
 .shc-metric strong { font: 700 17px/1 'Space Grotesk', sans-serif; letter-spacing: -.02em; color: #fff; font-variant-numeric: tabular-nums; }
 .shc-metric strong i { font-style: normal; color: #5e6862; font-size: 13px; }
 .shc-healed { color: #72dfac !important; }
+.shc-mttr { font: 600 10px ui-monospace, monospace !important; color: #6f7a73 !important; letter-spacing: 0; }
 
 .shc-stepper { display: flex; align-items: center; gap: 8px; }
 .shc-stepper button {
@@ -202,6 +197,23 @@
 .shc-btn-hot:hover { border-color: #e8674a; background: rgba(232, 103, 74, .16); }
 .shc-btn:focus-visible, .shc-stepper button:focus-visible { outline: 2px solid #e8674a; outline-offset: 2px; }
 
+/* degraded: the whole panel bleeds red until it heals */
+.shc-root::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(232, 103, 74, 0), inset 0 0 60px rgba(232, 103, 74, 0);
+  transition: box-shadow .5s;
+  z-index: 3;
+}
+.shc-root.is-degraded::after { animation: shc-alarm 1.1s ease-in-out infinite; }
+@keyframes shc-alarm {
+  0%, 100% { box-shadow: inset 0 0 0 1px rgba(232, 103, 74, .35), inset 0 0 40px rgba(232, 103, 74, .08); }
+  50% { box-shadow: inset 0 0 0 1px rgba(232, 103, 74, .8), inset 0 0 80px rgba(232, 103, 74, .2); }
+}
+
 @media (max-width: 1180px) and (min-width: 681px) {
   .shc-foot { grid-template-columns: auto minmax(0, 1fr) auto; }
   .shc-actions { grid-column: 1 / -1; }
@@ -220,11 +232,12 @@
   .shc-btn { flex: 1; justify-content: center; padding: 10px; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .shc-spin, .shc-ingress-dot, .shc-node.is-down .shc-node-led { animation: none; }
-}
-
 /* hero slot sizing (beats home-v2.css without !important) */
 @media (min-width: 861px) {
   .hv2-hero .hv2-dashboard { width: clamp(340px, 42vw, 560px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shc-spin, .shc-ingress-dot, .shc-node.is-down .shc-node-led { animation: none; }
+  .shc-root.is-degraded::after { animation: none; box-shadow: inset 0 0 0 1px rgba(232, 103, 74, .6); }
 }

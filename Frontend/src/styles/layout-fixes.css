@@ -1,0 +1,44 @@
+/* Loaded last (after fixes.css).
+   fixes.css sets `overflow-x: hidden` on BOTH html and body. When both have
+   overflow set, body becomes its own scroll container and `position: sticky`
+   stops working everywhere. `clip` still prevents horizontal scroll but does
+   not create a scroll container. */
+html body {
+  overflow-x: clip !important;
+  overflow-y: visible !important;
+}
+
+/* scroll progress beam (components/ScrollProgress.jsx) */
+.scroll-beam {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 150;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, #e8674a, #f0bc62 60%, #72dfac);
+  box-shadow: 0 0 10px rgba(232, 103, 74, .5);
+  pointer-events: none;
+}
+
+/* home metric cards: cursor spotlight (vars set in Home.jsx) */
+.hv2-metric-card { position: relative; isolation: isolate; }
+.hv2-metric-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(240px circle at var(--mx, 50%) var(--my, 50%), rgba(232, 103, 74, .12), transparent 70%);
+  transition: opacity .35s;
+}
+.hv2-metric-card:hover::after { opacity: 1; }
+
+/* keep `clip` (not `hidden`) on the home wrapper so sticky/fixed children work */
+main.home-v2 { overflow-x: clip; }
+
+/* the typed hero headline wraps to 2 lines for longer words; reserve both
+   lines so the hero doesn't jump vertically while typing */
+.hv2-hero .hv2-h1-em { display: block; min-height: 1.8em; }
