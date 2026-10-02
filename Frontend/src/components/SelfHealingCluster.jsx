@@ -59,18 +59,21 @@ function reducer(s, a) {
   const now = a.now
   switch (a.type) {
     case 'tick': {
-      let next = { ...s, pods: [...s.pods], nodeDown: { ...s.nodeDown } }
+      // structural sharing: arrays/objects are only replaced when they change,
+      // so the memoised SVG layers skip work on quiet ticks
+      let next = { ...s }
 
       // nodes recovering
       for (const [id, until] of Object.entries(next.nodeDown)) {
         if (now > until) {
+          next.nodeDown = { ...next.nodeDown }
           delete next.nodeDown[id]
           next = log(next, 'ok', `node/${NODES.find(n => n.id === id).name} Ready — uncordoned`)
         }
       }
 
       // lifecycle transitions
-      next.pods = next.pods.flatMap(p => {
+      const stepped = next.pods.flatMap(p => {
         const age = now - p.t
         if ((p.status === 'failed' && age > 900) || (p.status === 'terminating' && age > 650)) return []
         if (p.status === 'pending' && age > 420) return [{ ...p, status: 'creating', t: now }]
@@ -80,6 +83,8 @@ function reducer(s, a) {
         }
         return [p]
       })
+      // reuse the old array if no pod changed → memoised layers below skip re-rendering
+      next.pods = stepped.length === s.pods.length && stepped.every((p, i) => p === s.pods[i]) ? s.pods : stepped
       const justRan = s.pods.filter(p => p.status === 'creating' && now - p.t > 700)
       if (justRan.length && s.booted) next = log(next, 'ok', `pod/${justRan[0].name} Running · ready 1/1`)
 
@@ -98,7 +103,7 @@ function reducer(s, a) {
             const name = `${APPS[Math.floor(Math.random() * APPS.length)]}-${rid()}`
             const replacement = next.debt > 0
             if (replacement) next.debt -= 1
-            next.pods.push({ id: name, name, node: node.id, slot, status: 'pending', t: now, replacement })
+            next.pods = [...next.pods, { id: name, name, node: node.id, slot, status: 'pending', t: now, replacement }]
             if (next.booted) next = log(next, 'info', `scheduler: pod/${name} → ${node.name}`)
           }
         } else if (now - next.lastSchedFail > 2500) {
@@ -240,6 +245,26 @@ const Sparkline = ({ data }) => {
   )
 }
 
+// memo: framer's `layout` measures the DOM on every render, so render the log only when events change
+const EventLog = memo(function EventLog({ events }) {
+  return (
+    <div className="shc-log" aria-live="polite">
+      <AnimatePresence initial={false} mode="popLayout">
+        {events.map(e => (
+          <motion.div key={e.id} className={`shc-log-line is-${e.kind}`} layout
+            initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}>
+            <span className="shc-log-k">{e.kind === 'err' ? '✗' : e.kind === 'warn' ? '!' : e.kind === 'ok' ? '✓' : '›'}</span>
+            {e.msg}
+          </motion.div>
+        ))}
+      </AnimatePresence>
+    </div>
+  )
+})
+
+const MemoSparkline = memo(Sparkline)
+
 const SelfHealingCluster = () => {
   const [s, dispatch] = useReducer(reducer, initial)
   const [hovered, setHovered] = useState(null)
@@ -292,6 +317,94 @@ const SelfHealingCluster = () => {
     : running < s.desired || s.pods.some(p => p.status !== 'running') ? { t: 'RECONCILING', c: '#f0bc62' }
     : { t: 'HEALTHY', c: '#72dfac' }
 
+
+  // memoised SVG layers: a quiet 280ms tick (only the sparkline moved) re-renders none of these
+  const nodeDown = s.nodeDown
+  const pods = s.pods
+  const graphLayer = useMemo(() => (
+    <>
+    {/* traffic */}
+    {NODES.map((n, i) => {
+      const down = !!nodeDown[n.id]
+      return (
+        <g key={n.id}>
+          <use href={`#shc-path-${n.id}`} className={`shc-route ${down ? 'is-down' : ''}`} />
+          {!down && !reduced && [0, 1, 2].map(k => (
+            <circle key={k} r="1.9" className="shc-packet" style={{ fill: k === 1 ? '#72dfac' : '#e8674a' }}>
+              <animateMotion dur={`${1.5 + i * 0.15}s`} begin={`${k * 0.5 + i * 0.2}s`} repeatCount="indefinite">
+                <mpath href={`#shc-path-${n.id}`} />
+              </animateMotion>
+            </circle>
+          ))}
+        </g>
+      )
+    })}
+
+    {/* ingress */}
+    <g className="shc-ingress">
+      <rect x={INGRESS.x - 58} y={INGRESS.y - 14} width="116" height="26" rx="13" />
+      <circle cx={INGRESS.x - 42} cy={INGRESS.y - 1} r="4" className="shc-ingress-dot" />
+      <text x={INGRESS.x + 4} y={INGRESS.y + 2.5}>ingress · lb</text>
+      <text x={INGRESS.x} y={INGRESS.y - 22} className="shc-rps">{anyDown ? '↓ 1.6k rps · rerouting' : '↓ 2.4k rps'}</text>
+    </g>
+
+    {/* worker nodes */}
+    {NODES.map(n => {
+      const down = !!nodeDown[n.id]
+      return (
+        <g key={n.id} className={`shc-node ${down ? 'is-down' : ''}`}>
+          <rect x={n.x} y={NODE_Y} width={NODE_W} height={NODE_H} rx="10" className="shc-node-box" />
+          <circle cx={n.x + 12} cy={NODE_Y + 15} r="2.6" className="shc-node-led" />
+          <text x={n.x + 20} y={NODE_Y + 18} className="shc-node-name">{n.name}</text>
+          <text x={n.x + NODE_W - 10} y={NODE_Y + 18} className="shc-node-zone">{n.zone}</text>
+          <line x1={n.x + 8} x2={n.x + NODE_W - 8} y1={NODE_Y + 28} y2={NODE_Y + 28} className="shc-node-rule" />
+          {SLOTS.map(([sx, sy], i) => (
+            <polygon key={i} points={hex(n.x + sx, NODE_Y + sy, 19)} className="shc-slot" />
+          ))}
+          {!down && !reduced && pods.filter(p => p.node === n.id && p.status === 'running').map((p, k) => {
+            const [px, py] = SLOTS[p.slot]
+            return (
+              <circle key={p.id} r="1.5" className="shc-pod-packet">
+                <animateMotion dur={`${0.9 + k * 0.17}s`} repeatCount="indefinite"
+                  path={`M${n.x + NODE_W / 2},${NODE_Y + 30} L${n.x + px},${NODE_Y + py - 19}`} />
+              </circle>
+            )
+          })}
+          {!down && (() => {
+            const load = Math.min(96, pods.filter(p => p.node === n.id && p.status === 'running').length * 21 + ((HISTORY * 7 + n.x) % 9))
+            return (
+              <g className="shc-cpu">
+                <text x={n.x + 10} y={NODE_Y + NODE_H - 9}>cpu</text>
+                <rect x={n.x + 28} y={NODE_Y + NODE_H - 14} width={NODE_W - 64} height="5" rx="2.5" className="shc-cpu-track" />
+                <rect x={n.x + 28} y={NODE_Y + NODE_H - 14} width={((NODE_W - 64) * load) / 100} height="5" rx="2.5"
+                  className={`shc-cpu-fill ${load > 75 ? 'hot' : load > 50 ? 'warm' : ''}`} />
+                <text x={n.x + NODE_W - 10} y={NODE_Y + NODE_H - 9} className="shc-cpu-pct">{load}%</text>
+              </g>
+            )
+          })()}
+          {down && (
+            <g className="shc-down-tag">
+              <rect x={n.x + 10} y={NODE_Y + NODE_H - 22} width={NODE_W - 20} height="17" rx="4" />
+              <text x={n.x + NODE_W / 2} y={NODE_Y + NODE_H - 10.5}>NotReady · cordoned</text>
+            </g>
+          )}
+        </g>
+      )
+    })}
+    </>
+  ), [nodeDown, pods, reduced, anyDown])
+
+  const podLayer = useMemo(() => (
+    <>
+    {/* pods */}
+    <AnimatePresence>
+      {pods.map(p => (
+        <Pod key={p.id} pod={p} onKill={killPod} onHover={setHovered} />
+      ))}
+    </AnimatePresence>
+    </>
+  ), [pods, killPod])
+
   return (
     <div ref={rootRef} className={`shc-root ${status.t.startsWith('DEGRADED') ? 'is-degraded' : ''}`}>
       <div className="shc-bar">
@@ -316,81 +429,9 @@ const SelfHealingCluster = () => {
           </defs>
           <rect width="420" height="252" fill="url(#shc-dots)" />
 
-          {/* traffic */}
-          {NODES.map((n, i) => {
-            const down = !!s.nodeDown[n.id]
-            return (
-              <g key={n.id}>
-                <use href={`#shc-path-${n.id}`} className={`shc-route ${down ? 'is-down' : ''}`} />
-                {!down && !reduced && [0, 1, 2].map(k => (
-                  <circle key={k} r="1.9" className="shc-packet" style={{ fill: k === 1 ? '#72dfac' : '#e8674a' }}>
-                    <animateMotion dur={`${1.5 + i * 0.15}s`} begin={`${k * 0.5 + i * 0.2}s`} repeatCount="indefinite">
-                      <mpath href={`#shc-path-${n.id}`} />
-                    </animateMotion>
-                  </circle>
-                ))}
-              </g>
-            )
-          })}
+          {graphLayer}
 
-          {/* ingress */}
-          <g className="shc-ingress">
-            <rect x={INGRESS.x - 58} y={INGRESS.y - 14} width="116" height="26" rx="13" />
-            <circle cx={INGRESS.x - 42} cy={INGRESS.y - 1} r="4" className="shc-ingress-dot" />
-            <text x={INGRESS.x + 4} y={INGRESS.y + 2.5}>ingress · lb</text>
-            <text x={INGRESS.x} y={INGRESS.y - 22} className="shc-rps">{anyDown ? '↓ 1.6k rps · rerouting' : '↓ 2.4k rps'}</text>
-          </g>
-
-          {/* worker nodes */}
-          {NODES.map(n => {
-            const down = !!s.nodeDown[n.id]
-            return (
-              <g key={n.id} className={`shc-node ${down ? 'is-down' : ''}`}>
-                <rect x={n.x} y={NODE_Y} width={NODE_W} height={NODE_H} rx="10" className="shc-node-box" />
-                <circle cx={n.x + 12} cy={NODE_Y + 15} r="2.6" className="shc-node-led" />
-                <text x={n.x + 20} y={NODE_Y + 18} className="shc-node-name">{n.name}</text>
-                <text x={n.x + NODE_W - 10} y={NODE_Y + 18} className="shc-node-zone">{n.zone}</text>
-                <line x1={n.x + 8} x2={n.x + NODE_W - 8} y1={NODE_Y + 28} y2={NODE_Y + 28} className="shc-node-rule" />
-                {SLOTS.map(([sx, sy], i) => (
-                  <polygon key={i} points={hex(n.x + sx, NODE_Y + sy, 19)} className="shc-slot" />
-                ))}
-                {!down && !reduced && s.pods.filter(p => p.node === n.id && p.status === 'running').map((p, k) => {
-                  const [px, py] = SLOTS[p.slot]
-                  return (
-                    <circle key={p.id} r="1.5" className="shc-pod-packet">
-                      <animateMotion dur={`${0.9 + k * 0.17}s`} repeatCount="indefinite"
-                        path={`M${n.x + NODE_W / 2},${NODE_Y + 30} L${n.x + px},${NODE_Y + py - 19}`} />
-                    </circle>
-                  )
-                })}
-                {!down && (() => {
-                  const load = Math.min(96, s.pods.filter(p => p.node === n.id && p.status === 'running').length * 21 + ((s.history.length * 7 + n.x) % 9))
-                  return (
-                    <g className="shc-cpu">
-                      <text x={n.x + 10} y={NODE_Y + NODE_H - 9}>cpu</text>
-                      <rect x={n.x + 28} y={NODE_Y + NODE_H - 14} width={NODE_W - 64} height="5" rx="2.5" className="shc-cpu-track" />
-                      <rect x={n.x + 28} y={NODE_Y + NODE_H - 14} width={((NODE_W - 64) * load) / 100} height="5" rx="2.5"
-                        className={`shc-cpu-fill ${load > 75 ? 'hot' : load > 50 ? 'warm' : ''}`} />
-                      <text x={n.x + NODE_W - 10} y={NODE_Y + NODE_H - 9} className="shc-cpu-pct">{load}%</text>
-                    </g>
-                  )
-                })()}
-                {down && (
-                  <g className="shc-down-tag">
-                    <rect x={n.x + 10} y={NODE_Y + NODE_H - 22} width={NODE_W - 20} height="17" rx="4" />
-                    <text x={n.x + NODE_W / 2} y={NODE_Y + NODE_H - 10.5}>NotReady · cordoned</text>
-                  </g>
-                )}
-              </g>
-            )
-          })}
-
-          {/* pods */}
-          <AnimatePresence>
-            {s.pods.map(p => (
-              <Pod key={p.id} pod={p} onKill={killPod} onHover={setHovered} />
-            ))}
-          </AnimatePresence>
+          {podLayer}
         </svg>
 
         <AnimatePresence>
@@ -417,18 +458,7 @@ const SelfHealingCluster = () => {
       </div>
 
       {/* event log */}
-      <div className="shc-log" aria-live="polite">
-        <AnimatePresence initial={false} mode="popLayout">
-          {s.events.map(e => (
-            <motion.div key={e.id} className={`shc-log-line is-${e.kind}`} layout
-              initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}>
-              <span className="shc-log-k">{e.kind === 'err' ? '✗' : e.kind === 'warn' ? '!' : e.kind === 'ok' ? '✓' : '›'}</span>
-              {e.msg}
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
+      <EventLog events={s.events} />
 
       {/* metrics + controls */}
       <div className="shc-foot">
@@ -444,7 +474,7 @@ const SelfHealingCluster = () => {
           <span>availability</span>
           <div className="shc-slo-row">
             <strong style={{ color: avail < 75 ? '#e8674a' : avail < 100 ? '#f0bc62' : '#72dfac' }}>{avail.toFixed(1)}%</strong>
-            <Sparkline data={s.history} />
+            <MemoSparkline data={s.history} />
           </div>
         </div>
         <div className="shc-metric">

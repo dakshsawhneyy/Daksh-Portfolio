@@ -126,6 +126,7 @@ const Footer = () => {
     let lastDrift = -1
     let lastDriftStr = ''
     let lastConvStr = ''
+    let lastMoving = null
 
     const field = createMeshField(canvas, {
       state, reduced, mobile,
@@ -134,6 +135,9 @@ const Footer = () => {
         // write CSS vars only when they change: each write restyles ~30 glyphs
         const dStr = d.toFixed(3), pStr = p.toFixed(3)
         if (dStr !== lastDriftStr) { lastDriftStr = dStr; headRef.current?.style.setProperty('--drift', dStr) }
+        // GPU layers for the ~30 glyphs only while they move; settled text drops them
+        const moving = d > 0.002
+        if (moving !== lastMoving && rootRef.current) { lastMoving = moving; rootRef.current.classList.toggle('is-moving', moving) }
         if (pStr !== lastConvStr) { lastConvStr = pStr; rootRef.current?.style.setProperty('--conv', pStr) }
         const drifted = Math.round(d * field.nodeCount)
         if (drifted !== lastDrift && driftRef.current) {
@@ -151,7 +155,15 @@ const Footer = () => {
     field.resize()
 
     let lastY = window.scrollY
+    let scrollQueued = false
+    // one layout read per frame at most (scroll events can fire several times per frame)
     const onScroll = () => {
+      if (scrollQueued) return
+      scrollQueued = true
+      requestAnimationFrame(measure)
+    }
+    const measure = () => {
+      scrollQueued = false
       const r = stage.getBoundingClientRect()
       const vh = window.innerHeight
       // fully reconciled once the stage top has nearly reached the top of the viewport
@@ -160,7 +172,7 @@ const Footer = () => {
       state.vel += y - lastY
       lastY = y
     }
-    onScroll()
+    measure()
 
     const io = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) field.start()

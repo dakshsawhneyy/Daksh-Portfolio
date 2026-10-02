@@ -52,6 +52,8 @@ const SkillGalaxy = () => {
 
     const stage = stageRef.current
     const io = new IntersectionObserver(([e]) => {
+      // node layers only while the constellation is on screen
+      stage.classList.toggle('is-live', e.isIntersecting)
       if (e.isIntersecting) { engine.start(); engine.reheat(0.8) } else engine.stop()
     })
     io.observe(stage)

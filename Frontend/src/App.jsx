@@ -23,6 +23,7 @@ import SreTerminal from "./components/SreTerminal"
 import MusicDisc from "./components/MusicDisc"
 import AskDaksh from "./components/AskDaksh"
 import ScrollProgress from "./components/ScrollProgress"
+import OffscreenPauser from "./components/OffscreenPauser"
 
 /* Scroll to top on every route change — or to #anchor when the link has one */
 const ScrollToTop = () => {
@@ -110,6 +111,7 @@ const App = () => {
     <div className="portfolio-app">
       <TrackVisitor />
       {!isSystem && <ScrollProgress />}
+      <OffscreenPauser />
       <ScrollToTop />
 
       {!isSystem && <Navbar onOpenSreMode={() => setSreModeOpen(true)} />}

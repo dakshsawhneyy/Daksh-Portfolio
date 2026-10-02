@@ -75,3 +75,53 @@ main.home-v2 { overflow-x: clip; }
 }
 /* infinite marquees: promote to their own layer */
 .hv2-marquee-track { will-change: transform; }
+
+/* GPU layers only while something animates: ~70 permanent layers made Chrome's
+   per-frame layerisation the second-biggest cost in the trace. */
+.sig-ch { will-change: auto !important; }
+.sig-footer.is-moving .sig-ch { will-change: transform, opacity !important; }
+.sig-aperture { will-change: auto !important; }
+.sig-footer.is-moving .sig-aperture { will-change: clip-path !important; }
+.sg-node { will-change: auto !important; }
+.sg-stage.is-live .sg-node { will-change: transform !important; }
+
+/* "Live" status dots: same look, compositor-only animation.
+   Animating box-shadow repaints every frame forever; a pseudo-element animated
+   with opacity/transform is handled by the GPU without repainting. */
+.hv2-status-dot, .hv2-badge-dot, .sig-pulse, .pt-live, .ap3-available-dot, .mdisc-hint-dot {
+  position: relative;
+  animation: none !important;
+}
+/* soft glow pulse (was pulse-badge: box-shadow 6px ↔ 14px) */
+.hv2-status-dot::after, .hv2-badge-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 14px #72dfac;
+  opacity: 0;
+  animation: dk-glow 2.2s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes dk-glow { 50% { opacity: 1; } }
+/* expanding ping ring (was sig-ping / pt-ping / ap3-pulse / mdisc-ping) */
+.sig-pulse::after, .pt-live::after, .ap3-available-dot::after, .mdisc-hint-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: inherit;
+  opacity: .55;
+  animation: dk-ping 2s ease-out infinite;
+  pointer-events: none;
+}
+.mdisc-hint-dot::after { animation-duration: 1.4s; }
+@keyframes dk-ping { to { transform: scale(2.4); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .hv2-status-dot::after, .hv2-badge-dot::after, .sig-pulse::after, .pt-live::after, .ap3-available-dot::after, .mdisc-hint-dot::after { animation: none; opacity: 0; }
+}
+
+/* off-screen sections (components/OffscreenPauser.jsx): freeze their CSS animations */
+[data-offscreen], [data-offscreen] *, [data-offscreen] *::before, [data-offscreen] *::after {
+  animation-play-state: paused !important;
+}

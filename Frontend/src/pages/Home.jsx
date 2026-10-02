@@ -31,10 +31,25 @@ const Counter = ({ to, suffix = '' }) => {
 /* ─── typing headline ─── */
 const TYPED_WORDS = ['that self-heal.', 'for resilience.', 'that scale.', 'for reliability.']
 const TypedText = ({ words }) => {
+  const boxRef = useRef(null)
   const [idx, setIdx]           = useState(0)
   const [displayed, setDisplayed] = useState('')
   const [deleting, setDeleting]   = useState(false)
+  // pause typing while the hero is off-screen or the tab is hidden (it re-lays out the page each keystroke)
+  const [active, setActive] = useState(true)
   useEffect(() => {
+    const el = boxRef.current
+    if (!el) return
+    let visible = true
+    const update = () => setActive(visible && !document.hidden)
+    const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; update() })
+    io.observe(el)
+    document.addEventListener('visibilitychange', update)
+    return () => { io.disconnect(); document.removeEventListener('visibilitychange', update) }
+  }, [])
+
+  useEffect(() => {
+    if (!active) return
     const word = words[idx]
     let t
     if (!deleting && displayed.length < word.length)
@@ -47,11 +62,10 @@ const TypedText = ({ words }) => {
       setDeleting(false); setIdx(i => (i+1) % words.length)
     }
     return () => clearTimeout(t)
-  }, [displayed, deleting, idx, words])
+  }, [displayed, deleting, idx, words, active])
 
   // Keep the phrase on ONE line: measure every phrase at the h1 size and scale
   // this line down just enough for the widest one to fit the column.
-  const boxRef = useRef(null)
   const sizerRefs = useRef([])
   const [scale, setScale] = useState(1)
   useLayoutEffect(() => {

@@ -23,7 +23,11 @@ const SignalScope = () => {
   const lastActRef = useRef(Date.now())
   const [phase, setPhase] = useState({ key: 'idle', scenario: null, detail: '' })
   const [log, setLog] = useState({})
-  const [stats, setStats] = useState({ v: 120, budget: 100, incidents: 0, mttr: null, breached: false })
+  // coarse state → React; per-frame numbers (latency, budget) → written to the DOM via refs
+  const [stats, setStats] = useState({ incidents: 0, mttr: null, breached: false })
+  const nowRef = useRef(null)
+  const budgetBarRef = useRef(null)
+  const budgetTxtRef = useRef(null)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -42,8 +46,16 @@ const SignalScope = () => {
         })
       },
       onStats: (s) => {
-        const k = `${s.v >> 3}|${s.budget.toFixed(1)}|${s.incidents}|${s.breached}`
-        if (k !== lastKey) { lastKey = k; setStats(s) }
+        const v = String(s.v)
+        if (nowRef.current && nowRef.current.textContent !== v) nowRef.current.textContent = v
+        const b = s.budget.toFixed(1)
+        if (budgetTxtRef.current && budgetTxtRef.current.textContent !== `${b}%`) {
+          budgetTxtRef.current.textContent = `${b}%`
+          budgetBarRef.current.style.width = `${s.budget}%`
+          budgetBarRef.current.classList.toggle('low', s.budget < 60)
+        }
+        const k = `${s.incidents}|${s.breached}|${s.mttr}`
+        if (k !== lastKey) { lastKey = k; setStats({ incidents: s.incidents, mttr: s.mttr, breached: s.breached }) }
       },
     })
     engineRef.current = engine
@@ -63,7 +75,12 @@ const SignalScope = () => {
 
     // scrolling = traffic: fast scrolls add jitter to the signal
     let lastY = window.scrollY
-    const onScroll = () => { engine.load(window.scrollY - lastY); lastY = window.scrollY }
+    let scrollQueued = false
+    const onScroll = () => {
+      if (scrollQueued) return
+      scrollQueued = true
+      requestAnimationFrame(() => { scrollQueued = false; engine.load(window.scrollY - lastY); lastY = window.scrollY })
+    }
     window.addEventListener('scroll', onScroll, { passive: true })
 
     // nobody playing? chaos happens anyway
@@ -115,14 +132,14 @@ const SignalScope = () => {
         <div className={`ss-scope ${stats.breached ? 'is-breached' : ''}`}>
           <div className="ss-scope-bar">
             <span className="ss-live"><i /> p99 latency · checkout-api · prod</span>
-            <span className={`ss-now ${stats.breached ? 'bad' : ''}`}><b>{stats.v}</b>ms</span>
+            <span className={`ss-now ${stats.breached ? 'bad' : ''}`}><b ref={nowRef}>120</b>ms</span>
           </div>
           <canvas ref={canvasRef} className="ss-canvas" />
           <div className="ss-scope-foot">
             <div className="ss-budget">
               <span>error budget</span>
-              <div className="ss-budget-track"><i style={{ width: `${stats.budget}%` }} className={stats.budget < 60 ? 'low' : ''} /></div>
-              <b>{stats.budget.toFixed(1)}%</b>
+              <div className="ss-budget-track"><i ref={budgetBarRef} style={{ width: '100%' }} /></div>
+              <b ref={budgetTxtRef}>100.0%</b>
             </div>
             <span>incidents <b>{stats.incidents}</b></span>
             <span>avg MTTR <b>{stats.mttr ? `${stats.mttr.toFixed(1)}s` : '—'}</b></span>
