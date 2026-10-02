@@ -1,0 +1,198 @@
+/* ══════════════════════════════════════════════════════════════════
+   MUSIC DISC — floating vinyl player (bottom-right, all pages)
+   ══════════════════════════════════════════════════════════════════ */
+.mdisc {
+  --energy: 0;
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 140;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.mdisc-btn {
+  pointer-events: auto;
+  position: relative;
+  width: 76px;
+  height: 76px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .45s cubic-bezier(.2, .9, .25, 1.4);
+}
+.mdisc-btn:hover { transform: scale(1.07); }
+.mdisc-btn:active { transform: scale(.94); }
+.mdisc-btn:focus-visible { outline: 2px solid #e8674a; outline-offset: 2px; }
+
+.mdisc-viz {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.mdisc-glow {
+  position: absolute;
+  inset: 14px;
+  border-radius: 50%;
+  box-shadow:
+    0 10px 30px rgba(16, 17, 15, .35),
+    0 0 calc(8px + var(--energy) * 40px) rgba(232, 103, 74, calc(.15 + var(--energy) * .6));
+  transition: box-shadow .2s;
+}
+
+.mdisc-vinyl {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background:
+    repeating-radial-gradient(circle at 50% 50%,
+      #151614 0 1.2px, #1f201d 1.2px 2.1px, #121311 2.1px 3px),
+    #111210;
+  border: 1px solid #2c2e2b;
+  will-change: transform;
+  overflow: hidden;
+}
+.mdisc-shine {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 20deg,
+    transparent 0 40deg, rgba(255, 255, 255, .16) 55deg, transparent 75deg,
+    transparent 210deg, rgba(255, 255, 255, .1) 228deg, transparent 245deg);
+}
+.mdisc-center {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: conic-gradient(#e8674a 0 50%, #f0bc62 50% 75%, #e8674a 75%);
+  display: grid;
+  place-items: center;
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, .15);
+}
+.mdisc-spindle {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #f3f1eb;
+}
+
+/* play / pause badge */
+.mdisc-icon {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #f3f1eb;
+  color: #10110f;
+  border: 1px solid #d8d8ce;
+  box-shadow: 0 4px 12px rgba(16, 17, 15, .2);
+}
+.mdisc-icon svg { margin-left: 1px; }
+.is-playing .mdisc-icon svg { margin-left: 0; }
+
+/* track label — slides out on hover / while playing */
+.mdisc-label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(16, 17, 15, .88);
+  backdrop-filter: blur(10px);
+  color: #f3f1eb;
+  opacity: 0;
+  transform: translateX(12px);
+  transition: opacity .3s, transform .45s cubic-bezier(.2, .9, .25, 1);
+  white-space: nowrap;
+}
+.mdisc:hover .mdisc-label { opacity: 1; transform: none; }
+.mdisc-label-k {
+  font: 700 8.5px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: #72dfac;
+}
+.mdisc-label-t { font: 700 13px/1.25 'Space Grotesk', sans-serif; letter-spacing: -.01em; }
+.mdisc-label-a { font-size: 10.5px; color: #9a9d95; }
+
+/* first-visit hint */
+.mdisc-hint {
+  position: absolute;
+  right: 6px;
+  bottom: 84px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #10110f;
+  color: #f3f1eb;
+  font: 600 11.5px 'DM Sans', sans-serif;
+  white-space: nowrap;
+  width: max-content;
+  max-width: none;
+  border: 1px solid rgba(243, 241, 235, .14);
+  box-shadow: 0 10px 30px rgba(16, 17, 15, .3);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .4s, transform .5s cubic-bezier(.2, .9, .25, 1.3);
+}
+.mdisc-hint.show { opacity: 1; transform: none; }
+.mdisc-hint::after {
+  content: '';
+  position: absolute;
+  right: 30px;
+  bottom: -5px;
+  width: 10px;
+  height: 10px;
+  background: #10110f;
+  border-right: 1px solid rgba(243, 241, 235, .14);
+  border-bottom: 1px solid rgba(243, 241, 235, .14);
+  transform: rotate(45deg);
+}
+.mdisc-hint-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #e8674a;
+  animation: mdisc-ping 1.4s ease-out infinite;
+}
+@keyframes mdisc-ping {
+  0% { box-shadow: 0 0 0 0 rgba(232, 103, 74, .6); }
+  100% { box-shadow: 0 0 0 9px rgba(232, 103, 74, 0); }
+}
+
+/* mobile: sit above the bottom nav bar */
+@media (max-width: 680px) {
+  .mdisc { right: 12px; bottom: 82px; }
+  .mdisc-btn { width: 64px; height: 64px; }
+  .mdisc-vinyl { width: 40px; height: 40px; }
+  .mdisc-center { width: 15px; height: 15px; }
+  .mdisc-icon { width: 19px; height: 19px; right: 4px; bottom: 4px; }
+  .mdisc-hint { bottom: 70px; font-size: 11px; }
+  .mdisc-label { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mdisc-btn, .mdisc-label, .mdisc-hint { transition: none; }
+  .mdisc-hint-dot { animation: none; }
+}

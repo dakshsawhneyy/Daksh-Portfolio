@@ -19,13 +19,21 @@ import SideRail from "./components/SideRail"
 import SystemWorkspace from "./components/SystemWorkspace"
 import CommandPalette from "./components/CommandPalette"
 import SreTerminal from "./components/SreTerminal"
+import MusicDisc from "./components/MusicDisc"
 
-/* Scroll to top on every route change */
+/* Scroll to top on every route change — or to #anchor when the link has one */
 const ScrollToTop = () => {
-  const { pathname } = useLocation()
+  const { pathname, hash } = useLocation()
   useEffect(() => {
+    if (hash) {
+      // wait for the page transition to mount the target
+      const t = setTimeout(() => {
+        document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 260)
+      return () => clearTimeout(t)
+    }
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
-  }, [pathname])
+  }, [pathname, hash])
   return null
 }
 
@@ -157,6 +165,7 @@ const App = () => {
       </AnimatePresence>
 
       {!isSystem && !isProjectDetail && <Footer />}
+      <MusicDisc />
     </div>
   )
 }

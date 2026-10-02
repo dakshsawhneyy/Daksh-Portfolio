@@ -2,6 +2,7 @@ import { ArrowUpRight, ShieldCheck, Search, Wrench, Activity, Terminal, Zap, Git
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useInView, animate, AnimatePresence } from 'framer-motion'
+import SelfHealingCluster from '../components/SelfHealingCluster'
 import '../home-v2.css'
 
 /* ─── variants ─── */
@@ -45,199 +46,6 @@ const TypedText = ({ words }) => {
     return () => clearTimeout(t)
   }, [displayed, deleting, idx, words])
   return <span className="typed-word">{displayed}<span className="typed-cursor">|</span></span>
-}
-
-/* ─── multicloud architecture map ─── */
-
-const NODES = [
-  { id:'aws',  label:'AWS',        sub:'EKS · Lambda · CloudWatch', x:20, y:22, color:'#f0bc62', dot:'#FF9900' },
-  { id:'az',   label:'Azure',      sub:'AKS · VMSS · Load Balancer', x:60, y:10, color:'#65cfe5', dot:'#0078D4' },
-  { id:'gcp',  label:'GCP',        sub:'GKE · Cloud Functions',     x:82, y:30, color:'#72dfac', dot:'#4285F4' },
-  { id:'prom', label:'Prometheus', sub:'Metrics · Alerts',          x:18, y:64, color:'#e8674a', dot:'#e8674a' },
-  { id:'graf', label:'Grafana',    sub:'Dashboards · SLOs',         x:50, y:78, color:'#f0bc62', dot:'#f0b429' },
-  { id:'tf',   label:'Terraform',  sub:'IaC · Multi-cloud',         x:80, y:66, color:'#8784d2', dot:'#7B42BC' },
-]
-const EDGES = [
-  ['aws','prom'],['az','prom'],['gcp','prom'],
-  ['prom','graf'],['aws','tf'],['az','tf'],['gcp','tf'],
-  ['aws','az'],['az','gcp'],
-]
-
-const ArchMap = () => {
-  const [active, setActive] = useState(null)
-  const [pulse,  setPulse]  = useState(0)
-  const [pingNode, setPingNode] = useState(null)
-
-  // edge pulse
-  useEffect(() => {
-    const t = setInterval(() => setPulse(p => (p+1) % EDGES.length), 850)
-    return () => clearInterval(t)
-  }, [])
-
-  // random node "ping" to show it's live
-  useEffect(() => {
-    const t = setInterval(() => {
-      const n = NODES[Math.floor(Math.random() * NODES.length)]
-      setPingNode(n.id)
-      setTimeout(() => setPingNode(null), 700)
-    }, 2200)
-    return () => clearInterval(t)
-  }, [])
-
-  const nodeById = id => NODES.find(n => n.id === id)
-
-  return (
-    <div className="arch-root">
-      <div className="arch-bar">
-        <div className="arch-bar-dots">
-          <span className="arch-bd-r"/><span className="arch-bd-y"/><span className="arch-bd-g"/>
-        </div>
-        <span className="arch-bar-title">multicloud-topology / live</span>
-        <span className="arch-bar-status"><span className="arch-status-dot"/>CONNECTED</span>
-      </div>
-
-      <div className="arch-canvas">
-        <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" className="arch-svg">
-          <defs>
-            {/* dot grid */}
-            <pattern id="ag" width="6" height="6" patternUnits="userSpaceOnUse">
-              <circle cx="3" cy="3" r="0.4" fill="rgba(255,255,255,0.07)"/>
-            </pattern>
-            {/* per-edge gradient */}
-            {EDGES.map(([a,b],i) => {
-              const na=nodeById(a), nb=nodeById(b)
-              return (
-                <linearGradient key={i} id={`eg-${i}`}
-                  x1={na.x} y1={na.y} x2={nb.x} y2={nb.y} gradientUnits="userSpaceOnUse">
-                  <stop offset="0%"   stopColor={na.color} stopOpacity="0.8"/>
-                  <stop offset="100%" stopColor={nb.color} stopOpacity="0.8"/>
-                </linearGradient>
-              )
-            })}
-            {/* glow filter */}
-            <filter id="glow" x="-40%" y="-40%" width="180%" height="180%">
-              <feGaussianBlur stdDeviation="1.5" result="blur"/>
-              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-          </defs>
-
-          {/* background */}
-          <rect width="100" height="100" fill="url(#ag)"/>
-          {/* subtle vignette */}
-          <radialGradient id="vig" cx="50%" cy="50%" r="50%">
-            <stop offset="60%" stopColor="transparent"/>
-            <stop offset="100%" stopColor="rgba(7,15,12,0.6)"/>
-          </radialGradient>
-          <rect width="100" height="100" fill="url(#vig)"/>
-
-          {/* edges */}
-          {EDGES.map(([a,b],i) => {
-            const na=nodeById(a), nb=nodeById(b), isP = i===pulse
-            return (
-              <line key={i} x1={na.x} y1={na.y} x2={nb.x} y2={nb.y}
-                stroke={`url(#eg-${i})`}
-                strokeWidth={isP ? 1.0 : 0.4}
-                strokeDasharray={isP ? 'none' : '1 2'}
-                opacity={isP ? 0.9 : 0.25}
-                style={{transition:'opacity .6s, stroke-width .5s'}}
-              />
-            )
-          })}
-
-          {/* travelling pulse dot on active edge */}
-          {(() => {
-            const [a,b] = EDGES[pulse]
-            const na=nodeById(a), nb=nodeById(b)
-            return (
-              <motion.circle r="1.5" fill={na.color}
-                filter="url(#glow)"
-                animate={{cx:[na.x,nb.x], cy:[na.y,nb.y]}}
-                transition={{duration:0.82,ease:'linear'}}
-              />
-            )
-          })()}
-
-          {/* nodes */}
-          {NODES.map(n => {
-            const isActive = active === n.id
-            const isPing   = pingNode === n.id
-            return (
-              <g key={n.id} style={{cursor:'pointer'}}
-                onMouseEnter={()=>setActive(n.id)}
-                onMouseLeave={()=>setActive(null)}>
-                {/* ping ring */}
-                {isPing && (
-                  <motion.circle cx={n.x} cy={n.y}
-                    initial={{r:4, opacity:0.7}}
-                    animate={{r:8, opacity:0}}
-                    transition={{duration:0.7, ease:'easeOut'}}
-                    fill={n.color}
-                  />
-                )}
-                {/* hover glow ring */}
-                {isActive && (
-                  <motion.circle cx={n.x} cy={n.y} r="7"
-                    fill={n.color} opacity="0.1"
-                    initial={{scale:0.6}} animate={{scale:1}}
-                    transition={{duration:0.18}}
-                  />
-                )}
-                {/* outer ring */}
-                <circle cx={n.x} cy={n.y} r="4.2"
-                  fill="#091410"
-                  stroke={n.color}
-                  strokeWidth={isActive ? 1.4 : 0.7}
-                  filter={isActive ? 'url(#glow)' : undefined}
-                  style={{transition:'stroke-width .2s'}}
-                />
-                {/* inner dot */}
-                <circle cx={n.x} cy={n.y} r="1.8" fill={n.dot} opacity="0.95"/>
-                {/* label — positioned to not overlap edges */}
-                <text x={n.x} y={n.y + 7.8}
-                  textAnchor="middle"
-                  fontSize="2.8"
-                  fontFamily="ui-monospace,monospace"
-                  fontWeight="700"
-                  fill={isActive ? n.color : 'rgba(200,234,214,.6)'}
-                  style={{transition:'fill .2s', userSelect:'none'}}
-                >{n.label}</text>
-              </g>
-            )
-          })}
-        </svg>
-      </div>
-
-      {/* hover detail */}
-      <div className="arch-detail">
-        <AnimatePresence mode="wait">
-          {active ? (
-            <motion.div key={active} className="arch-detail-inner"
-              initial={{opacity:0,y:4}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-4}}
-              transition={{duration:0.14}}>
-              <span className="arch-detail-dot" style={{background:nodeById(active)?.dot}}/>
-              <span className="arch-detail-name" style={{color:nodeById(active)?.color}}>{nodeById(active)?.label}</span>
-              <span className="arch-detail-sep">·</span>
-              <span className="arch-detail-sub">{nodeById(active)?.sub}</span>
-            </motion.div>
-          ) : (
-            <motion.div key="idle" className="arch-detail-inner arch-detail-muted"
-              initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}}>
-              hover a node to inspect
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* stats */}
-      <div className="arch-stats">
-        {[{l:'NODES',v:'6'},{l:'CLOUDS',v:'3'},{l:'SERVICES',v:'9'},{l:'UPTIME',v:'99.97%',c:'#72dfac'}].map(({l,v,c})=>(
-          <div key={l} className="arch-stat">
-            <span>{l}</span><strong style={{color:c||'#fff'}}>{v}</strong>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
 }
 
 /* ─── Incident Zero simulator — with real product screenshot ─── */
@@ -408,7 +216,7 @@ const Home = () => (
         <motion.div className="hv2-dashboard"
           initial={{opacity:0,x:40}} animate={{opacity:1,x:0}}
           transition={{duration:0.7,delay:0.3,ease:[0.22,1,0.36,1]}}>
-          <ArchMap/>
+          <SelfHealingCluster/>
         </motion.div>
       </div>
     </section>
@@ -590,17 +398,6 @@ const Home = () => (
       </div>
 
     </motion.div>
-
-    {/* ══ CTA ══ */}
-    <motion.section className="hv2-cta"
-      initial="hidden" whileInView="visible" viewport={{once:true,margin:'-60px'}} variants={stagger}>
-      <motion.p className="hv2-eyebrow" variants={fadeUp}>Ready to collaborate?</motion.p>
-      <motion.h2 variants={fadeUp}>Have a platform problem<br/><em>worth solving?</em></motion.h2>
-      <motion.div className="hv2-cta-actions" variants={fadeUp}>
-        <Link className="hv2-btn-primary" to="/contact">Let's talk <ArrowUpRight size={16}/></Link>
-        <Link className="hv2-btn-ghost"   to="/projects">Browse work <ArrowUpRight size={15}/></Link>
-      </motion.div>
-    </motion.section>
 
   </main>
 )

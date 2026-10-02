@@ -1,0 +1,201 @@
+/* ══════════════════════════════════════════════════════════════════
+   PORTRAIT — About hero photo composition.
+   Everything is sized in cqw (container width) so the composition
+   scales as one unit at every breakpoint.
+     root  : 100cqw × 110cqw
+     disc  : Ø76cqw, centre at (50cqw, 66.5cqw)
+   ══════════════════════════════════════════════════════════════════ */
+.pt-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  padding-bottom: 28px;
+}
+
+.pt-root {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  container-type: inline-size;
+  perspective: 1200px;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.pt-scene {
+  position: relative;
+  width: 100%;
+  height: 110cqw;
+  transform-style: preserve-3d;
+}
+
+/* ── ring ── */
+.pt-ring {
+  position: absolute;
+  left: 0;
+  top: 16.5cqw;
+  width: 100cqw;
+  height: 100cqw;
+  overflow: visible;
+  pointer-events: none;
+}
+.pt-orbit { fill: none; stroke: rgba(17, 18, 16, .14); stroke-width: 1; stroke-dasharray: 2 6; }
+.pt-orbit-inner { stroke: rgba(232, 103, 74, .25); stroke-dasharray: 1 4; }
+.pt-ring-text,
+.pt-satellite {
+  transform-origin: 200px 200px;
+  animation: pt-spin 48s linear infinite;
+}
+.pt-satellite { animation-duration: 14s; animation-direction: reverse; }
+.pt-satellite circle { fill: #e8674a; filter: drop-shadow(0 0 6px rgba(232, 103, 74, .7)); }
+.pt-ring-text text {
+  font: 600 10.5px ui-monospace, SFMono-Regular, Menlo, monospace;
+  fill: #6b6e67;
+  letter-spacing: .02em;
+}
+@keyframes pt-spin { to { transform: rotate(360deg); } }
+
+/* ── core: disc + photo ── */
+.pt-core {
+  position: absolute;
+  inset: 0;
+}
+.pt-disc {
+  position: absolute;
+  left: 12cqw;
+  top: 28.5cqw;
+  width: 76cqw;
+  height: 76cqw;
+  border-radius: 50%;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 32% 24%, #fbe0b4 0%, #f5b27a 28%, #ec7c55 62%, #d4553a 100%);
+  box-shadow:
+    0 44px 80px -28px rgba(232, 103, 74, .55),
+    inset 0 -18px 50px rgba(120, 30, 10, .25),
+    inset 0 0 0 1px rgba(255, 255, 255, .25);
+  transition: transform .8s cubic-bezier(.2, .9, .25, 1);
+}
+.pt-disc-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, .16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .16) 1px, transparent 1px);
+  background-size: 5cqw 5cqw;
+  -webkit-mask-image: radial-gradient(circle at 50% 60%, transparent 30%, #000 75%);
+  mask-image: radial-gradient(circle at 50% 60%, transparent 30%, #000 75%);
+}
+.pt-disc-shine {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 200deg, transparent 0 60deg, rgba(255, 255, 255, .22) 90deg, transparent 130deg);
+  animation: pt-spin 18s linear infinite;
+}
+
+/* photo: visible above the disc's centre line, clipped to the disc below */
+.pt-photo-wrap {
+  position: absolute;
+  left: 8cqw;
+  bottom: 5.5cqw;
+  width: 84cqw;
+  -webkit-mask-image:
+    linear-gradient(#000, #000),
+    radial-gradient(circle 38cqw at 50% calc(100% - 38cqw), #000 99.4%, transparent 100%);
+  -webkit-mask-size: 100% calc(100% - 38cqw), 100% 100%;
+  -webkit-mask-position: top, 0 0;
+  -webkit-mask-repeat: no-repeat;
+  mask-image:
+    linear-gradient(#000, #000),
+    radial-gradient(circle 38cqw at 50% calc(100% - 38cqw), #000 99.4%, transparent 100%);
+  mask-size: 100% calc(100% - 38cqw), 100% 100%;
+  mask-position: top, 0 0;
+  mask-repeat: no-repeat;
+}
+.pt-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: saturate(1.05) contrast(1.04) drop-shadow(0 18px 24px rgba(60, 20, 8, .28));
+  transform-origin: 50% 100%;
+  transition: transform .8s cubic-bezier(.2, .9, .25, 1);
+}
+.pt-root:hover .pt-photo { transform: translateY(-1.2cqw) scale(1.015); }
+.pt-root:hover .pt-disc { transform: scale(1.02); }
+
+/* ── chips ── */
+.pt-chip {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 13px 9px 9px;
+  border-radius: 12px;
+  background: rgba(16, 17, 15, .92);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, .08);
+  box-shadow: 0 18px 40px -12px rgba(16, 17, 15, .45);
+  color: #f3f1eb;
+  white-space: nowrap;
+  z-index: 3;
+}
+.pt-chip b { display: block; font: 700 12.5px/1.2 'Space Grotesk', sans-serif; letter-spacing: -.01em; }
+.pt-chip small { display: block; font-size: 10.5px; color: #9a9d95; }
+.pt-chip-logo {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.pt-logo-code { background: #0f172a; }
+.pt-logo-aws { background: #232f3e; color: #ff9900; font: 800 11px Arial, sans-serif; letter-spacing: .02em; }
+
+.pt-chip-tl { left: -4cqw; top: 26cqw; }
+.pt-chip-br { right: -6cqw; bottom: 22cqw; }
+.pt-chip-r {
+  right: 2cqw;
+  top: 12cqw;
+  padding: 7px 12px;
+  gap: 6px;
+  border-radius: 999px;
+  background: #f3f1eb;
+  color: #10110f;
+  border-color: #d8d8ce;
+  box-shadow: 0 10px 24px -10px rgba(16, 17, 15, .25);
+}
+.pt-chip-r b { display: inline; font-size: 11.5px; }
+.pt-chip-r small { display: inline; color: #6b6e67; }
+.pt-live {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #27ae78;
+  animation: pt-ping 1.8s ease-out infinite;
+}
+@keyframes pt-ping {
+  0% { box-shadow: 0 0 0 0 rgba(39, 174, 120, .55); }
+  100% { box-shadow: 0 0 0 8px rgba(39, 174, 120, 0); }
+}
+
+@media (max-width: 980px) {
+  .pt-root { max-width: 380px; }
+}
+@media (max-width: 680px) {
+  .pt-col { order: -1; padding: 0 0 4px; }
+  .pt-root { max-width: 320px; margin: 0 auto; }
+  .pt-chip { padding: 7px 10px 7px 7px; gap: 8px; }
+  .pt-chip b { font-size: 11px; }
+  .pt-chip small { font-size: 9.5px; }
+  .pt-chip-logo { width: 24px; height: 24px; }
+  .pt-chip-tl { left: -2cqw; top: 30cqw; }
+  .pt-chip-br { right: -2cqw; bottom: 20cqw; }
+  .pt-ring-text text { font-size: 11.5px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-ring-text, .pt-satellite, .pt-disc-shine, .pt-live { animation: none; }
+}

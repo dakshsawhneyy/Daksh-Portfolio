@@ -1,0 +1,478 @@
+/* ══════════════════════════════════════════════════════════════════
+   SIGNATURE FOOTER — "The Reconcile Loop"
+   Palette mirrors the site: ink #10110f / paper #f3f1eb, coral is the
+   single hot accent, green = healthy, gold = warning.
+   --conv (0→1) is written by the canvas engine every frame.
+   ══════════════════════════════════════════════════════════════════ */
+.sig-footer {
+  --sig-bg: #0c0e0c;
+  --sig-paper: #f3f1eb;
+  --sig-muted: #8e918a;
+  --sig-dim: #5d605a;
+  --sig-line: rgba(243, 241, 235, .09);
+  --sig-coral: #e8674a;
+  --sig-green: #72dfac;
+  --sig-gold: #f0bc62;
+  --sig-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  position: relative;
+  background: var(--h-paper, #f3f1eb);
+  font-family: 'DM Sans', sans-serif;
+  color: var(--sig-paper);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* aperture: the dark world opens from an inset rounded window to full bleed */
+.sig-aperture {
+  position: relative;
+  background: var(--sig-bg);
+  overflow: hidden;
+  clip-path: inset(0 calc((1 - var(--conv, 0)) * 3.2vw) round calc((1 - var(--conv, 0)) * 44px) calc((1 - var(--conv, 0)) * 44px) 0 0);
+  will-change: clip-path;
+}
+.is-reduced .sig-aperture { clip-path: none; }
+
+/* ─────────────────────────── STAGE ─────────────────────────── */
+.sig-stage {
+  position: relative;
+  min-height: max(760px, 100vh);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 120px clamp(20px, 6vw, 96px) 110px;
+  isolation: isolate;
+  cursor: crosshair;
+  touch-action: pan-y;
+}
+.sig-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  display: block;
+}
+.sig-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 55% at 30% 38%, rgba(12, 14, 12, .72), transparent 70%),
+    linear-gradient(180deg, rgba(12, 14, 12, .55) 0%, transparent 22%, transparent 82%, rgba(12, 14, 12, .9) 100%);
+}
+
+/* HUD strip */
+.sig-hud {
+  position: absolute;
+  top: 28px;
+  left: clamp(20px, 6vw, 96px);
+  right: clamp(20px, 6vw, 96px);
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font: 600 10.5px/1 var(--sig-mono);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--sig-dim);
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--sig-line);
+}
+.sig-hud-item { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.sig-hud b { color: var(--sig-paper); font-weight: 700; font-variant-numeric: tabular-nums; }
+.sig-status[data-state='drift'] { color: var(--sig-gold) !important; }
+.sig-status[data-state='reconciling'] { color: var(--sig-coral) !important; }
+.sig-status[data-state='reconciled'] { color: var(--sig-green) !important; }
+
+.sig-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--sig-green);
+  box-shadow: 0 0 0 0 rgba(114, 223, 172, .6);
+  animation: sig-ping 2s ease-out infinite;
+  flex-shrink: 0;
+}
+@keyframes sig-ping { 70%, 100% { box-shadow: 0 0 0 9px rgba(114, 223, 172, 0); } }
+
+.sig-stage-inner {
+  position: relative;
+  max-width: 1320px;
+  width: 100%;
+  margin: 0 auto;
+  pointer-events: none;
+}
+.sig-stage-inner a, .sig-stage-inner button { pointer-events: auto; }
+
+.sig-eyebrow {
+  margin: 0 0 22px;
+  font: 600 12px var(--sig-mono);
+  letter-spacing: .08em;
+  color: var(--sig-coral);
+  opacity: calc(.35 + var(--conv, 0) * .65);
+}
+
+/* headline: one variable (--drift) moves every glyph */
+.sig-headline {
+  --drift: 1;
+  --amp: 1;
+  margin: 0;
+  font: 700 clamp(2.7rem, 8.4vw, 9rem)/.92 'Space Grotesk', sans-serif;
+  letter-spacing: -.055em;
+  display: flex;
+  flex-direction: column;
+}
+.sig-h-line { display: block; white-space: nowrap; }
+.sig-h-dim {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(243, 241, 235, .42);
+}
+.sig-word { display: inline-block; margin-right: .22em; }
+.sig-word:last-child { margin-right: 0; }
+.sig-accent { color: var(--sig-coral); }
+.sig-ch {
+  display: inline-block;
+  transform:
+    translate3d(calc(var(--rx) * var(--drift) * var(--amp) * 1px), calc(var(--ry) * var(--drift) * var(--amp) * 1px), 0)
+    rotate(calc(var(--rr) * var(--drift) * 1deg));
+  opacity: calc(1 - var(--drift) * .82);
+  will-change: transform, opacity;
+}
+
+/* CTA row */
+.sig-cta-row {
+  margin-top: clamp(36px, 6vh, 64px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 32px 48px;
+  align-items: center;
+}
+.sig-cta-copy {
+  margin: 0;
+  max-width: 470px;
+  font-size: clamp(15px, 1.25vw, 18px);
+  line-height: 1.6;
+  color: var(--sig-muted);
+  text-shadow: 0 0 14px #0c0e0c, 0 0 4px #0c0e0c;
+}
+.sig-cta-copy em { font-style: normal; color: var(--sig-paper); }
+
+.sig-cta-actions {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+/* magnetic circular CTA with orbiting command text */
+.sig-cta {
+  position: relative;
+  width: 196px;
+  height: 196px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  text-decoration: none;
+  color: var(--sig-bg) !important;
+  flex-shrink: 0;
+}
+.sig-cta-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  animation: sig-spin 22s linear infinite;
+  transition: opacity .3s;
+}
+.sig-cta-ring text {
+  font: 600 10.6px var(--sig-mono);
+  text-transform: uppercase;
+  fill: rgba(243, 241, 235, .55);
+}
+.sig-cta:hover .sig-cta-ring { animation-duration: 6s; }
+.sig-cta:hover .sig-cta-ring text { fill: var(--sig-coral); }
+@keyframes sig-spin { to { transform: rotate(360deg); } }
+
+.sig-cta-core {
+  position: relative;
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+  background: var(--sig-coral);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  overflow: hidden;
+  box-shadow: 0 0 0 0 rgba(232, 103, 74, .45), 0 18px 50px rgba(232, 103, 74, .25);
+  transition: transform .5s cubic-bezier(.2, .9, .25, 1.3), box-shadow .4s;
+}
+.sig-cta-core::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--sig-paper);
+  transform: translateY(101%);
+  transition: transform .5s cubic-bezier(.7, 0, .2, 1);
+}
+.sig-cta:hover .sig-cta-core { transform: scale(1.1); box-shadow: 0 0 0 14px rgba(232, 103, 74, .12), 0 24px 60px rgba(232, 103, 74, .35); }
+.sig-cta:hover .sig-cta-core::before { transform: translateY(0); }
+.sig-cta-label {
+  position: relative;
+  font: 700 15px/1.05 'Space Grotesk', sans-serif;
+  letter-spacing: -.02em;
+  text-align: center;
+}
+.sig-cta-arrow { position: relative; transition: transform .45s cubic-bezier(.2, .9, .25, 1.3); }
+.sig-cta:hover .sig-cta-arrow { transform: rotate(45deg); }
+.sig-cta:focus-visible { outline: 2px solid var(--sig-coral); outline-offset: 6px; }
+
+/* terminal command — copies email */
+.sig-cmd {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  border: 1px solid var(--sig-line);
+  border-radius: 10px;
+  background: rgba(243, 241, 235, .03);
+  color: var(--sig-muted);
+  font: 500 12.5px var(--sig-mono);
+  cursor: copy;
+  white-space: nowrap;
+  transition: border-color .25s, color .25s, background .25s;
+}
+.sig-cmd b { color: var(--sig-paper); font-weight: 600; }
+.sig-cmd-prompt { color: var(--sig-green); }
+.sig-cmd-icon { display: grid; place-items: center; opacity: .6; }
+.sig-cmd:hover { border-color: rgba(232, 103, 74, .55); color: var(--sig-paper); background: rgba(232, 103, 74, .06); }
+.sig-cmd:hover .sig-cmd-text::after {
+  content: '▍';
+  margin-left: 2px;
+  color: var(--sig-coral);
+  animation: sig-blink 1s steps(2) infinite;
+}
+@keyframes sig-blink { 50% { opacity: 0; } }
+
+.sig-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%);
+  margin: 0;
+  font: 600 10px var(--sig-mono);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--sig-dim);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* ─────────────────────────── MANIFEST ─────────────────────────── */
+.sig-manifest {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.45fr 1fr 1fr 1.25fr;
+  gap: 40px;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 64px clamp(20px, 6vw, 96px) 40px;
+  border-top: 1px solid var(--sig-line);
+}
+@media (min-width: 1500px) { .sig-manifest { padding-left: 0; padding-right: 0; } }
+
+.sig-key {
+  margin: 0 0 18px;
+  font: 600 11px var(--sig-mono);
+  letter-spacing: .06em;
+  color: var(--sig-coral);
+}
+.sig-name {
+  margin: 0 0 12px;
+  font: 700 26px/1.1 'Space Grotesk', sans-serif;
+  letter-spacing: -.03em;
+  color: var(--sig-paper);
+}
+.sig-pos { margin: 0 0 18px; max-width: 340px; font-size: 14px; line-height: 1.65; color: var(--sig-muted); }
+.sig-loc { display: flex; align-items: center; gap: 10px; margin: 0; font: 500 11.5px var(--sig-mono); color: var(--sig-dim); }
+
+.sig-col { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+
+/* rolling links: text slides up to reveal a coral copy + route path */
+.sig-link {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 5px 0;
+  color: var(--sig-paper) !important;
+  text-decoration: none;
+  font: 500 16px 'DM Sans', sans-serif;
+}
+.sig-roll {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  line-height: 1.25;
+}
+.sig-roll > span { display: inline-block; transition: transform .5s cubic-bezier(.7, 0, .2, 1); }
+.sig-roll::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 100%;
+  color: var(--sig-coral);
+  transition: transform .5s cubic-bezier(.7, 0, .2, 1);
+}
+.sig-link:hover .sig-roll > span,
+.sig-link:hover .sig-roll::after { transform: translateY(-100%); }
+.sig-link:focus-visible { outline: 1px dashed var(--sig-coral); outline-offset: 3px; }
+.sig-link-path {
+  font: 500 10.5px var(--sig-mono);
+  color: var(--sig-dim);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity .35s, transform .45s cubic-bezier(.2, .9, .25, 1);
+}
+.sig-link:hover .sig-link-path { opacity: 1; transform: none; }
+
+.sig-stats { margin: 0 0 22px; display: grid; gap: 12px; width: 100%; }
+.sig-stats div { display: grid; gap: 3px; }
+.sig-stats dt { font: 600 9.5px var(--sig-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--sig-dim); }
+.sig-stats dd { margin: 0; font: 500 13.5px var(--sig-mono); color: var(--sig-paper); font-variant-numeric: tabular-nums; }
+.sig-stats dd.ok { color: var(--sig-green); }
+
+.sig-top {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px 11px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--sig-line);
+  background: transparent;
+  color: var(--sig-paper);
+  font: 600 11px var(--sig-mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: border-color .3s, background .3s;
+}
+.sig-top svg { transition: transform .45s cubic-bezier(.2, .9, .25, 1.3); }
+.sig-top:hover { border-color: var(--sig-coral); background: rgba(232, 103, 74, .08); }
+.sig-top:hover svg { transform: translateY(-3px); }
+
+/* ─────────────────────────── WORDMARK ─────────────────────────── */
+.sig-wordmark {
+  --mx: 50%;
+  --my: 50%;
+  --spot: 0;
+  position: relative;
+  display: grid;
+  margin-top: 8px;
+  padding: 0 clamp(12px, 3vw, 40px);
+  font: 700 clamp(5rem, 25vw, 26rem)/.78 'Space Grotesk', sans-serif;
+  letter-spacing: -.07em;
+  text-align: center;
+  overflow: hidden;
+  cursor: default;
+}
+.sig-wordmark > span { grid-area: 1 / 1; padding-top: .06em; }
+.sig-wm-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(243, 241, 235, .14);
+}
+.sig-wm-fill {
+  background: linear-gradient(180deg, var(--sig-coral) 0%, #f0a07c 55%, rgba(232, 103, 74, 0) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-mask-image: radial-gradient(circle 260px at var(--mx) var(--my), #000 0%, rgba(0, 0, 0, .55) 45%, transparent 100%);
+  mask-image: radial-gradient(circle 260px at var(--mx) var(--my), #000 0%, rgba(0, 0, 0, .55) 45%, transparent 100%);
+  opacity: var(--spot);
+  transition: opacity .5s;
+}
+/* touch / no hover: the spotlight sweeps on its own */
+@media (hover: none), (pointer: coarse) {
+  .sig-wm-fill {
+    opacity: .9;
+    -webkit-mask-image: linear-gradient(100deg, transparent 30%, #000 50%, transparent 70%);
+    mask-image: linear-gradient(100deg, transparent 30%, #000 50%, transparent 70%);
+    -webkit-mask-size: 300% 100%;
+    mask-size: 300% 100%;
+    animation: sig-sweep 5.5s ease-in-out infinite;
+  }
+}
+@keyframes sig-sweep {
+  0% { -webkit-mask-position: 100% 0; mask-position: 100% 0; }
+  100% { -webkit-mask-position: 0 0; mask-position: 0 0; }
+}
+
+.sig-bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px clamp(20px, 6vw, 96px) 26px;
+  border-top: 1px solid var(--sig-line);
+  font: 500 10.5px var(--sig-mono);
+  letter-spacing: .06em;
+  color: var(--sig-dim);
+}
+
+/* ─────────────────────────── RESPONSIVE ─────────────────────────── */
+/* tablet: simplified — CTA stacks, manifest goes 2×2 */
+@media (max-width: 1080px) {
+  .sig-cta-row { grid-template-columns: 1fr; }
+  .sig-manifest { grid-template-columns: 1fr 1fr; gap: 44px 32px; }
+}
+
+/* mobile: a vertical, scroll-driven composition */
+@media (max-width: 680px) {
+  .sig-aperture { clip-path: inset(0 calc((1 - var(--conv, 0)) * 14px) round calc((1 - var(--conv, 0)) * 28px) calc((1 - var(--conv, 0)) * 28px) 0 0); }
+  .sig-stage {
+    min-height: 0;
+    padding: 96px 20px 84px;
+    justify-content: flex-start;
+    cursor: default;
+  }
+  .sig-hud { top: 22px; left: 20px; right: 20px; font-size: 9.5px; letter-spacing: .1em; }
+  .sig-hide-sm { display: none !important; }
+  .sig-headline { --amp: .42; font-size: clamp(2.5rem, 13.4vw, 4.2rem); line-height: .96; }
+  .sig-h-line { white-space: normal; }
+  .sig-vignette {
+    background: linear-gradient(180deg, rgba(12, 14, 12, .82) 0%, rgba(12, 14, 12, .5) 45%, transparent 70%, rgba(12, 14, 12, .85) 100%);
+  }
+  .sig-cta-row { margin-top: 28px; gap: 26px; }
+  .sig-cta-actions { flex-direction: column; align-items: stretch; gap: 18px; }
+  .sig-cta { width: 100%; height: auto; border-radius: 16px; }
+  .sig-cta-ring { display: none; }
+  .sig-cta-core {
+    width: 100%;
+    height: 64px;
+    border-radius: 14px;
+    flex-direction: row;
+    gap: 12px;
+  }
+  .sig-cta-label br { display: none; }
+  .sig-cta-label { font-size: 17px; }
+  .sig-cta:active .sig-cta-core { transform: scale(.97); }
+  .sig-cmd { justify-content: center; font-size: 12px; padding: 14px; }
+  .sig-hint { bottom: 22px; }
+
+  .sig-manifest { grid-template-columns: 1fr 1fr; gap: 36px 20px; padding: 44px 20px 28px; }
+  .sig-col-id, .sig-col-status { grid-column: 1 / -1; }
+  .sig-link { font-size: 15px; padding: 6px 0; }
+  .sig-link-path { display: none; }
+  .sig-stats { grid-template-columns: 1fr 1fr; }
+  .sig-stats div:last-child { grid-column: 1 / -1; }
+  .sig-top { width: 100%; justify-content: center; }
+
+  .sig-wordmark { font-size: 31vw; }
+  .sig-bottom { flex-direction: column; gap: 6px; padding: 18px 20px 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sig-ch { transform: none !important; opacity: 1 !important; }
+  .sig-cta-ring, .sig-pulse, .sig-wm-fill { animation: none !important; }
+  .sig-roll > span, .sig-roll::after, .sig-cta-core, .sig-cta-core::before { transition: none; }
+}
